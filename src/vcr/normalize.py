@@ -17,19 +17,33 @@ def normalize(run, repo):
     repo = Path(repo).resolve(strict=True)
     if run.schema_version != '0.1' or run.workflow not in {'start', 'rescue', 'improve', 'tokens'}:
         raise ValueError('Version ou workflow de rapport invalide.')
-    if not run.run_id or not run.created_at or not isinstance(run.target, dict):
+    if not isinstance(run.run_id, str) or not run.run_id or not isinstance(run.created_at, str) or not run.created_at or not isinstance(run.target, dict):
         raise ValueError('Identité, date ou cible du rapport invalide.')
-    if any(not c.id or c.status not in CHECKS for c in run.checks):
+    if (not isinstance(run.target.get('path'), str) or not run.target['path']
+            or run.target.get('mode') not in {'read_only', 'proposal', 'approved_change'}
+            or run.target.get('git_head') is not None and not isinstance(run.target['git_head'], str)
+            or run.target.get('git_dirty') is not None and type(run.target['git_dirty']) is not bool):
+        raise ValueError('Cible ou état Git invalide.')
+    if not isinstance(run.profile, list) or any(not isinstance(p, str) for p in run.profile):
+        raise ValueError('Profil invalide.')
+    if not isinstance(run.limitations, list) or any(not isinstance(x, str) for x in run.limitations):
+        raise ValueError('Limites du rapport invalides.')
+    if any(not isinstance(c.id, str) or not c.id or c.status not in CHECKS or not isinstance(c.reason, str) for c in run.checks):
         raise ValueError('Identifiant ou statut de vérification invalide.')
     unique = set()
     dedup = set()
     accepted = []
     for finding in run.findings:
-        if (not finding.id or not finding.title or not isinstance(finding.summary, str)
+        if (not isinstance(finding.id, str) or not finding.id or not isinstance(finding.title, str) or not finding.title or not isinstance(finding.summary, str)
                 or finding.category not in CATEGORIES or finding.severity not in SEVERITIES
                 or finding.status not in STATUSES or finding.confidence not in CONFIDENCES
                 or finding.origin not in ORIGINS):
             raise ValueError('Constat invalide : identifiant, champs obligatoires ou énumération.')
+        arrays = (finding.evidence, finding.recommendations, finding.alternatives, finding.risks_of_fix, finding.invariants_to_preserve, finding.verification_plan, finding.limitations)
+        if any(not isinstance(a, list) for a in arrays) or any(not isinstance(x, str) for a in arrays[1:] for x in a):
+            raise ValueError('Listes de constat invalides.')
+        if not isinstance(finding.impact, str) or any(x is not None and (not isinstance(x, str) or not x) for x in (finding.rule_id, finding.cause)):
+            raise ValueError('Impact, règle ou cause invalide.')
         if finding.id in unique:
             raise ValueError('Identifiant de constat en double.')
         unique.add(finding.id)
@@ -37,6 +51,13 @@ def normalize(run, repo):
         for e in finding.evidence:
             if e.kind not in KINDS or not isinstance(e.summary, str) or not e.summary:
                 raise ValueError('Preuve invalide : type ou résumé manquant.')
+            if (e.path is not None and not isinstance(e.path, str)
+                    or e.command is not None and not isinstance(e.command, str)
+                    or e.exit_code is not None and type(e.exit_code) is not int
+                    or e.redacted is not None and type(e.redacted) is not bool):
+                raise ValueError('Champs de preuve invalides.')
+            if finding.status == 'confirmed' and ((e.kind == 'file' and not e.path) or (e.kind == 'command' and (not e.command or e.exit_code is None))):
+                invalid = True
             has_lines = e.line_start is not None or e.line_end is not None
             lines_valid = (type(e.line_start) is int and e.line_start > 0
                            and (e.line_end is None or type(e.line_end) is int and e.line_end >= e.line_start))
