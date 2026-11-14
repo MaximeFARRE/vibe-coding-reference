@@ -13,3 +13,17 @@ CI : [exécution GitHub 43602137084](https://github.com/MaximeFARRE/vibe-coding-
 Limites : TOKENS ne lit pas les journaux natifs de session Codex/Claude Code ; les compteurs et coûts sont déclaratifs. Les neuf liens du catalogue et des métadonnées ont été consultés le 2026-11-14, sans audit de sécurité ni preuve générale d'efficacité. START stocke les réponses en clair ; RESCUE vérifie partiellement les schémas et monorepos ; IMPROVE n'établit pas de cause commune. Pas de validation d'ergonomie par une personne extérieure, HTML ni tri automatique.
 
 Cas du backlog : T001–T015 couverts ; T007 simulé et T013 testé avec espaces sur macOS et Ubuntu, pas Windows. Prochaine étape : revue de la branche et décision de fusion ; ensuite, prioriser les limites réelles selon les retours utilisateurs.
+
+## Présentation GitHub — 14 novembre 2026
+
+README réorganisé autour des cinq parcours, du statut de prototype et d'un clonage explicite de `feat/initial-publication` ; le dossier de lancement initial est signalé comme historique. Le README est préparé pour la branche par défaut après fusion.
+
+Vérifications de ce lot sur macOS/Python 3.12.9 : `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -m unittest discover -s tests -v` : 59 tests réussis. L'exemple README RESCUE (deux rapports), IMPROVE, `tokens` et `sources --topic tokens` a été exécuté sur un projet fictif temporaire ; les deux rapports Markdown attendus existent. `git diff --check` : aucune erreur. Le clone présenté et le parcours interactif START n'ont pas été rejoués dans ce lot ; Windows et l'installation editable restent non vérifiés.
+
+GitHub consulté en lecture seule : `main` est la branche par défaut ; `feat/initial-publication` est 91 commits en avance et 0 en retard au moment de la consultation. La CI [43602244697](https://github.com/MaximeFARRE/vibe-coding-reference/actions/runs/43602244697), sur `c41ce65`, a réussi ses quatre configurations. Aucun changement GitHub ni commit effectué pour ce lot. Prochaine étape : revoir les changements locaux et décider de leur publication, puis de la fusion éventuelle ; vérifier à nouveau l'état distant avant chaque action.
+
+## Préparation de la publication
+
+README bilingue d'accueil avec badges CI, Python et licence, schéma des parcours et guide français détaillé. Ajout de consignes de contribution, code de conduite, modèle de pull request et de signalement de bug, journal des changements et feuille de route. Les retours de personnes extérieures, Windows et l'installation editable restent à vérifier.
+
+Vérification locale : `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -m unittest discover -s tests -v` : 59 tests réussis sur macOS/Python 3.12.9. Prochaines étapes : revue, CI distante, fusion et préversion si les vérifications aboutissent.
