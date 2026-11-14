@@ -398,3 +398,103 @@ Trois travaux de 2026 justifient cette rubrique :
 | Architecture | Atout possible | Limite / contexte |
 |---|---|---|
 | Monolithe simple | peu d'infrastructure, découverte facile | risques de couplage en grandissant |
+| Monolithe modulaire | domaines séparés, un déploiement | règles de dépendances à faire respecter |
+| Feature-first / vertical slices | parcours cohérent dans peu de modules | duplication possible ; découpage fin à surveiller |
+| Clean / hexagonale | ports explicites, logique métier isolée | peut multiplier interfaces et couches |
+| Feature-Sliced Design | conventions frontend et règles d'import | surdimensionnement possible pour petit projet [S33–S34] |
+| Microservices | autonomie d'équipes et services | réseau, déploiements et opérations supplémentaires |
+
+**HYPOTHÈSE DE TRAVAIL :** « monolithe modulaire + organisation par fonctionnalités + règles d'import » peut être un bon point de départ pour beaucoup d'applications. Cette hypothèse est inspirée de pratiques et de retours techniques, **pas d'une étude comparative démontrant une supériorité pour les IA** [S01, S33, S36].
+
+### 7.1 Principes structurants
+
+- Collocaliser les éléments d'un même workflow lorsque cela réduit la recherche et les changements en cascade.
+- Séparer les calculs métier des I/O lorsque les tests et la pérennité y gagnent.
+- Créer une abstraction partagée seulement après un besoin récurrent et réellement identique.
+- Conserver des frontières de données, API et sécurité explicites.
+- Prohiber les dépendances entre domaines seulement lorsqu'elles sont réellement interdites ; documenter les exceptions.
+- Chercher une architecture **lisible et vérifiable**, pas un maximum de petits fichiers.
+- Couvrir les frontières importantes par linters ou tests structurels lorsque la stack le permet.
+
+### 7.2 Contrôles techniques d'architecture
+
+- JS/TS : [Dependency Cruiser](https://github.com/sverweij/dependency-cruiser), [ESLint Plugin Boundaries](https://github.com/javierbrea/eslint-plugin-boundaries).
+- Python : [Import Linter](https://import-linter.readthedocs.io/en/stable/).
+- FSD : examiner le linter officiel et les skills [S34].
+
+Ces outils sont des **candidats** : vérifier leur compatibilité avec la stack et éviter de superposer des outils de même fonction sans valeur ajoutée.
+
+### 7.3 Ce qu'OpenAI montre, et ce qu'OpenAI ne prouve pas
+
+Le retour *Harness Engineering* décrit un dépôt produit par Codex, une documentation servant de source de connaissance, des frontières architecturales explicites et des contrôles automatisés [S01]. Cela justifie une **piste forte de conception**. Il ne démontre ni la supériorité universelle de Next.js, ni une économie de tokens quantifiée pour toute architecture.
+
+---
+
+## 7.4 Revue approfondie 2026 — architecture adaptée aux agents
+
+**Question posée :** existe-t-il une architecture démontrée plus facile à maintenir par Codex/Claude Code qu'une autre ? **Réponse : pas de classement général probant identifié dans les sources de cette consolidation.** La question doit être décomposée en localisation du code, couplage, risque de régression, effort de test et charge d'exploitation.
+
+| Source | Résultat attesté | Ce qu'elle ne démontre pas |
+|---|---|---|
+| *On Coding Agent Issue Localization Accuracy* (ESEM, octobre 2026) [N02] | 2 441 corrections dans 10 projets Java ; localisation globalement meilleure au niveau package qu'aux niveaux classe et méthode | supériorité du monolithe modulaire, de Java ou d'un framework web |
+| *SWE-Explore* (juin 2026) [N10] | 848 problèmes, 203 dépôts et 10 langages ; la précision aux lignes et l'efficacité du contexte restent des difficultés | classement universel des méthodes de navigation dans des projets réels |
+| *Agent Retrieval Bench* (juillet 2026) [N01] | 427 exemples, 25 dépôts ; aucune famille de retrieval ne domine tout ; RepoMap a un bon rendement au budget 8K | économie directe garantie en coût API/quotas |
+| OpenAI *Harness Engineering* (février 2026) [N19] | retour industriel de forte activité agentique, contraintes structurales testables, documentation repo locale, nettoyage continu | causalité isolée d'une organisation de dossiers ; transposabilité au solo developer |
+| Martin Fowler *Monolith First* [S36] | argumentation d'architecture pour un démarrage monolithique dans certaines situations | expérimentation récente spécifique aux agents de code |
+
+### Hypothèses de travail révisées
+
+1. **Cohésion fonctionnelle.** Quand les changements d'une fonctionnalité peuvent se comprendre dans un nombre limité de modules, on s'attend à moins d'allers-retours exploratoires. **Hypothèse**, non économie de tokens chiffrée.
+2. **Frontières contraignantes.** Les invariants vérifiés par l'outillage résistent mieux à la dérive que les simples interdictions en langage naturel. **Pratique industrielle** [N19], non résultat universel.
+3. **Coût marginal de modification.** L'indicateur conceptuel pertinent est l'effort pour changer un comportement sans casser les autres, pas le nombre brut de fichiers, couches ou LOC.
+4. **Complexité totale.** Un microservice peut réduire un couplage local mais augmenter réseau, permissions, déploiement, monitoring et traçage. L'analyse doit considérer **tous** ces coûts.
+5. **Mauvais précédents.** Le code existant sert de modèle au code futur ; lorsqu'il contient des vulnérabilités, elles peuvent être propagées [N09].
+
+### Garde-fous raisonnables selon la taille
+
+- **Petit dépôt** : conventions simples, fonctions cohérentes, quelques tests métier, aucun outillage architectural spécial.
+- **Dépôt grandissant** : routes claires, séparation I/O et calculs sensibles, carte des fonctionnalités, contrôle d'import si des frontières stables existent.
+- **Grand dépôt** : dépendances explicites, analyse de cycles, contrôles structuraux en CI, ownership fonctionnel, logs vérifiables, documentation orientée parcours.
+
+**Interdiction éditoriale** : affirmer « architecture X = −Y % de tokens » sans étude directement pertinente et comparable. Des gains observés pour un système de recherche ne peuvent être attribués à une architecture de dossiers.
+
+## 7.5 Recommandation conditionnelle pour un grand projet JS/TS
+
+La structure `features/<domaine>/` peut rassembler pages/queries/actions/services, avec `lib/domain/` pour la logique métier pure, `lib/db/` pour accès et migrations, `components/` pour les composants réellement transversaux, `app/` pour assembler les routes. Ce **schéma illustratif** doit être adapté à chaque framework ; ce n'est ni une norme scientifique ni une réécriture imposée.
+
+**Critères de contrôle** : chemins d'import autorisés, présence de tests des règles métier, accès aux données centralisé quand nécessaire, validation aux frontières et absence de logique critique dupliquée. Les dépendances entre domaines ne sont interdites que si une règle métier justifie cette interdiction.
+
+---
+
+
+# Partie V — Documentation vivante et contexte IA
+
+## 8. Les quatre couches de connaissance
+
+1. **Règles et orientation** — `AGENTS.md` court : commandes, invariants, limites, chemins vers les docs pertinentes.
+2. **Carte fonctionnelle** — fonctionnalité → module, point d'entrée, tests, flux importants.
+3. **Index structurel** — symboles, imports, appels, routes, références, éventuellement un graphe régénérable.
+4. **Intentions et décisions** — règles métier, architecture decision records, arbitrages et raisons des exceptions.
+
+**La distinction clé :** un index peut découvrir où est une fonction ; il ne peut pas nécessairement retrouver pourquoi un calcul ou une règle métier existe.
+
+### 8.1 Règles retenues
+
+- Ne pas faire lire toute la documentation avant chaque action [S02, S04].
+- Utiliser une divulgation progressive et des skills à déclenchement clair [S02, S40].
+- Documenter le bon chemin vers les sources, plutôt que paraphraser toutes les fonctions.
+- Adapter la découverte de `AGENTS.md` aux agents réels : Codex et Claude Code ne chargent pas forcément les fichiers de la même manière [S41–S42].
+- Ne pas créer d'index complexe pour un dépôt qui tient déjà facilement en contexte.
+- Préférer les connaissances persistantes réellement utiles aux instructions répétitives.
+
+### 8.2 Mise à jour : événements plutôt que régénération générale
+
+| Déclencheur | Réponse documentaire souhaitée |
+|---|---|
+| Fichier déplacé ou renommé | réparation des références/index automatiques |
+| Fonction/signature modifiée | réindexation déterministe de la zone concernée |
+| API/route ajoutée | inventaire des routes mis à jour |
+| Module découpé | révision ciblée de la carte des fonctionnalités |
+| Règle métier changée | revue humaine/agent de la décision documentée |
+| Pull request | contrôle de dérive docs-code, proposition révisable |
+| Échéance périodique | contrôle de cohérence, non réécriture intégrale |
