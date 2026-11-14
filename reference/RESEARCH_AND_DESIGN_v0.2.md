@@ -798,3 +798,103 @@ Réserver `AGENTS.md` aux chemins, commandes et exceptions ; les skills pertinen
 
 Après plusieurs tentatives infructueuses, demander explicitement une **nouvelle hypothèse testable**, identifier ce qui a changé et arrêter les modifications aléatoires. Un protocole simple : « Reproduis, isole l'origine, propose une cause, teste-la sur une zone limitée, puis corrige ». Un nombre fixe de tentatives est une heuristique d'usage, pas une règle scientifiquement universelle.
 
+## 10.9 Mesures conditionnelles (niveau B)
+
+### B1. Cartes de fonctionnalités et repo maps
+
+Pour un gros dépôt, un document court « fonctionnalité → point d'entrée → modules → tests → données » peut éviter de reproduire des recherches récurrentes. On privilégie des **index déterministes** pour les symboles et imports. Aider RepoMap et Serena sont des outils publics à examiner, pas des dépendances obligatoires [S26-S27, N01].
+
+### B2. Désactiver les MCP/plugins réellement inutilisés
+
+Une description d'outil peut devenir une partie répétée du préfixe du modèle. Réduire les intégrations inutiles est raisonnable, à condition de ne pas retirer un outil critique et de comprendre l'effet sur le **cache** (modification des outils = possible changement de préfixe et coût d'écriture). Le chiffre de 21K–57K de [N15] dépend fortement d'une configuration chargée de schémas.
+
+### B3. Choix raisonné du modèle et de l'effort
+
+Les modèles plus coûteux ne sont pas systématiquement meilleurs par dollar pour tous les travaux. Le retour OpenAI *Maintaining Software* [N21] compare différentes configurations sur un nettoyage précis et illustre un arbitrage. **Néanmoins :** choisir un modèle moins cher qui échoue deux fois peut coûter davantage qu'un modèle robuste qui réussit du premier coup. Le coût d'une tâche correcte prime sur le tarif par token.
+
+### B4. États/handoffs réutilisables
+
+Conserver les règles et décisions métier stables dans les documents du dépôt ; utiliser des notes de transmission sur les longues tâches, plutôt qu'un historique intégral. Éviter un système de mémoire automatique qui invente des « faits » ou oublie de supprimer une décision périmée.
+
+## 10.10 Optimisations avancées / expérimentales (niveau C)
+
+- **TokenEconomizer** [N12, N27] : plugin Microsoft existant ; apprend des micro-faits de dépôt, écarte les outils historiquement inutiles, repère certains cycles improductifs. **N'est pas un skill**. Compatible uniquement avec les versions d'agents listées et testées par son dépôt ; inspecter les hooks, scripts, paramètres et permissions avant usage. Les fonctionnalités ont des activations différentes ; ne pas interpréter la fourchette de publication comme un gain garanti sous un abonnement.
+- **Compression automatique / proxy** [N14-N16] : gains possibles, mais risque d'effacer un détail exact indispensable (identifiants, lignes d'édition, messages d'erreur). La compression d'un log ne doit jamais déformer une chaîne servant d'ancre à un patch.
+- **Routage sémantique/RAG/graphe** : potentiel sur dépôts massifs, coût d'indexation, maintenance, fausses localisations et confidentialité ; **aucun déploiement automatique** prévu.
+- **Multi-agents spécialisés** : revue indépendante et séparation planification/exécution utile pour tâches longues mais parfois très chère ; Anthropic [N18] rapporte un harness qualitatif nettement plus coûteux qu'une exécution solo. Ce n'est pas un scénario général de réduction des coûts.
+
+## 10.11 Cache API : bénéfices, contre-effets et contrat de preuve
+
+La documentation OpenAI sur le prompt caching [N28], consultée pour cette version, précise que le cache réutilise un **préfixe identique** et peut réduire considérablement la facture des entrées mises en cache. Sur certains modèles GPT-5.6 et ultérieurs, la lecture peut être facturée à **0,1× le prix d'entrée normal**, voire **0,05×** sur des modèles énumérés, tandis que la première écriture de cache selon la durée choisie peut être facturée **1,25× ou 2,5×** en API. Ces **paramètres changent selon le modèle et la date** ; vérifier la page officielle avant toute recommandation chiffrée.
+
+**Conséquence contre-intuitive :** compresser un historique déjà fortement caché peut réduire le nombre de tokens bruts tout en réinitialisant une partie du cache ; l'effet monétaire peut être négatif [N14, N28]. Les modèles/harness et les API ne gèrent pas tous le caching de la même manière.
+
+### Règles API conditionnelles
+
+1. Stabiliser les instructions et schémas communs au début du contexte quand l'API le permet.
+2. Ajouter les entrées dynamiques après les éléments stables ; éviter de réécrire sans cesse un long préfixe.
+3. Utiliser les compteurs réels (`cached_tokens`, éventuels `cache_write_tokens`, tarification de sortie) au lieu de déduire le coût du seul volume d'entrée.
+4. Ne pas promettre qu'un cache hit est toujours garanti : modèle, paramètres, expiration et routage peuvent changer.
+5. Tester l'effet financier d'une compaction **sur la métrique facturée** publiée ; ne pas utiliser une étude sur les tokens bruts pour prédire des dollars.
+
+**Formule de principe** : `coût ≈ (entrée non cachée × prix entrée) + (lecture cache × prix lecture) + (écriture cache × prix écriture) + (sortie × prix sortie) + coûts d'outils`. Les catégories exactes sont propres au provider, et certaines API n'ont pas de tarification explicite d'écriture de cache.
+
+### Quotas des applications / abonnements
+
+Le fournisseur peut utiliser une allocation, des plafonds dynamiques, un compteur de messages ou une tarification interne des tâches qui n'est **pas identique** au coût API. À défaut de formule officielle publique détaillée, on ne prédit pas combien « une économie de 20 % en tokens API » ajoute de tâches Codex par semaine. On privilégie les bonnes pratiques qui **réduisent aussi le travail total** (navigation pertinente, moins de boucles d'échecs) ; c'est une hypothèse raisonnable d'amélioration du quota, pas une conversion chiffrée.
+
+## 10.12 Ordre d'action recommandé par valeur/difficulté
+
+| Ordre de lecture | Action | Adoption | Effet présumé | Risque principal |
+|---|---|---|---|---|
+| 1 | Définir clairement la tâche et les critères métier | A | éviter réécritures | sous-spécifier les cas limites |
+| 2 | Recherche ciblée puis élargissement prudent | A | moins d'exploration inutile | manquer une dépendance indirecte |
+| 3 | Sorties de tests synthétiques + logs complets conservés | A | contexte moins encombré | masquer une erreur si filtrage brut |
+| 4 | Session cohérente + passation courte quand nécessaire | A | éviter répétition et histoire obsolète | perdre un invariant sans handoff |
+| 5 | AGENTS.md/skills pertinents, pas de lecture obligatoire globale | A | moins de surcharge et contradictions | supprimer une vraie contrainte |
+| 6 | Outils/MCP inventoriés et désactivés si inutiles | B | préfixe et outils plus légers | casser une fonction, perturber cache |
+| 7 | Index, RepoMap, recherche symbolique complémentaire | B | gains de localisation sur gros projets | coût d'installation ou index périmé |
+| 8 | TokenEconomizer / routage avancé | C | gains publiés sur certains agents | hooks, compatibilité, réversibilité |
+| 9 | Compression intelligente et proxies | C | potentiel selon cache/tâches | dégradation des correctifs et facture |
+
+Ce classement est **une proposition éditoriale qualitative**, pas le résultat d'un essai contrôlé comparant les neuf lignes.
+
+## 10.13 Auditer la consommation de tokens sans créer de benchmark
+
+Dans RESCUE, un audit peut être **purement descriptif** et non expérimental : inventorier le `AGENTS.md`, les skills activés, les outils MCP, les scripts bavards, les patterns de navigation, les sessions longues et les journaux d'erreur répétitifs. Il ne nécessite ni dispositif scientifique, ni collecte nouvelle de données privées, ni instrumentation complexe.
+
+**Sortie attendue :**
+
+- **Observation** : « la tâche lance un build complet 11 fois avant une correction locale », uniquement si une trace accessible le montre ; sinon « à vérifier ».
+- **Conséquence possible** : volume de contexte/temps supplémentaire, sans conversion monétaire inventée.
+- **Action simple** : exécuter un test ciblé en boucle puis le build final.
+- **Risques** : test ciblé insuffisant sur changements transversaux.
+- **Preuve de correction** : commandes réellement exécutées, tests verts, critères métier contrôlés.
+
+Aucune obligation de produire des métriques personnelles ni de chronométrer des agents. **Les études externes demeurent la seule base pour les bénéfices quantitatifs généraux.**
+
+---
+
+
+# Partie VII — Doctrine de recherche
+
+## 11. Politique de preuve
+
+**Décision explicite : pas de benchmarks maison.** La bibliothèque s'appuie sur la littérature existante et les sources techniques originales. Si une question n'a pas de preuve, l'indiquer plutôt que créer un classement intuitif.
+
+### Hiérarchie pratique
+
+- **A — Étude empirique** : protocole, groupe(s), conditions, résultats et limites disponibles. L'effet observé n'est valable que pour ce périmètre.
+- **B — Retour industriel détaillé** : OpenAI, Anthropic, Google, etc. Contexte concret, apprentissages précieux mais possible biais de sélection.
+- **C — Documentation/spécification officielle** : description de comportements et d'interfaces, non preuve de productivité.
+- **D — Dépôt/pratique personnelle/opinion** : excellente source d'idées ; conclusions à confirmer indépendamment.
+
+### Sources prioritaires
+
+OpenAI et les équipes Codex ; Anthropic et Claude Code ; DeepSeek ; Google DeepMind et Google ; publications scientifiques sur agents de code, génie logiciel et interfaces ; organismes indépendants comme METR ; auteurs identifiés (Andrej Karpathy, Matt Pocock, Peter Steinberger) pour leurs pratiques, **pas comme garantie scientifique**.
+
+### Règles d'édition pour une recommandation
+
+Chaque fiche devra préciser : (1) problème visé ; (2) contexte applicable ; (3) recommandation ; (4) contre-exemples ; (5) sources primaires ; (6) type de preuve ; (7) limites ; (8) date de dernière revue ; (9) décision retenue/à tester/écartée ; (10) changement depuis version précédente.
+
+### Précautions essentielles
