@@ -4,6 +4,7 @@ from pathlib import Path
 
 from vcr.models import Evidence, Finding, Run
 from vcr.normalize import normalize
+from vcr.report import render
 
 
 class NormalizationTests(unittest.TestCase):
@@ -31,6 +32,13 @@ class NormalizationTests(unittest.TestCase):
         self.run.findings[0].status = 'verified'
         with self.assertRaisesRegex(ValueError, 'énumération'):
             normalize(self.run, self.repo)
+
+    def test_render_links_to_validated_file_and_line(self):
+        self.run.findings = [self.finding('x', [Evidence('file', 'Indice', path='code.py', line_start=2)])]
+        report = render(normalize(self.run, self.repo))
+        self.assertIn('[code.py:2](', report)
+        self.assertIn('/code.py)', report)
+        self.assertIn('ligne 2', report)
 
     def test_only_same_rule_cause_and_location_deduplicates(self):
         def item(id, cause='cause', line=1, rule='rule'):
