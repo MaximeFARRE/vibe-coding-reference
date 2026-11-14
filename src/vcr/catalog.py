@@ -57,7 +57,7 @@ def normalize_catalog(data):
         item['scientific_link_status'] = 'verified' if item.get('scientific_link_status') == 'verified' and item['scientific_url'] and valid_date(item.get('link_checked_at')) else 'unverified'
         maintenance = item.get('maintenance_status')
         item['maintenance_status'] = maintenance if isinstance(maintenance, str) and maintenance in {'verified', 'unverified'} else 'unverified'
-        if item['maintenance_status'] == 'verified' and (not valid_date(item.get('maintenance_verified_at')) or not valid_url(item.get('maintenance_source'))):
+        if item['maintenance_status'] == 'verified' and (not valid_date(item.get('maintenance_verified_at')) or not valid_url(item.get('maintenance_source')) or not isinstance(item.get('maintenance_detail'), str) or not item['maintenance_detail']):
             item['maintenance_status'] = 'unverified'
         if (item.get('evidence_status') != 'verified' or not item['official_url'] or item['maintenance_status'] != 'verified'
                 or review is None or not valid_date(item.get('evidence_verified_at')) or not valid_url(item.get('verification_source'))):
@@ -90,6 +90,7 @@ def render(catalog, topic=None):
             lines.append(f"- **Vérification de preuve :** {item['evidence_verified_at']} ; {item['verification_source']}")
         if item['maintenance_status'] == 'verified':
             lines.append(f"- **Vérification de maintenance :** {item['maintenance_verified_at']} ; {item['maintenance_source']}")
+            lines.append(f"- **Observation de maintenance :** {item['maintenance_detail']}")
         lines.append(f"- **Mainteneur :** {item['maintainer']} **Version :** {item['version']}")
         for label, key in [('Problème traité', 'problem'), ('Incompatibilités / limites', 'incompatibilities'), ('Coûts cachés', 'hidden_costs'), ('Permissions', 'permissions'), ('Licence', 'license')]:
             lines.append(f"- **{label} :** {item[key]}")
