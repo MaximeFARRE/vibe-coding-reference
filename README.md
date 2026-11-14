@@ -36,3 +36,7 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -m unittest discover -s tests -
 ```
 
 Les tests créent des projets artificiels temporaires et ne nécessitent ni réseau ni données privées. `pytest` est proposé en dépendance de développement facultative, mais n'est pas nécessaire à cette commande. Voir [l'état d'avancement](docs/IMPLEMENTATION_STATUS.md) pour les cas couverts et les limites.
+
+## Licence
+
+Ce projet est distribué sous [licence MIT](LICENSE).
