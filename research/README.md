@@ -1,39 +1,39 @@
-# Notes de recherche — index pour agents
+# Research notes — agent index
 
-Objectif : conserver les résultats, sources, options, avantages, inconvénients et questions ouvertes du projet. Notes courtes en Markdown, une question ou décision par fichier ; pas de base de données ni de format à parser obligatoirement.
+Purpose: preserve project findings, sources, options, benefits, drawbacks and open questions. Short Markdown notes, one question or decision per file; no database or mandatory machine-readable format.
 
-## Utilisation
+## Use
 
-- Chercher dans cet index puis avec `rg 'mot-clé' research docs reference` ; lire uniquement les notes utiles au sujet.
-- Ajouter une note `AAAA-MM-JJ-sujet.md` lorsqu'une recherche produit un résultat ou une décision. Mettre à jour l'index ci-dessous dans le même changement.
-- Consigner aussi les résultats négatifs, désaccords, options écartées, raisons et questions non résolues ; ne pas inventer de résultat pour remplir le modèle.
-- Sources : chemin et emplacement vérifiable pour le local ; URL exacte, auteur/version/date et limites pour l'externe lorsqu'ils sont disponibles. Distinguer observation directe, conclusion de source, hypothèse et décision ; préciser ce qui n'a pas été vérifié. Ne pas faire passer une source historique pour une vérification actuelle.
-- Mettre à jour une note si une preuve évolue, en conservant les conclusions précédentes et la date de correction. Indiquer si une décision est remplacée et par laquelle.
-- Aucun secret, donnée personnelle, extrait sensible ou historique privé. Ne pas dupliquer intégralement les documents sources ; les lier.
-- Les études externes ne prouvent pas de gains propres à VCR ; aucun benchmark maison de performance/tokens.
+- Search this index, then use `rg 'keyword' research docs reference`; read only notes relevant to the topic.
+- Add a `YYYY-MM-DD-topic.md` note when research produces a finding or decision. Update the index below in the same change.
+- Record negative results, disagreements, rejected options, reasons and unresolved questions; do not invent results to fill the template.
+- Sources: verifiable local path and location; exact external URL, author/version/date and limitations when available. Distinguish direct observation, source conclusion, hypothesis and decision; state what was not checked. Do not present a historical source as current verification.
+- Update a note when evidence changes, retaining previous conclusions and the correction date. State whether and by what a decision is superseded.
+- No secrets, personal data, sensitive excerpts or private history. Link source documents instead of duplicating them in full.
+- External studies do not prove VCR-specific savings; no homemade performance or token benchmarks.
 
-## Modèle minimal
+## Minimal template
 
 ```markdown
-# Sujet
-- Date : AAAA-MM-JJ ; mise à jour : AAAA-MM-JJ
-- Statut : ouvert | décidé | remplacé
-- Question / périmètre : ...
-- Sources et preuves : [référence précise, date ou commande] ...
-- Résultats : [confirmé | suspecté | non vérifié | non applicable] ...
-- Options : option A — avantages / inconvénients / limites ; option B — ...
-- Décision / justification : ... ou « aucune »
-- Incertitudes / prochaine vérification : ...
+# Topic
+- Date: YYYY-MM-DD; updated: YYYY-MM-DD
+- Status: open | decided | superseded
+- Question / scope: ...
+- Sources and evidence: [precise reference, date or command] ...
+- Findings: [confirmed | suspected | not checked | not applicable] ...
+- Options: option A — benefits / drawbacks / limitations; option B — ...
+- Decision / rationale: ... or “none”
+- Uncertainties / next verification: ...
 ```
 
 ## Index
 
-| Sujet | Note | État |
+| Topic | Note | Status |
 |---|---|---|
-| Base existante, architecture et limites du prototype | [2026-11-14-socle-et-recherche-existante.md](2026-11-14-socle-et-recherche-existante.md) | Ouvert |
-| Preuves, rapport et décisions utilisateur | [2026-11-14-rapport-et-preuves.md](2026-11-14-rapport-et-preuves.md) | Décidé (lot 2) |
-| Questionnaire START et choix de stack | [2026-11-14-start-guide.md](2026-11-14-start-guide.md) | Décidé (lot 3) |
-| IMPROVE : observations et registre | [2026-11-14-improve-preuves.md](2026-11-14-improve-preuves.md) | Décidé (lot 4) |
-| TOKENS : diagnostic et import volontaire | [2026-11-14-tokens-diagnostic.md](2026-11-14-tokens-diagnostic.md) | Décidé (lot 5) |
-| Catalogue : liens et maintenance | [2026-11-14-catalogue-sources.md](2026-11-14-catalogue-sources.md) | Décidé (lot 6) |
-| Épreuve fonctionnelle et CI | [2026-11-14-epreuve-fonctionnelle.md](2026-11-14-epreuve-fonctionnelle.md) | Décidé (lot 7) |
+| Existing foundation, architecture and prototype limitations | [2026-11-14-socle-et-recherche-existante.md](2026-11-14-socle-et-recherche-existante.md) | Open |
+| Evidence, report and user decisions | [2026-11-14-rapport-et-preuves.md](2026-11-14-rapport-et-preuves.md) | Decided (batch 2) |
+| START questionnaire and stack options | [2026-11-14-start-guide.md](2026-11-14-start-guide.md) | Decided (batch 3) |
+| IMPROVE: observations and registry | [2026-11-14-improve-preuves.md](2026-11-14-improve-preuves.md) | Decided (batch 4) |
+| TOKENS: diagnosis and voluntary import | [2026-11-14-tokens-diagnostic.md](2026-11-14-tokens-diagnostic.md) | Decided (batch 5) |
+| Catalog: links and maintenance | [2026-11-14-catalogue-sources.md](2026-11-14-catalogue-sources.md) | Decided (batch 6) |
+| Functional exercise and CI | [2026-11-14-epreuve-fonctionnelle.md](2026-11-14-epreuve-fonctionnelle.md) | Decided (batch 7) |
