@@ -198,3 +198,70 @@ Avec seulement un dépôt source, classer les risques de surconsommation comme *
 
 ### Résumé pour débutant (première page)
 
+```markdown
+# Résumé
+L'analyse a examiné 5 domaines ; 2 vérifications importantes nécessitent ton accord.
+
+1. [P1] ... — Pourquoi c'est important, ce que tu risques, solution en une phrase.
+2. [P2] ... — Même chose.
+3. [P3] ... — Non urgent.
+
+Ce qui a bien fonctionné : ...
+Ce que l'analyse n'a pas vérifié : ...
+Pour continuer, choisis 1, 2, 3 ou « aucun ».
+```
+
+### Annexe pour expert/agent
+
+- version et commande des outils, source et configuration, timestamp, statut Git, fichiers inclus/exclus ;
+- preuve exacte file:line ou commande/exit code ;
+- statistiques de couverture **de la collecte** (pas de l'exactitude) ;
+- findings JSON, schéma et provenance ;
+- décisions et état de validation humaine ;
+- limites, faux positifs, problèmes non traités.
+
+## 7. Prompts de travail générés par l'outil
+
+### Audit ciblé à coller dans Codex
+
+```text
+Tu travailles dans le dépôt cible avec un objectif d'audit, pas de correction.
+Révise uniquement les domaines sélectionnés : [liste].
+L'inventaire et les observations déterministes sont ici : [chemin rapport].
+Valide toute preuve avant de conclure, et complète ce qui nécessite une analyse sémantique.
+N'exécute ni migration, installation, commande risquée ou écriture dans le dépôt cible sans accord.
+Pour chaque constat : statut, preuve fichier/ligne, conséquence concrète, solutions, risques,
+comportements métier à préserver et vérifications possibles. Si tu ne sais pas, écris-le.
+Ne déclare aucun pourcentage de gains de tokens, coût ou performance sans mesure/source.
+Produis un `agent-findings.json` conforme au schéma et un résumé court en français.
+```
+
+### Correction après validation humaine
+
+```text
+Constat retenu : [identifiant]. Objectif métier : [description].
+Commence par confirmer la preuve, inspecter les dépendances et évaluer si la solution proposée
+est viable dans ce dépôt ; propose une meilleure alternative si nécessaire et explique pourquoi.
+Préserve explicitement [invariants]. N'écrase pas mes modifications Git.
+Prépare un changement localisé et des tests de non-régression, sans suppression non validée.
+N'exécute pas de migration/destruction de données, commit, push ou déploiement sans accord.
+Fournis les tests réellement exécutés, le résultat et les risques résiduels.
+```
+
+### Revue d'un harness après incidents
+
+```text
+Lis seulement les rapports sélectionnés [chemins] et les courtes instructions de dépôt.
+Identifie les problèmes récurrents réellement prouvés qui empêchent l'agent de travailler.
+Propose 0 à 3 améliorations de contexte/outillage/tests/processus, chacune avec preuve,
+solution minimale, alternative, risques, maintenance, stratégie de validation et rollback.
+Aucune modification d'AGENTS.md, configuration, skill ou hook sans validation de l'utilisateur.
+```
+
+## 8. Gestion des contraintes non-développeurs
+
+- Expliquer « migration BDD » comme « changement de la structure où l'application enregistre ses données » si le lecteur débute.
+- Traduire « N+1 » comme « la même requête répétée des dizaines de fois pendant un seul affichage ».
+- Ne pas montrer un graphique de 50 critères inutiles ; 3 à 5 problèmes majeurs, accès aux annexes sur demande.
+- Lorsqu'une alerte exige une décision métier, présenter précisément la **question à poser** à l'utilisateur (ex. « ce calcul est-il encore indispensable ? »).
+- Éviter le faux sentiment de sécurité : même un audit sans alertes ne remplace pas une revue sécurité complète ou des tests en conditions réelles.
