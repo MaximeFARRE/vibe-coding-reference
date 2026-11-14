@@ -110,7 +110,8 @@ def audit(repo):
                 errors.append('Un élément est inaccessible.')
             if len(files) >= MAX_FILES:
                 break
-    incomplete = bool(stack or errors)
+    # Atteindre le plafond peut laisser des entrées non traitées dans le dossier courant.
+    incomplete = bool(stack or errors or len(files) >= MAX_FILES)
     if incomplete:
         limits.append('Inventaire incomplet : limite de fichiers atteinte ou accès refusé.')
     if not ignored_checked:
