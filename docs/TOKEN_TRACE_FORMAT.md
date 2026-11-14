@@ -1,8 +1,8 @@
-# Format de trace TOKENS V1
+# TOKENS trace format V1
 
-Le format `vcr-token-trace-v1` ci-dessous est accepté par défaut. Deux imports explicites d'une réponse API individuelle sont également disponibles (voir plus bas) ; aucun historique Codex ou Claude Code n'est lu automatiquement. L'utilisateur choisit volontairement le fichier et doit vérifier la signification de ses données avant toute conversion. Fichier UTF-8, JSON, 4 Mio et 10 000 enregistrements maximum pour VCR ; champs VCR inconnus, valeurs invalides, clés JSON dupliquées et liens symboliques directs refusés.
+The `vcr-token-trace-v1` format below is accepted by default. Two explicit imports of an individual API response are also available (see below); no Codex or Claude Code history is read automatically. The user voluntarily selects the file and must verify the meaning of its data before conversion. VCR accepts UTF-8 JSON files up to 4 MiB and 10,000 records; unknown VCR fields, invalid values, duplicate JSON keys and direct symbolic links are rejected.
 
-Chaque élément de `records` représente **une requête distincte**, pas un compteur cumulatif ni un instantané. Ne pas importer plusieurs fois la même requête. Les champs sont optionnels : leur absence signifie « indisponible », jamais zéro. Chaque entier est positif ou nul ; les booleens ne sont pas des entiers. Les totaux ne sont calculés que si tous les enregistrements contiennent le champ nécessaire. Les montants ne sont pas une estimation de quota ni d'économie.
+Each `records` element represents **one distinct request**, not a cumulative counter or snapshot. Do not import the same request more than once. Fields are optional: absence means “unavailable”, never zero. Integers must be non-negative; booleans are not integers. Totals are calculated only when every record has the required field. Amounts are not quota or savings estimates.
 
 ```json
 {
@@ -31,34 +31,34 @@ Chaque élément de `records` représente **une requête distincte**, pas un com
 }
 ```
 
-Les nombres et noms ci-dessus sont des **fixtures inventées** pour décrire le format ; aucun tarif n'est fourni ni recommandé.
+The numbers and names above are **invented fixtures** describing the format; no pricing is provided or recommended.
 
-| Champ | Sens déclaré par l'importateur |
+| Field | Meaning declared by the importer |
 |---|---|
-| `input_tokens`, `output_tokens` | Compteurs de la requête, entrée et sortie. La sortie doit déjà inclure tout raisonnement que le fournisseur y compte : VCR ne l'ajoute pas séparément. |
-| `cache_read_tokens` | Partie de `input_tokens` lue depuis le cache. Si les deux champs sont présents, la première valeur ne peut dépasser la seconde. |
-| `cache_write_tokens` | Compteur d'écriture séparément déclaré ; son inclusion éventuelle dans l'entrée dépend de la source. VCR ne l'ajoute pas à l'entrée ou à la sortie. |
-| `model`, `session_id`, `tool` | Identifiants fournis, non recopiés dans les sorties. `tool` décrit l'outil associé à l'enregistrement ; une seule valeur par requête. Sans inventaire complet des outils, une faible fréquence ne démontre pas l'inutilité. |
-| `command_chars` | Nombre de caractères d'une commande, pas la commande elle-même. Le seuil d'affichage de 1 000 caractères est descriptif et ne prouve pas de gaspillage. |
-| `search_fingerprint` | Empreinte SHA-256 en 64 caractères hexadécimaux minuscules, déjà calculée par l'importateur, sans recherche en clair. Les comparaisons exigent aussi un `session_id`. Ne pas utiliser de données confidentielles pour produire une empreinte partageable. |
-| `topic_count` | Nombre de sujets distincts déclaré pour la session associée à cet enregistrement. VCR ne déduit pas les sujets à partir du contenu. |
-| `cost` | Objet complet : `amount` numérique, `currency` en trois lettres majuscules, `kind` (`actual` ou `estimated`), `provider` et `date` ISO `AAAA-MM-JJ`. Montants par requête non dupliqués, 18 décimales maximum. Le fournisseur et les montants sont déclaratifs : VCR ne vérifie pas la facture. |
+| `input_tokens`, `output_tokens` | Request input and output counters. Output must already include any reasoning the provider counts there: VCR does not add it separately. |
+| `cache_read_tokens` | Portion of `input_tokens` read from cache. If both fields are present, the first cannot exceed the second. |
+| `cache_write_tokens` | Separately declared write counter; whether it is included in input depends on the source. VCR does not add it to input or output. |
+| `model`, `session_id`, `tool` | Supplied identifiers, not copied to outputs. `tool` describes the tool associated with the record; one value per request. Without a complete tool inventory, low frequency does not demonstrate uselessness. |
+| `command_chars` | Number of command characters, not the command itself. The 1,000-character display threshold is descriptive and does not prove waste. |
+| `search_fingerprint` | SHA-256 fingerprint, 64 lowercase hexadecimal characters, already calculated by the importer, with no plain-text search. Comparisons also require `session_id`. Do not use confidential data to create a shareable fingerprint. |
+| `topic_count` | Number of distinct topics declared for the session associated with this record. VCR does not infer topics from content. |
+| `cost` | Complete object: numeric `amount`, three-letter uppercase `currency`, `kind` (`actual` or `estimated`), `provider` and ISO `YYYY-MM-DD` `date`. Nonduplicated per-request amounts, at most 18 decimal places. Provider and amounts are declarations: VCR does not verify billing. |
 
-`measured` désigne une somme de compteurs ou un coût réel **déclarés**, pas une mesure indépendante. `estimated` indique ici un calcul dérivé (entrée + sortie ou entrée − cache lu) ou un coût fourni comme estimé. `unavailable` indique qu'une valeur manque ou que les unités/natures de coût ne permettent pas de total fiable. Les devises ne sont jamais converties ; si elles ou les natures diffèrent, aucun total de coût n'est calculé.
+`measured` denotes a **declared** sum of counters or actual cost, not an independent measurement. `estimated` denotes a derived calculation (input + output or input − cache read) or a cost supplied as estimated. `unavailable` means a value is missing or units/cost types do not permit a reliable total. Currencies are never converted; if currencies or cost types differ, no total cost is calculated.
 
-Une somme des entrées sur plusieurs requêtes peut inclure plusieurs fois du contexte réutilisé : elle n'est pas le nombre de tokens uniques. Le total entrée + sortie ne doit pas être confondu avec le coût. Cache lu et écriture sont présentés séparément ; l'entrée hors cache lu peut inclure les écritures selon la source. Aucun quota d'abonnement n'est déduit. Aucun prix ni pourcentage de gain n'est calculé.
+Summing inputs across requests can count reused context more than once: it is not the number of unique tokens. Total input + output must not be confused with cost. Cache reads and writes are presented separately; input excluding cache reads may include writes depending on the source. No subscription quota is inferred. No prices or percentage savings are calculated.
 
-Les champs libres (`model`, `session_id`, `tool`, `provider`), empreintes et contenus bruts ne sont pas recopiés dans les rapports. Les références `record_refs` utilisent les positions **à partir de 1** dans `records` ; les sorties listent dix références/groupes au plus et indiquent les couvertures partielles. Le code de l'outil ne possède ni collecte automatique, ni télémétrie, ni envoi externe. L'utilisateur reste responsable de sécuriser le fichier importé et de contrôler les sorties avant partage.
+Free-text fields (`model`, `session_id`, `tool`, `provider`), fingerprints and raw contents are not copied into reports. `record_refs` references use positions **starting at 1** in `records`; outputs list at most ten references/groups and indicate partial coverage. The tool has no automatic collection, telemetry or external transmission. The user remains responsible for securing the imported file and reviewing outputs before sharing.
 
-## Import volontaire d'une réponse API individuelle
+## Voluntary import of an individual API response
 
-`--format openai-responses` accepte un objet JSON contenant le champ `usage` d'une réponse **Responses API** OpenAI unique. Le compteur `input_tokens` inclut les entrées mises en cache, dont `input_tokens_details.cached_tokens` ; la sortie inclut les éventuels tokens de raisonnement. VCR ne les additionne pas une seconde fois. Si une valeur manque ou vaut `null`, elle reste indisponible. Référence : [OpenAI — observabilité et usage](https://developers.openai.com/api/docs/guides/agents-api/observability) et [OpenAI — prompt caching](https://developers.openai.com/api/docs/guides/prompt-caching).
+`--format openai-responses` accepts a JSON object containing the `usage` field of one OpenAI **Responses API** response. `input_tokens` includes cached input, including `input_tokens_details.cached_tokens`; output includes any reasoning tokens. VCR does not add them a second time. Missing or `null` values remain unavailable. References: [OpenAI — observability and usage](https://developers.openai.com/api/docs/guides/agents-api/observability) and [OpenAI — prompt caching](https://developers.openai.com/api/docs/guides/prompt-caching).
 
-`--format anthropic-messages` accepte un objet JSON contenant le champ `usage` d'une réponse **Messages API** Anthropic unique. Le total d'entrée est calculé uniquement si les trois champs `input_tokens`, `cache_read_input_tokens` et `cache_creation_input_tokens` sont présents : ils sont distincts selon [Anthropic — prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching). Si l'un manque, le total est indisponible ; le cache observé reste séparé. La somme est indiquée comme calculée (`estimated`), les compteurs source comme déclarés (`measured`).
+`--format anthropic-messages` accepts a JSON object containing the `usage` field of one Anthropic **Messages API** response. Total input is calculated only if `input_tokens`, `cache_read_input_tokens` and `cache_creation_input_tokens` are all present: they are distinct according to [Anthropic — prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching). If one is missing, the total is unavailable; observed cache remains separate. The sum is marked as calculated (`estimated`), and source counters as declared (`measured`).
 
 ```sh
 python3 -m vcr tokens --format openai-responses --from "/chemin/reponse-openai.json"
 python3 -m vcr tokens --format anthropic-messages --from "/chemin/reponse-anthropic.json"
 ```
 
-Il appartient à l'utilisateur de sélectionner **une seule réponse** de l'API indiquée, pas une synthèse de session, une liste de réponses ni un compteur cumulé. Un `usage` nul reste indisponible. Le contenu de réponse et les champs non nécessaires sont ignorés et non recopiés ; aucun appel API n'est effectué. Ces formats ne sont **pas** les journaux natifs de session Codex ou Claude Code et ne permettent pas de déduire leur quota ni le coût d'un abonnement. Aucun coût n'est déduit de ces réponses.
+The user must select **one response** from the specified API, not a session summary, list of responses or cumulative counter. A null `usage` remains unavailable. Response content and unnecessary fields are ignored and not copied; no API call is made. These formats are **not** native Codex or Claude Code session logs and do not establish their quota or subscription cost. No cost is inferred from these responses.
