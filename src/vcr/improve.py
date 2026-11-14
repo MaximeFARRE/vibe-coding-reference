@@ -4,7 +4,7 @@ import re
 from dataclasses import asdict
 from pathlib import Path
 
-from .improve_registry import load_registry, merge, save_json
+from .improve_registry import load_registry, merge, save_json, timestamp
 from .improve_rules import RULES
 from .improve_sources import read_sources
 from .models import ImprovementProposal
@@ -20,10 +20,16 @@ def prepare(project, reports, notes, logs, registry_path=None):
     project = Path(project).expanduser().resolve(strict=True)
     if not project.is_dir():
         raise ValueError('Le projet doit être un dossier existant.')
-    if not reports and not notes and not logs:
-        raise ValueError('Sélectionnez au moins un rapport, une note ou un journal.')
-    observations, limitations = read_sources(project, reports, notes, logs)
+    if not reports and not notes and not logs and not registry_path:
+        raise ValueError('Sélectionnez au moins un rapport, une note, un journal ou un registre.')
+    observations, limitations, suppressed = read_sources(project, reports, notes, logs)
     previous = load_registry(registry_path, project) if registry_path else None
+    if previous:
+        for rule, entry in previous['entries'].items():
+            retained = [s for s in entry['sources'] if (s['identity'], rule) not in suppressed]
+            if len(retained) != len(entry['sources']):
+                entry['sources'] = retained
+                entry['updated_at'] = timestamp()
     registry = merge(project, observations, previous)
     proposals = []
     for rule, entry in sorted(registry['entries'].items()):

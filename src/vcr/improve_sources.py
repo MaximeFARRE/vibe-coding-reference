@@ -21,7 +21,7 @@ def read_file(path):
 
 
 def read_sources(project, reports, notes, logs):
-    observations, limitations = [], []
+    observations, limitations, suppressed = [], [], set()
     seen_runs, seen_texts = set(), set()
     for name in reports:
         path, text = read_file(name)
@@ -60,7 +60,10 @@ def read_sources(project, reports, notes, logs):
             status = finding.get('status')
             if not isinstance(rule, str) or not isinstance(finding.get('id'), str):
                 raise ValueError('Identifiant de constat RESCUE invalide.')
-            if rule not in RULES or not isinstance(status, str) or status not in {'confirmed', 'suspected'} or finding['id'] in excluded:
+            if rule not in RULES or not isinstance(status, str) or status not in {'confirmed', 'suspected'}:
+                continue
+            if finding['id'] in excluded:
+                suppressed.add(('run:' + run_id, rule))
                 continue
             evidence = finding.get('evidence')
             if not isinstance(evidence, list) or not any(isinstance(e, dict) and isinstance(e.get('kind'), str) and isinstance(e.get('summary'), str) and e['summary'] for e in evidence):
@@ -89,4 +92,4 @@ def read_sources(project, reports, notes, logs):
                     found = True
             if not found:
                 limitations.append('Une note ou un journal ne contient aucun marqueur VCR reconnu ; aucune conclusion n’en est déduite.')
-    return observations, limitations
+    return observations, limitations, suppressed
