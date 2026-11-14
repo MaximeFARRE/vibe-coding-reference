@@ -5,7 +5,7 @@ Scope ideas, inspect projects and review improvements with evidence and human ov
 
 [![Functional checks](https://github.com/MaximeFARRE/vibe-coding-reference/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/MaximeFARRE/vibe-coding-reference/actions/workflows/ci.yml) [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-3776AB?logo=python&logoColor=white)](pyproject.toml) [![License: MIT](https://img.shields.io/badge/license-MIT-2ea44f)](LICENSE) [![Status: prototype](https://img.shields.io/badge/status-prototype-DB8B0B)](docs/IMPLEMENTATION_STATUS.md)
 
-[Quick start](#quick-start) · [Guide en français](#guide-en-français) · [Contributing](CONTRIBUTING.md) · [Research](research/README.md) · [Security](SECURITY.md)
+[Quick start](#quick-start) · [Français](README.fr.md) · [Contributing](CONTRIBUTING.md) · [Research](research/README.md) · [Security](SECURITY.md)
 
 > **Prototype.** Reports are partial and require human review. VCR does not guarantee a project is safe or bug-free. It runs locally, uses no API key, and does not create another agent or model.
 
@@ -43,48 +43,14 @@ python3 -m vcr --help
 python3 -m vcr
 ```
 
-Try RESCUE and IMPROVE on a [fictional project](#essayer-sur-un-projet-fictif). Reports and the interactive interface are in French. Windows and editable installation have not been verified. VCR does not contact a service during use; cloning requires a network connection. Native Codex and Claude Code session logs are not currently supported by TOKENS. See the [French guide](#guide-en-français) for commands, privacy considerations and limitations.
+Try RESCUE and IMPROVE on a [fictional project](#try-a-fictional-project). Reports and the interactive interface are in French. Windows and editable installation have not been verified. VCR does not contact a service during use; cloning requires a network connection. Native Codex and Claude Code session logs are not currently supported by TOKENS.
 
-## Guide en français
+[![Lire en français](https://img.shields.io/badge/lire%20en-fran%C3%A7ais-0055A4?style=for-the-badge)](README.fr.md)
 
-VCR aide à cadrer et examiner un projet quand on développe avec des agents existants comme Codex ou Claude Code. Ce prototype Python fonctionne localement, sans clé API et sans créer de nouvel agent ou modèle. Ses rapports sont en français.
 
-> **Prototype :** les résultats sont partiels et demandent une validation humaine. RESCUE ne garantit pas qu'un projet est sûr ou exempt de bugs ; il ne remplace ni ses tests ni une revue de sécurité.
+### Try a fictional project
 
-| Parcours | Pour quoi faire ? | Résultat ou limite principale |
-|---|---|---|
-| **START** | Transformer une idée en cadrage | Brief, critères et pistes de stack à valider |
-| **RESCUE** | Inspecter passivement un projet | Rapport avec preuves et limites, sans modifier la cible |
-| **IMPROVE** | Examiner des rapports ou notes choisis | Pistes supervisées, sans appliquer de changement |
-| **TOKENS** | Examiner le contexte ou une trace fournie volontairement | Diagnostic descriptif, sans calcul de quota ou d'économies |
-| **SOURCES** | Consulter des ressources par thème | Catalogue local, sans installation automatique |
-
-**English:** VCR is a local-first prototype for project scoping, passive repository inspection, supervised improvements, token-context diagnostics and a local source catalog. It produces French reports without an API key.
-
-Les [notes de recherche destinées aux agents](research/README.md) conservent les observations, sources, décisions et limites du projet.
-
-## Démarrage sans installation
-
-Il faut **Python 3.11 ou supérieur** et Git pour le clonage. Sur macOS ou Linux, dans un terminal :
-
-```sh
-git clone https://github.com/MaximeFARRE/vibe-coding-reference.git
-cd vibe-coding-reference
-python3 --version
-export PYTHONPATH="$PWD/src"
-python3 -m vcr --help
-python3 -m vcr
-```
-
-Le menu permet de découvrir les commandes. VCR ne contacte aucun service pendant son utilisation ; le clonage, lui, nécessite une connexion. Aucun paquet n'est nécessaire pour cette utilisation avec `PYTHONPATH`.
-
-Sous Windows PowerShell, remplacer l'export par `$env:PYTHONPATH = "$PWD/src"` et utiliser `python` si nécessaire ; **Windows n'a pas été vérifié**.
-
-Pour un premier essai sans projet personnel, suivre l'exemple fictif ci-dessous. Pour une idée personnelle, utiliser `python3 -m vcr start --interactive --out "/chemin/vers/nouveau-cadrage"` ; pour un projet existant, utiliser `python3 -m vcr rescue --repo "/chemin/du/projet" --out "/chemin/vers/nouveau-rapport"`. Les dossiers de sortie doivent être nouveaux ; pour RESCUE et IMPROVE, ils doivent aussi être extérieurs au projet.
-
-### Essayer sur un projet fictif
-
-Sur macOS ou Linux, après l'`export PYTHONPATH` ci-dessus :
+On macOS or Linux, after setting `PYTHONPATH` as above:
 
 ```sh
 VCR_DEMO_DIR="$(mktemp -d)"
@@ -95,81 +61,83 @@ python3 -m vcr rescue --repo "$VCR_DEMO_DIR/projet" --out "$VCR_DEMO_DIR/rapport
 python3 -m vcr improve --project "$VCR_DEMO_DIR/projet" --from "$VCR_DEMO_DIR/rapport-1/run.json" --from "$VCR_DEMO_DIR/rapport-2/run.json" --out "$VCR_DEMO_DIR/ameliorations"
 python3 -m vcr tokens
 python3 -m vcr sources --topic tokens
-printf 'Rapports locaux : %s\n' "$VCR_DEMO_DIR"
+printf 'Local reports: %s\n' "$VCR_DEMO_DIR"
 ```
 
-Ouvrir `rapport-1/report.md` puis `ameliorations/report.md` dans le dossier affiché. Le projet et les rapports sont fictifs ; le dossier temporaire reste disponible jusqu'à sa suppression par l'utilisateur. Pour essayer START, lancer `python3 -m vcr start --interactive --out "$VCR_DEMO_DIR/cadrage"` et répondre avec des données fictives.
+Open `rapport-1/report.md`, then `ameliorations/report.md`, in the displayed directory. The project and reports are fictional; the temporary directory remains until you delete it. To try START, run `python3 -m vcr start --interactive --out "$VCR_DEMO_DIR/cadrage"` and answer using fictional data.
 
-### Installer ou retirer le paquet
+For an existing project, use `python3 -m vcr rescue --repo "/path/to/project" --out "/path/to/new-report"`. Output directories must be new; for RESCUE and IMPROVE they must also be outside the project and must not contain it. On Windows PowerShell, replace the export with `$env:PYTHONPATH = "$PWD/src"` and use `python` if needed; **Windows has not been verified**.
 
-L'utilisation sans installation ci-dessus est la plus courte. Pour installer dans un environnement virtuel dédié sur macOS/Linux : `python3 -m venv .venv`, puis `. .venv/bin/activate` et `python -m pip install .`. La préparation du paquet peut télécharger les outils de construction Python ; installation et désinstallation ont été vérifiées dans un environnement temporaire sous macOS/Python 3.12. L'installation editable et Windows restent non vérifiés. Une fois installé, `vcr --help` fonctionne depuis l'environnement activé.
+### Install or uninstall the package
 
-Pour retirer une installation, activer le même environnement puis exécuter `python -m pip uninstall vibe-coding-reference`. Supprimer éventuellement l'environnement virtuel uniquement s'il est dédié à VCR ; les rapports créés ailleurs sont à supprimer séparément si souhaité. Sans installation, supprimer le dossier VCR et ses rapports séparés suffit.
+Running without installation, as above, is the shortest route. To install in a dedicated virtual environment on macOS/Linux: run `python3 -m venv .venv`, then `. .venv/bin/activate` and `python -m pip install .`. Package preparation may download Python build tools. Installation and uninstallation were verified in a temporary macOS/Python 3.12 environment; editable installation and Windows remain unverified. Once installed, `vcr --help` works in the activated environment.
 
-## Cadrer une idée avec START
+To uninstall, activate the same environment and run `python -m pip uninstall vibe-coding-reference`. You may delete the virtual environment if it is dedicated to VCR; reports created elsewhere must be deleted separately if desired. Without installation, deleting the VCR directory and its separate reports is sufficient.
 
-Le questionnaire demande le besoin, une action et son résultat visible, les utilisateurs, données et contraintes. Une réponse vide indique « à préciser ». Il produit un brief, des critères à valider, des options de stack et un prompt Codex, ainsi que `answers.json` pour reprendre les réponses. Aucune infrastructure ni compte n'est créé.
+## Scope an idea with START
 
-Pour reprendre un cadrage dans un **nouveau** dossier :
+The questionnaire asks about the need, an action and its visible result, users, data and constraints. An empty answer means “to be determined”. It produces a brief, criteria for review, stack options and a Codex prompt, as well as `answers.json` to resume later. It creates no infrastructure or accounts.
+
+To resume in a **new** directory:
 
 ```sh
-python3 -m vcr start --interactive --from "/chemin/vers/nouveau-cadrage/answers.json" --out "/chemin/vers/autre-cadrage"
+python3 -m vcr start --interactive --from "/path/to/brief/answers.json" --out "/path/to/new-brief"
 ```
 
-Les réponses déjà enregistrées, y compris « à préciser », ne sont pas redemandées. Pour les changer, recommencer sans `--from`. Les documents contiennent vos réponses en clair : ne saisissez pas de secret ni de donnée personnelle et vérifiez-les avant partage. Les choix de stack et les critères restent des hypothèses à confirmer avec le propriétaire ; ils ne remplacent pas une analyse de sécurité ou de faisabilité.
+Saved answers, including “to be determined”, are not requested again. To change them, start over without `--from`. The documents contain your answers in plain text: do not enter secrets or personal data, and review them before sharing. Stack options and criteria remain assumptions for the owner to validate; they do not replace a security or feasibility assessment.
 
-## Analyser un projet avec RESCUE
+## Inspect a project with RESCUE
 
-Le dossier `--out` doit être nouveau, extérieur au projet, et ne pas contenir le projet. Ouvrir `report.md` ; `run.json` contient les mêmes constats structurés et `ASK_CODEX_TO_REVIEW.md` un prompt facultatif.
+The `--out` directory must be new, outside the project, and must not contain it. Open `report.md`; `run.json` contains the same structured findings, and `ASK_CODEX_TO_REVIEW.md` is an optional review prompt.
 
-Chaque constat présente ses preuves, son niveau de confiance, deux options et un ordre de revue à copier. Pour enregistrer une décision, utiliser l'identifiant affiché dans le rapport :
+Each finding includes evidence, confidence, two options and a review instruction to copy. To record a decision, use the finding identifier shown in the report:
 
 ```sh
-python3 -m vcr feedback --report "/chemin/vers/nouveau-rapport" --finding tests-unknown --decision deferred
+python3 -m vcr feedback --report "/path/to/new-report" --finding tests-unknown --decision deferred
 ```
 
-Les décisions possibles sont `accepted` (accepté), `rejected` (rejeté), `false_positive` (faux positif) et `deferred` (reporté). Le dernier choix par constat est stocké dans `feedback.json` à côté du rapport, sans modifier le projet audité. Cette décision ne lance aucune correction. Les liens vers des fichiers ordinaires sont locaux ; les fichiers sensibles sont affichés sans lien cliquable.
+Decisions are `accepted`, `rejected`, `false_positive` and `deferred`. The latest choice for each finding is stored in `feedback.json` beside the report, without modifying the inspected project or applying a fix. Links to ordinary files are local; sensitive files are displayed without clickable links.
 
-## Examiner des améliorations avec IMPROVE
+## Review improvements with IMPROVE
 
-Sélectionner explicitement des rapports du **même projet** et un nouveau dossier extérieur à celui-ci :
+Explicitly select reports from the **same project** and a new output directory outside it:
 
 ```sh
-python3 -m vcr improve --project "/chemin/projet" --from "/chemin/rapport-1/run.json" --from "/chemin/rapport-2/run.json" --out "/chemin/nouvel-improve"
+python3 -m vcr improve --project "/path/to/project" --from "/path/to/report-1/run.json" --from "/path/to/report-2/run.json" --out "/path/to/new-improve"
 ```
 
-Le rapport distingue une observation isolée de deux observations d'une même règle. Deux rapports peuvent décrire le même état : ils ne prouvent pas deux incidents ni une cause commune. Les statuts et preuves sont ceux déclarés par les sources, à vérifier ; les constats RESCUE marqués `false_positive` ou `rejected` dans leur `feedback.json` sont ignorés. `report.md`, `proposals.json` et `registry.json` restent dans le dossier de sortie. Aucune modification n'est appliquée.
+The report distinguishes a single observation from two observations of the same rule. Two reports may describe the same state: they do not prove two incidents or a common cause. Statuses and evidence come from the sources and require review. RESCUE findings marked `false_positive` or `rejected` in `feedback.json` are ignored. `report.md`, `proposals.json` and `registry.json` remain in the output directory. No changes are applied.
 
-Pour enregistrer une décision et reprendre le registre plus tard :
+To record a decision and reuse the registry later:
 
 ```sh
-python3 -m vcr improve-feedback --registry "/chemin/nouvel-improve/registry.json" --proposal tests-unknown --decision false_positive
-python3 -m vcr improve --project "/chemin/projet" --registry "/chemin/nouvel-improve/registry.json" --from "/chemin/rapport-3/run.json" --out "/chemin/improve-suivant"
+python3 -m vcr improve-feedback --registry "/path/to/new-improve/registry.json" --proposal tests-unknown --decision false_positive
+python3 -m vcr improve --project "/path/to/project" --registry "/path/to/new-improve/registry.json" --from "/path/to/report-3/run.json" --out "/path/to/next-improve"
 ```
 
-Décisions : `accepted`, `rejected`, `deferred`, `false_positive`, `obsolete`. La décision modifie seulement le registre sélectionné ; pour actualiser le Markdown et les propositions, relancer `improve` avec ce registre et un nouveau dossier. Lorsqu'un rapport est réimporté, son feedback actuel peut retirer du registre une observation rejetée ; les rapports non réimportés ne sont pas revérifiés automatiquement. Les chemins des sources figurent dans les sorties : les examiner avant partage.
+Decisions are `accepted`, `rejected`, `deferred`, `false_positive` and `obsolete`. The decision changes only the selected registry; to refresh the Markdown and proposals, run `improve` again with the registry and a new directory. When a report is reimported, its current feedback may remove a rejected observation from the registry; reports not reimported are not automatically rechecked. Source paths appear in the outputs: review them before sharing.
 
-Les options répétables `--note` et `--log` importent des fichiers texte choisis volontairement. Le texte libre n'est pas interprété ni recopié. Pour signaler explicitement une observation, placer seule sur une ligne, par exemple, `VCR_OBSERVATION test-failure confirmed` ou `VCR_OBSERVATION agents-conflict suspected` ; les statuts sont des déclarations de l'utilisateur, non des vérifications automatiques. Règles reconnues : `tests-unknown`, `test-failure`, `architecture-doc`, `git-dirty`, `env-present`, `agents-conflict`, `navigation-difficulty`, `large-tool-output`, `convention-conflict`, `unused-plugin`. Une même note copiée ne compte qu'une fois. Ne pas importer d'historique privé sans choix explicite ; les fichiers sont limités à 1 Mio et les liens symboliques directs refusés.
+The repeatable `--note` and `--log` options import voluntarily selected text files. Free text is neither interpreted nor copied. To explicitly declare an observation, place a line such as `VCR_OBSERVATION test-failure confirmed` or `VCR_OBSERVATION agents-conflict suspected` on its own; these statuses are user declarations, not automatic checks. Recognized rules: `tests-unknown`, `test-failure`, `architecture-doc`, `git-dirty`, `env-present`, `agents-conflict`, `navigation-difficulty`, `large-tool-output`, `convention-conflict`, `unused-plugin`. A copied note counts only once. Do not import private histories without an explicit choice; files are limited to 1 MiB and direct symbolic links are refused.
 
-## Examiner le contexte avec TOKENS
+## Examine context with TOKENS
 
-Sans fichier, le diagnostic affiche une checklist et des pistes sans prétendre mesurer la consommation :
+Without a file, the diagnosis displays a checklist and suggestions without claiming to measure consumption:
 
 ```sh
 python3 -m vcr tokens
 ```
 
-Pour importer volontairement une trace et créer un rapport hors du projet :
+To voluntarily import a trace and create a report outside the project:
 
 ```sh
-python3 -m vcr tokens --from "/chemin/trace.json" --out "/chemin/nouveau-diagnostic" --project "/chemin/projet"
+python3 -m vcr tokens --from "/path/to/trace.json" --out "/path/to/new-diagnosis" --project "/path/to/project"
 ```
 
-L'option `--out` est facultative ; sans elle, le résultat est affiché dans le terminal. Si un projet est concerné, `--project` protège son dossier contre les sorties. Sans cette option, choisir soi-même un dossier extérieur au projet. Les résultats peuvent contenir `tokens.json`, `report.md` et un prompt de revue. L'import accepte le [format VCR documenté](docs/TOKEN_TRACE_FORMAT.md) et, avec `--format openai-responses` ou `--format anthropic-messages`, l'objet `usage` d'une réponse API individuelle choisie. Les journaux natifs Codex et Claude Code ne sont pas reconnus automatiquement. Les mesures sont reprises, mais les noms de modèles, outils et sessions, les empreintes et les contenus bruts ne sont pas recopiés ; conserver la trace sélectionnée pour retrouver les références numériques.
+`--out` is optional; without it, the result is displayed in the terminal. If a project is involved, `--project` protects its directory from output. Without it, choose a directory outside the project yourself. Outputs may include `tokens.json`, `report.md` and a review prompt. Imports accept the [documented VCR format](docs/TOKEN_TRACE_FORMAT.md) and, with `--format openai-responses` or `--format anthropic-messages`, the `usage` object of a selected individual API response. Native Codex and Claude Code session logs are not automatically recognized. Measurements are retained, but model, tool and session names, fingerprints and raw content are not copied; keep the selected trace to retrieve numerical references.
 
-Les compteurs sont déclaratifs, pas vérifiés indépendamment. Les champs absents restent `unavailable` ; les coûts déclarés ne sont ni des économies calculées ni un quota d'abonnement. Aucune surveillance des historiques, aucun tarif figé et aucun accès réseau ne sont effectués.
+Counters are declared, not independently verified. Missing fields remain `unavailable`; declared costs are neither calculated savings nor a subscription quota. There is no history monitoring, fixed pricing or network access.
 
-## Consulter le catalogue SOURCES
+## Browse SOURCES
 
 ```sh
 python3 -m vcr sources --topic tokens
@@ -177,28 +145,28 @@ python3 -m vcr sources --topic navigation
 python3 -m vcr sources
 ```
 
-Le filtre correspond à un thème exact ; un thème inconnu affiche la liste des thèmes disponibles. Les fiches séparent le niveau d'adoption A/B/C, l'état des preuves et celui des liens. Les liens officiels, plusieurs licences et les métadonnées d'activité GitHub ont été consultés le 14 novembre 2026 ; cela ne prouve ni efficacité ni sécurité, et les versions, compatibilités et retraits restent à vérifier avant usage. Le statut `unverified` ne constitue pas une recommandation. VCR lui-même n'ouvre pas les liens et n'installe rien.
+The filter matches an exact topic; an unknown topic lists those available. Entries distinguish adoption level A/B/C, evidence status and link status. Official links, several licenses and GitHub activity metadata were checked on November 14, 2026; this proves neither effectiveness nor security. Check versions, compatibility and removal procedures before use. An `unverified` status is not a recommendation. VCR itself does not open links or install anything.
 
-La [politique des sources](docs/SOURCE_POLICY.md) précise comment conserver les versions, preuves et limites. Pour un problème de sécurité, consulter la [politique de signalement](SECURITY.md) avant toute publication.
+The [source policy](docs/SOURCE_POLICY.md) explains how to record versions, evidence and limits. For a security concern, consult the [security policy](SECURITY.md) before publishing anything. The [agent research notes](research/README.md) preserve observations, sources, decisions and uncertainties.
 
-## Ce qui est examiné
+## What RESCUE examines
 
-Inventaire limité, filtres de dossiers, règles Git ignore lorsque Git fonctionne, statut et HEAD Git, manifestes courants, indices de scripts test/lint/build, noms de documentation d'architecture et fichiers `.env` non exclus. Les commandes et valeurs de manifestes ne sont pas recopiées. Les fichiers `.env` ne sont jamais lus ; leur présence n'établit pas qu'un secret existe. Les fichiers ignorés ne sont pas inspectés. Les dépendances sont comptées partiellement, sans analyse de vulnérabilités.
+A limited inventory, directory filters, Git ignore rules when Git works, Git status and HEAD, common manifests, hints of test/lint/build scripts, architecture documentation names and non-excluded `.env` files. Manifest commands and values are not copied. `.env` files are never read; their presence does not establish that a secret exists. Ignored files are not inspected. Dependencies are partially counted, without vulnerability analysis.
 
-Un constat `confirmed` correspond à un fait observé ; `suspected` demande vérification. Les contrôles `not_checked` n'ont pas été établis ; `not_applicable` signifie non applicable. L'absence d'alerte ne prouve ni sécurité ni bon fonctionnement. Le verdict reste inconclusif. L'analyse ne couvre ni le métier ni l'exécution. Les noms et chemins du dossier ciblé, le hash Git et les observations figurent dans les rapports : vérifiez-les avant partage. Ne copiez pas de données sensibles dans un agent sans les examiner.
+A `confirmed` finding is an observed fact; `suspected` requires verification. `not_checked` means a check was not established; `not_applicable` means it does not apply. No alert does not prove security or correct operation. The verdict remains inconclusive. The inspection covers neither business behavior nor execution. Target directory names and paths, the Git hash and observations appear in reports: review them before sharing. Do not copy sensitive data into an agent without examining it.
 
-Les champs et énumérations produits sont vérifiés avant rendu ; une preuve sans localisation valide entraîne un avertissement et une confiance diminuée. Cette validation interne ne remplace pas un validateur JSON Schema complet. Un tri automatique par priorité et un rapport HTML ne sont pas fournis.
+Produced fields and enumerations are checked before rendering; evidence without a valid location triggers a warning and reduced confidence. This internal validation does not replace a complete JSON Schema validator. Automatic priority sorting and HTML reports are not provided.
 
-L'inventaire exclut les liens symboliques et les fichiers de plus de 1 Mio ; il est limité à 10 000 fichiers. Un dépôt modifié simultanément peut changer pendant l'analyse : ne pas auditer une arborescence contrôlée activement par un tiers hostile. Les erreurs de lecture et les règles Git non disponibles sont indiquées. Les règles de fichiers ignorés ne sont pas évaluées hors Git ; plusieurs manifestes sont relevés, sans interprétation complète des monorepos.
+The inventory excludes symbolic links and files larger than 1 MiB, and is limited to 10,000 files. A repository modified simultaneously may change during inspection: do not audit a tree actively controlled by a hostile third party. Read errors and unavailable Git rules are reported. Ignore rules are not evaluated outside Git; multiple manifests are identified without complete monorepo interpretation.
 
-## Tests locaux
+## Local tests
 
 ```sh
 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -m unittest discover -s tests -v
 ```
 
-Les tests créent des projets artificiels temporaires et ne nécessitent ni réseau ni données privées. `pytest` est proposé en dépendance de développement facultative, mais n'est pas nécessaire à cette commande. Voir [l'état d'avancement](docs/IMPLEMENTATION_STATUS.md) pour les cas couverts et les limites.
+Tests create artificial temporary projects and require neither network access nor private data. `pytest` is offered as an optional development dependency, but is not required for this command. See the [implementation status](docs/IMPLEMENTATION_STATUS.md) for coverage and limitations.
 
-## Licence
+## License
 
-Ce projet est distribué sous [licence MIT](LICENSE).
+This project is distributed under the [MIT License](LICENSE).

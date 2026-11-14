@@ -1,19 +1,19 @@
-# Feuille de route
+# Roadmap
 
-VCR est un prototype local-first. Cette liste indique des pistes, sans calendrier ni promesse de livraison.
+VCR is a local-first prototype. This list describes possible work without a schedule or delivery commitment.
 
-## Maintenant
+## Now
 
-- Faire essayer les parcours à des personnes extérieures et corriger les blocages constatés.
-- Améliorer l'accessibilité des guides français et anglais et clarifier les limites des rapports.
-- Recueillir des exemples reproductibles de faux positifs sur fixtures.
+- Ask people outside the project to try the workflows and address observed blockers.
+- Improve the accessibility of the English and French guides and clarify report limitations.
+- Collect reproducible examples of false positives using fixtures.
 
-## À étudier selon les retours
+## Consider based on feedback
 
-- Vérifier Windows et l'installation editable ; documenter les résultats sans supposer leur compatibilité.
-- Examiner l'intérêt et la faisabilité d'autres formats de traces choisis explicitement.
-- Améliorer la prise en charge des monorepos et des schémas à partir de cas concrets.
+- Verify Windows and editable installation; document results without assuming compatibility.
+- Assess the value and feasibility of additional explicitly selected trace formats.
+- Improve monorepo and schema support based on concrete cases.
 
-## Hors périmètre actuel
+## Outside the current scope
 
-Nouveau modèle ou agent, envoi automatique de données, installation automatique d'outils tiers, modification automatique des projets audités, promesse chiffrée d'économies ou de sécurité. Les [notes de recherche](research/README.md) conservent les sources, options et incertitudes.
+A new model or agent, automatic data transmission, automatic third-party tool installation, automatic changes to inspected projects, and quantified promises of savings or security. The [research notes](research/README.md) preserve sources, options and uncertainties.
