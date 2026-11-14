@@ -15,6 +15,8 @@ def escape(value):
 
 
 def prepare(project, reports, notes, logs, registry_path=None):
+    if not str(project).strip():
+        raise ValueError('Un dossier de projet est nécessaire.')
     project = Path(project).expanduser().resolve(strict=True)
     if not project.is_dir():
         raise ValueError('Le projet doit être un dossier existant.')
