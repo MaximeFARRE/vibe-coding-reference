@@ -36,3 +36,4 @@ Objectif : conserver les résultats, sources, options, avantages, inconvénients
 | IMPROVE : observations et registre | [2026-11-14-improve-preuves.md](2026-11-14-improve-preuves.md) | Décidé (lot 4) |
 | TOKENS : diagnostic et import volontaire | [2026-11-14-tokens-diagnostic.md](2026-11-14-tokens-diagnostic.md) | Décidé (lot 5) |
 | Catalogue : liens et maintenance | [2026-11-14-catalogue-sources.md](2026-11-14-catalogue-sources.md) | Décidé (lot 6) |
+| Épreuve fonctionnelle et CI | [2026-11-14-epreuve-fonctionnelle.md](2026-11-14-epreuve-fonctionnelle.md) | Ouvert : CI distante |
