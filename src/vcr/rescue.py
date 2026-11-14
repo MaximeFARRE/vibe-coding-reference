@@ -98,3 +98,103 @@ def audit(repo):
                 if entry.is_dir(follow_symlinks=False):
                     stack.append(Path(entry.path))
                 elif entry.is_file(follow_symlinks=False):
+                    if entry.stat(follow_symlinks=False).st_size > MAX_SIZE:
+                        excluded += 1
+                    else:
+                        files.append(Path(rel))
+            except OSError:
+                errors.append('Un élément est inaccessible.')
+            if len(files) >= MAX_FILES:
+                break
+    incomplete = bool(stack or errors)
+    if incomplete:
+        limits.append('Inventaire incomplet : limite de fichiers atteinte ou accès refusé.')
+    if not ignored_checked:
+        limits.append('Règles Git ignore non vérifiées ; seules les exclusions fixes sont appliquées.')
+    check('inventory', 'not_checked' if incomplete else 'passed', f'{len(files)} fichiers retenus ; {excluded} entrées exclues (dossiers non dénombrés récursivement).')
+    check('ignored_files', 'passed' if ignored_checked else 'not_checked', f'{excluded} entrées exclues par filtres, taille, liens ou règles Git ; ce nombre ne représente pas tous leurs descendants.')
+    paths = {str(p) for p in files}
+    names = {p.name for p in files}
+    profile = []
+    if any(p.suffix in ('.ts', '.tsx') for p in files): profile.append('typescript')
+    if 'package.json' in names or any(p.suffix in ('.js', '.jsx', '.mjs') for p in files): profile.append('javascript')
+    if 'pyproject.toml' in names or 'requirements.txt' in names or any(p.suffix == '.py' for p in files): profile.append('python')
+    if not profile: profile.append('generic')
+    manifests = [p for p in files if p.name in MANIFESTS]
+    if len([p for p in manifests if p.name in {'package.json', 'pyproject.toml'}]) > 1:
+        limits.append('Plusieurs manifestes détectés : couverture monorepo partielle, sans résolution des workspaces.')
+    scripts_found = []
+    deps_count = 0
+    parse_errors = False
+    for path in manifests:
+        # Ne pas divulguer des chemins ou valeurs arbitraires fournis par le projet.
+        if path.name not in {'package.json', 'pyproject.toml', 'requirements.txt'}:
+            continue
+        try:
+            full = repo / path
+            if full.is_symlink():
+                raise OSError('lien symbolique')
+            data = full.read_bytes()
+            if len(data) > MAX_SIZE: raise ValueError('taille')
+            if path.name == 'package.json':
+                obj = json.loads(data)
+                if not isinstance(obj, dict): raise ValueError('format')
+                scripts = obj.get('scripts', {})
+                if isinstance(scripts, dict):
+                    scripts_found += [s for s in ('test', 'lint', 'build') if s in scripts]
+                for key in ('dependencies', 'devDependencies', 'peerDependencies', 'optionalDependencies'):
+                    if isinstance(obj.get(key), dict): deps_count += len(obj[key])
+                if isinstance(obj.get('dependencies'), dict) and 'next' in obj['dependencies']:
+                    if 'nextjs' not in profile: profile.append('nextjs')
+            elif path.name == 'pyproject.toml':
+                obj = tomllib.loads(data.decode('utf-8'))
+                project = obj.get('project', {})
+                if isinstance(project, dict) and isinstance(project.get('dependencies'), list): deps_count += len(project['dependencies'])
+                if isinstance(obj.get('tool'), dict) and 'pytest' in obj['tool']: scripts_found.append('pytest')
+            else:
+                deps_count += sum(1 for line in data.decode('utf-8').splitlines() if line.strip() and not line.lstrip().startswith(('#', '-')))
+        except (OSError, ValueError, UnicodeError, TypeError):
+            parse_errors = True
+    manifest_names = ', '.join(sorted({p.name for p in manifests})) or 'aucun'
+    check('manifests', 'not_checked' if parse_errors or incomplete else 'passed', f'{len(manifests)} manifestes ou lockfiles repérés ({manifest_names}) ; {deps_count} déclarations de dépendances comptées (couverture partielle).')
+    check('dependencies_security', 'not_checked', 'Aucun audit de vulnérabilités ni résolution des versions exécuté.')
+    if any(p.name.startswith('test_') and p.suffix == '.py' for p in files) or 'pytest.ini' in names:
+        scripts_found.append('pytest (indice)')
+    check('tests', 'not_checked', 'Indices de commandes : ' + (', '.join(sorted(set(scripts_found))) if scripts_found else 'aucun identifié') + '. Aucune commande exécutée.')
+    if not scripts_found and not incomplete and not parse_errors:
+        finding('tests-unknown', 'Tests non identifiés', 'testing', 'info', 'suspected', 'Aucun indice de test parmi les conventions limitées examinées ; des tests peuvent exister ailleurs.', [], 'Identifier les tests utiles et convenir de leur exécution.')
+    doc_present = any(p.name.lower() in {'architecture.md', 'architecture.rst'} for p in files)
+    if not doc_present and not incomplete:
+        finding('architecture-doc', 'Document d’architecture non repéré', 'documentation', 'info', 'suspected', 'Aucun fichier architecture.md ou architecture.rst repéré dans le périmètre retenu.', [], 'Vérifier si la documentation existe sous un autre nom avant de la compléter.')
+    check('architecture_doc', 'not_checked' if incomplete else 'passed', 'Recherche limitée aux noms architecture.md et architecture.rst.')
+    sensitive = any(p.name == '.env' or (p.name.startswith('.env.') and p.name not in {'.env.example', '.env.sample', '.env.template'}) for p in files)
+    if sensitive:
+        finding('env-present', 'Fichier de configuration sensible potentiel', 'security', 'info', 'suspected', 'Un fichier de type .env est présent ; son contenu n’a pas été lu et la présence d’un secret n’est pas confirmée.', [Evidence('file', 'Nom de fichier sensible détecté ; contenu non lu.', redacted=True)], 'Vérifier localement son suivi Git et ses permissions sans partager ses valeurs.')
+    check('secrets', 'not_checked', 'Seule la présence de noms .env non exclus est recherchée ; aucun contenu ni secret confirmé.')
+    limits.append('Les fichiers ignorés et exemples .env ne sont pas examinés à la recherche de secrets ; aucun secret ne peut être déclaré absent.')
+    return Run('0.1', str(uuid.uuid4()), datetime.now(timezone.utc).isoformat(), 'rescue', {'path': str(repo), 'mode': 'read_only', 'git_head': head, 'git_dirty': dirty}, profile, checks, limits, findings)
+
+
+def compact(value):
+    if isinstance(value, dict): return {k: compact(v) for k, v in value.items() if v is not None}
+    if isinstance(value, list): return [compact(v) for v in value]
+    return value
+
+
+def write_reports(run, out):
+    out.mkdir(parents=True, exist_ok=False)
+    data = compact(asdict(run))
+    # Le schéma autorise explicitement null pour les deux champs Git.
+    data['target'] = run.target
+    (out / 'run.json').write_text(json.dumps(data, ensure_ascii=True, indent=2) + '\n', encoding='utf-8')
+    lines = ['# Rapport RESCUE', '', '**Verdict : inconclusif.** Cette inspection ne démontre ni qualité générale ni sécurité.', '', 'Profils détectés : ' + ', '.join(run.profile), '', '## Observations']
+    if not run.findings: lines += ['', 'Aucun constat dans le périmètre limité de ces contrôles.']
+    for f in run.findings:
+        lines += ['', f'### {f.title} ({f.severity}, {f.status})', f.summary, 'À envisager : ' + ' '.join(f.recommendations)]
+        for e in f.evidence:
+            lines.append('Preuve : ' + e.summary + (f' Commande : `{e.command}` (code {e.exit_code}).' if e.command else ''))
+    lines += ['', '## Vérifications et limites']
+    lines += [f'- **{c.id} — {c.status}** : {c.reason}' for c in run.checks]
+    lines += ['', '## Non vérifié et prudence'] + ['- ' + x for x in run.limitations]
+    lines += ['', 'Choisissez une observation à examiner, ou ne changez rien. Les corrections nécessitent votre décision.']
+    (out / 'report.md').write_text('\n'.join(lines) + '\n', encoding='utf-8')
