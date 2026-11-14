@@ -1198,3 +1198,103 @@ Données / migrations / permissions touchées : [oui/non, détail]
 Limites restantes : [faits et incertitudes]
 Prochaine étape éventuelle : [courte]
 ```
+
+**Attention** : les résultats de test doivent venir de sorties d'outils ou de constats réellement réalisés ; ne pas générer une attestation plausible à partir du seul code.
+
+## 16.8 Note de passation entre sessions
+
+```markdown
+# État de tâche — [titre]
+Objectif et critères d'acceptation : […]
+Dernier commit / état Git : […]
+Fichiers et points d'entrée utiles : […]
+Décisions métier et invariants à conserver : […]
+Ce qui a été effectivement fait : […]
+Tests lancés et résultats : […]
+Problèmes ouverts / informations manquantes : […]
+Prochaine action concrète : […]
+```
+
+**Ne pas transporter** de longs journaux, secrets, raisonnement intégral ou copies du code disponibles dans le dépôt.
+
+## 16.9 Fiche de skill existant
+
+```markdown
+# [Nom exact du skill]
+Origine officielle : [URL, auteur]
+Chemin exact : [lien vers le SKILL.md]
+Version/commit examiné : […], date de vérification : […]
+Licence : […]
+Usage ciblé : [tâches et stack]
+Agent(s)/versions compatibles : [documentées uniquement]
+Preuve d'efficacité : [étude/retour d'expérience/aucune]
+Limites de la preuve : [protocole, modèle, tâches]
+Scripts/hooks et permissions : […]
+Coûts de contexte / dépendances : […]
+Mises à jour et correctifs : […]
+Verdict : [référencer / recommander conditionnellement / étude / exclure]
+```
+
+## 16.10 Règles de décision documentaire pour un non-développeur
+
+| Question utilisateur | Réponse de référence attendue |
+|---|---|
+| « Quelle est la meilleure stack pour toutes les apps IA ? » | aucune ; commencer par le besoin et les contraintes |
+| « Est-ce que je dois installer tous les skills ? » | non ; choisir ceux dont la tâche, la provenance et les prérequis sont appropriés |
+| « Mon fichier fait 1 000 lignes : faut-il le couper ? » | examiner le couplage, les tests et les modifications futures, pas la taille seule |
+| « Les tests passent : tout est bon ? » | non ; vérifier que les tests correspondent aux critères métier et à l'usage réel |
+| « Je veux économiser 50 % de tokens » | aucune garantie ; commencer par localiser le code, réduire le bruit et les boucles improductives |
+| « Puis-je passer tout en microservices ? » | seulement si contraintes concrètes l'exigent et que l'exploitation est maîtrisée |
+| « AGENTS.md doit contenir toute la documentation ? » | non ; consignes courtes et liens vers les références pertinentes |
+| « Puis-je installer un plugin Microsoft de réduction ? » | vérifier version et hooks, comprendre les risques ; option avancée, pas défaut |
+| « Mon agent propose de tout reconstruire » | demander les preuves, le coût de transition et une option de correction ciblée |
+
+## 16.11 Proposition de packaging GitHub documentaire (v0.2, non implémenté)
+
+```text
+vibe-coding-reference/
+├── README.md                          # approche et chemin d'entrée
+├── RESEARCH_AND_DESIGN_REFERENCE.md   # présent document de référence
+├── start/                             # décisions simples, modèles de besoin
+├── rescue/                            # audit et recovery progressif
+├── agent-context/                     # AGENTS.md, navigation, handoff
+├── token-efficiency/                 # tokens, cache, coûts, quotas
+├── quality/                           # critères métier, tests, sécurité
+├── architecture/                      # choix conditionnels de stack et modules
+├── catalog/skills/                   # fiches de skills existants, aucun fork implicite
+├── catalog/tools/                    # outils existants, compatibilité et dangers
+└── research/                          # fiches de sources et limites
+```
+
+**Ne pas créer cette arborescence d'un coup.** Pour une première publication, quelques documents principaux et liens suffisent. Le découpage effectif ne doit apparaître qu'une fois qu'il existe du contenu à ranger.
+
+## 16.12 Limites d'exploitation de la bibliothèque
+
+- La bibliothèque **n'exécute pas** d'audits automatiquement et ne garantit pas la sécurité d'un projet.
+- Un modèle peut ignorer un skill, mal interpréter un document ou se tromper malgré les garde-fous.
+- Les règles d'un projet client restent prioritaires sur les exemples génériques lorsque la loi, le secret, la sécurité ou la continuité de service l'exigent.
+- Les données sensibles doivent rester dans des environnements autorisés et ne doivent pas être copiées dans des issues, traces ou prompts publics.
+- Les outils de revue automatique ne remplacent ni des sauvegardes vérifiées ni un contrôle humain des opérations destructives.
+
+---
+
+
+# Partie IX — Bibliographie consolidée
+
+## 17. Mode d'emploi des sources
+
+- Les références **[S01] à [S45]** reprennent les 45 sources listées dans notre bilan précédent, dans le même ordre ; quelques intitulés et liens ont été précisés.
+- Les références **[S46] et [S47]** sont des compléments officiels identifiés pendant cette consolidation.
+- « Ouvert » = page vérifiée via une source consultée dans cette séance. « Recensé » = lien répertorié mais non relu complètement.
+- Les articles industriels et dépôts sont des **sources primaires sur leurs propres pratiques**, pas des preuves scientifiques d'efficacité comparative.
+- Les liens X peuvent changer de disponibilité ; l'archive textuelle / citation primaire est à rechercher avant d'appuyer une recommandation structurante sur un post.
+
+### A — Recherche industrielle, agents et études (S01–S10)
+
+**[S01] OpenAI — Harness engineering: leveraging Codex in an agent-first world.** Ryan Lopopolo, 11 févr. 2026. **B · Ouvert.** Architecture vérifiable, documentation, maintenance et environnement de Codex.  
+https://openai.com/index/harness-engineering/
+
+**[S02] OpenAI — Rethinking skills and prompts for GPT-6 Astra.** Eric Provencher, 11 sept. 2026. **B · Ouvert.** Skills, `AGENTS.md`, surcharge de contexte, révision des anciennes instructions.  
+https://developers.openai.com/blog/rethinking-skills-and-prompts-for-gpt-6-astra
+
+**[S03] OpenAI — Maintaining software with the GPT-6 family.** Oct. 2026. **B · Ouvert.** Nettoyage raisonné du code et conservation des garde-fous métier.  
