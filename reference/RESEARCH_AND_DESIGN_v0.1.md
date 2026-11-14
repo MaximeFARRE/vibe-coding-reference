@@ -198,3 +198,103 @@ Un audit sérieux doit pouvoir conclure : « l'existant est sain », « répare 
 | **PARTIAL REBUILD** | reconstruire une zone précisément délimitée | import fragilisé dont la frontière est claire |
 | **REBUILD** | reconstruction globale mieux justifiée | architecture inadaptée + coût/risque de réparation supérieurs |
 
+Chaque verdict doit traiter au minimum : preuves, comportements à préserver, données, tests disponibles, coût de transition, régressions probables, sécurité, bénéfice attendu et incertitudes. **Pas de score arbitraire « 3/10 donc à réécrire ».**
+
+### Phase C — Recovery contrôlé, après validation humaine
+
+1. Préserver les données et créer une branche distincte.
+2. Établir des tests/fixtures de référence sur les comportements critiques.
+3. Corriger d'abord les risques de sécurité ou d'intégrité confirmés.
+4. Retirer les dépendances et chemins morts **confirmés**.
+5. Réparer les problèmes de persistance et les frontières API.
+6. Simplifier le produit et les workflows sans perte métier décidée implicitement.
+7. Refactorer une zone cohérente à la fois, avec vérifications et commits séparés.
+8. Mettre à jour documents, cartes et commandes de tests.
+9. Signaler les risques non résolus et ce qui n'a pas pu être testé.
+
+### 6.1 Les dix axes minimaux d'audit
+
+Architecture ; code ; fonctionnalité et UX ; dépendances ; sécurité ; fiabilité/tests ; données/migrations ; performances ; infrastructure ; documentation/maintenabilité IA.
+
+### 6.2 Exemples de mauvaises conclusions à éviter
+
+- « 1 500 lignes = code mauvais » : la taille seule est un signal.
+- « Aucun import trouvé = fonctionnalité inutilisée » : présence possible d'appels dynamiques ou externes.
+- « Plus de patterns = architecture meilleure » : les abstractions peuvent masquer le flux réel.
+- « Framework récent = reconstruction rentable » : migration et régression peuvent dépasser les bénéfices.
+- « Les tests passent = l'UX fonctionne » : un parcours complet peut manquer de couverture.
+- « L'IA veut dix documents supplémentaires » : leur maintenance peut coûter plus que leur usage.
+
+### 6.3 Le cas Patrimoine : enseignements à conserver
+
+Un audit de l'application Next.js/SQLite de référence a fait ressortir une stack globalement cohérente mais des difficultés localisées : dépendances vulnérables, 28 appels à une routine de migration depuis des lectures, gros composants orchestrateurs, import Trade Republic complexe et maintenu pour des raisons fonctionnelles, risques de routes POST locales, trous de tests API/migrations et documentation périmée. Les parcours Portefeuille et Projections ont été réorganisés conceptuellement en **essentiel + avancé**, sans suppression de calculs. Le bon verdict dans ce cas était **REFACTOR**, pas **REBUILD**.
+
+**Leçon transférable :** une architecture globalement saine peut devenir difficile à maintenir par accumulation locale ; mieux vaut retirer la complexité réelle plutôt que réécrire la stack.
+
+---
+
+# Partie IV — Architecture et agents
+
+## 7. Architectures à documenter
+
+| Architecture | Atout possible | Limite / contexte |
+|---|---|---|
+| Monolithe simple | peu d'infrastructure, découverte facile | risques de couplage en grandissant |
+| Monolithe modulaire | domaines séparés, un déploiement | règles de dépendances à faire respecter |
+| Feature-first / vertical slices | parcours cohérent dans peu de modules | duplication possible ; découpage fin à surveiller |
+| Clean / hexagonale | ports explicites, logique métier isolée | peut multiplier interfaces et couches |
+| Feature-Sliced Design | conventions frontend et règles d'import | surdimensionnement possible pour petit projet [S33–S34] |
+| Microservices | autonomie d'équipes et services | réseau, déploiements et opérations supplémentaires |
+
+**HYPOTHÈSE DE TRAVAIL :** « monolithe modulaire + organisation par fonctionnalités + règles d'import » peut être un bon point de départ pour beaucoup d'applications. Cette hypothèse est inspirée de pratiques et de retours techniques, **pas d'une étude comparative démontrant une supériorité pour les IA** [S01, S33, S36].
+
+### 7.1 Principes structurants
+
+- Collocaliser les éléments d'un même workflow lorsque cela réduit la recherche et les changements en cascade.
+- Séparer les calculs métier des I/O lorsque les tests et la pérennité y gagnent.
+- Créer une abstraction partagée seulement après un besoin récurrent et réellement identique.
+- Conserver des frontières de données, API et sécurité explicites.
+- Prohiber les dépendances entre domaines seulement lorsqu'elles sont réellement interdites ; documenter les exceptions.
+- Chercher une architecture **lisible et vérifiable**, pas un maximum de petits fichiers.
+- Couvrir les frontières importantes par linters ou tests structurels lorsque la stack le permet.
+
+### 7.2 Contrôles techniques d'architecture
+
+- JS/TS : [Dependency Cruiser](https://github.com/sverweij/dependency-cruiser), [ESLint Plugin Boundaries](https://github.com/javierbrea/eslint-plugin-boundaries).
+- Python : [Import Linter](https://import-linter.readthedocs.io/en/stable/).
+- FSD : examiner le linter officiel et les skills [S34].
+
+Ces outils sont des **candidats** : vérifier leur compatibilité avec la stack et éviter de superposer des outils de même fonction sans valeur ajoutée.
+
+### 7.3 Ce qu'OpenAI montre, et ce qu'OpenAI ne prouve pas
+
+Le retour *Harness Engineering* décrit un dépôt produit par Codex, une documentation servant de source de connaissance, des frontières architecturales explicites et des contrôles automatisés [S01]. Cela justifie une **piste forte de conception**. Il ne démontre ni la supériorité universelle de Next.js, ni une économie de tokens quantifiée pour toute architecture.
+
+---
+
+# Partie V — Documentation vivante et contexte IA
+
+## 8. Les quatre couches de connaissance
+
+1. **Règles et orientation** — `AGENTS.md` court : commandes, invariants, limites, chemins vers les docs pertinentes.
+2. **Carte fonctionnelle** — fonctionnalité → module, point d'entrée, tests, flux importants.
+3. **Index structurel** — symboles, imports, appels, routes, références, éventuellement un graphe régénérable.
+4. **Intentions et décisions** — règles métier, architecture decision records, arbitrages et raisons des exceptions.
+
+**La distinction clé :** un index peut découvrir où est une fonction ; il ne peut pas nécessairement retrouver pourquoi un calcul ou une règle métier existe.
+
+### 8.1 Règles retenues
+
+- Ne pas faire lire toute la documentation avant chaque action [S02, S04].
+- Utiliser une divulgation progressive et des skills à déclenchement clair [S02, S40].
+- Documenter le bon chemin vers les sources, plutôt que paraphraser toutes les fonctions.
+- Adapter la découverte de `AGENTS.md` aux agents réels : Codex et Claude Code ne chargent pas forcément les fichiers de la même manière [S41–S42].
+- Ne pas créer d'index complexe pour un dépôt qui tient déjà facilement en contexte.
+- Préférer les connaissances persistantes réellement utiles aux instructions répétitives.
+
+### 8.2 Mise à jour : événements plutôt que régénération générale
+
+| Déclencheur | Réponse documentaire souhaitée |
+|---|---|
+| Fichier déplacé ou renommé | réparation des références/index automatiques |
+| Fonction/signature modifiée | réindexation déterministe de la zone concernée |
