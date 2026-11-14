@@ -8,6 +8,9 @@ from .improve_registry import STATUSES, update_status
 from .rescue import audit, write_reports
 from .start import write_start
 from .start_questions import ask, load_answers
+from .tokens_analysis import analyse
+from .tokens_report import render as render_tokens, write_report as write_tokens_report
+from .tokens_trace import load_trace
 
 
 def main(argv=None):
@@ -31,13 +34,17 @@ def main(argv=None):
     improve_feedback.add_argument("--registry", required=True, help="Chemin du fichier registry.json")
     improve_feedback.add_argument("--proposal", required=True, help="Identifiant de la proposition")
     improve_feedback.add_argument("--decision", required=True, choices=sorted(STATUSES - {'pending'}))
+    tokens = sub.add_parser("tokens", help="Diagnostiquer le contexte, avec ou sans trace volontaire")
+    tokens.add_argument("--from", dest="trace", help="Trace locale au format vcr-token-trace-v1")
+    tokens.add_argument("--out", help="Nouveau dossier de rapport (facultatif)")
+    tokens.add_argument("--project", help="Projet à protéger : la sortie doit être extérieure à ce dossier")
     feedback = sub.add_parser("feedback", help="Enregistrer une décision dans le dossier du rapport")
     feedback.add_argument("--report", required=True, help="Dossier contenant run.json")
     feedback.add_argument("--finding", required=True, help="Identifiant du constat")
     feedback.add_argument("--decision", required=True, choices=sorted(DECISIONS))
     args = parser.parse_args(argv)
     if args.command is None:
-        print("Vibe Coding Reference — outil local\n[1] START — cadrer un projet\n[2] RESCUE — analyser un projet\n[3] IMPROVE — examiner des observations\n[0] Quitter\nTOKENS et SOURCES : pas encore disponibles.")
+        print("Vibe Coding Reference — outil local\n[1] START — cadrer un projet\n[2] RESCUE — analyser un projet\n[3] IMPROVE — examiner des observations\n[4] TOKENS — examiner le contexte\n[0] Quitter\nSOURCES : pas encore disponible.")
         if not sys.stdin.isatty():
             return 0
         try:
@@ -58,11 +65,31 @@ def main(argv=None):
                     if not path:
                         break
                     args.reports.append(path)
+            elif choice == '4':
+                args.command = 'tokens'
+                args.trace = input("Trace VCR facultative (vide pour diagnostic descriptif) : ").strip() or None
+                args.out = input("Nouveau dossier de rapport facultatif (vide pour afficher) : ").strip() or None
+                args.project = None
+                if args.out:
+                    args.project = input("Dossier du projet à protéger facultatif : ").strip() or None
             else:
                 return 0
         except (EOFError, KeyboardInterrupt):
             print("\nAnnulé.")
             return 0
+    if args.command == 'tokens':
+        try:
+            records = load_trace(args.trace) if args.trace else None
+            data = analyse(records)
+            if args.out:
+                output = write_tokens_report(data, args.out, args.project)
+                print(f"Rapport TOKEN EFFICIENCY créé : {output}")
+            else:
+                print(render_tokens(data), end='')
+            return 0
+        except (OSError, ValueError) as exc:
+            print(f"Erreur : {exc}", file=sys.stderr)
+            return 2
     if args.command == 'improve':
         try:
             project, registry, proposals, limitations = prepare(args.project, args.reports, args.note, args.log, args.registry)
