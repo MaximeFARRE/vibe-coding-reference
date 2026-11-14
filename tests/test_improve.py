@@ -90,6 +90,19 @@ class ImproveTests(unittest.TestCase):
         self.assertFalse((self.project / 'bad').exists())
         self.assertEqual(snapshot(self.project), self.before)
 
+    def test_new_false_positive_feedback_removes_old_registry_evidence(self):
+        first, second = self.rescue('first'), self.rescue('second')
+        initial, updated = self.base / 'initial', self.base / 'updated'
+        self.assertEqual(self.improve(initial, '--from', first, '--from', second).returncode, 0)
+        result = self.cli('feedback', '--report', first.parent, '--finding', 'tests-unknown', '--decision', 'false_positive')
+        self.assertEqual(result.returncode, 0, result.stderr)
+        result = self.improve(updated, '--registry', initial / 'registry.json', '--from', first)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        ids = [p['id'] for p in json.loads((updated / 'proposals.json').read_text())]
+        self.assertNotIn('tests-unknown', ids)
+        entry = json.loads((updated / 'registry.json').read_text())['entries']['tests-unknown']
+        self.assertEqual(len(entry['sources']), 1)
+
 
 if __name__ == '__main__':
     unittest.main()
