@@ -198,3 +198,96 @@ https://aider.chat/docs/repomap.html
 ### Instructions, besoins et skills
 
 **[N03] Gloaguen, T. et al. — Evaluating AGENTS.md: Are Repository-Level Context Files Helpful for Coding Agents?** 12 février 2026. **A-prépublication, source consultée.** Résultats défavorables à l'injection indiscriminée de contexte ; ne prouve pas que toute consigne minimale est inutile.  
+https://arxiv.org/abs/2602.11988
+
+**[N04] Li, X. et al. — SkillsBench: Benchmarking How Well Agent Skills Work Across Diverse Tasks.** 13 février 2026. **A-prépublication, source consultée.** Benchmark général multi-domaines ; +16,2 points moyen, +4,5 en génie logiciel d'après la version consultée.  
+https://arxiv.org/abs/2602.12670
+
+**[N05] Han, T. et al. — SWE-Skills-Bench: Do Agent Skills Actually Help in Real-World Software Engineering?** **Version 2 du 27 octobre 2026**. **A-prépublication, texte HTML et tableau de résultats consultés.** 98 skills ; 92 sans effet significatif, quatre positifs et deux négatifs, moyenne +0,3 point. Les résultats de mars 2026 sont historiques.  
+https://arxiv.org/html/2603.15401v2
+
+**[N06] Deng, H. et al. — SWE-Journey: Towards More Realistic Evaluation of Coding Assistants through Long-Horizon, Multi-Turn Interaction.** 8 octobre 2026. **A-prépublication, source consultée.** Benchmark d'interactions prolongées avec profils utilisateurs ; fortes différences selon la capacité à préciser les besoins.  
+https://arxiv.org/abs/2610.11559
+
+**[N17] Liu, Y. et al. — “Do Not Mention This to the User”: Detecting and Understanding Malicious Agent Skills in the Wild.** USENIX Security 2026. **A-conférence, résumé consulté.** 98 380 skills étudiés, 157 malveillants confirmés dans le corpus.  
+https://www.usenix.org/conference/usenixsecurity26/presentation/liu-yi
+
+**[N24] Vercel — Agent Skills, notamment `vercel-react-best-practices`.** Dépôt officiel, **C/D, documentation consultée** ; 70 règles dans le SKILL.md consulté. Pas de preuve expérimentale indépendante de gain marginal examinée pour ce skill exact.  
+https://github.com/vercel-labs/agent-skills
+
+**[N25] Matt Pocock — Skills for Real Engineers.** Dépôt public et release notes, **D, documentation consultée**. Certains noms/invocations ont évolué ; ne pas supposer qu'un ancien nom persiste.  
+https://github.com/mattpocock/skills
+
+**[N26] Jesse Vincent / obra — Superpowers.** Dépôt et `systematic-debugging`, **D, documentation consultée**. Processus de debugging détaillé, pas une preuve d'efficacité comparative universelle.  
+https://github.com/obra/superpowers
+
+**[N30] Agent Skills — Specification.** Standard documentaire public des skills, **C, spécification identifiée**. Interopérabilité de format, pas uniformité d'interprétation des agents.  
+https://agentskills.io/specification
+
+**[N31] Huang, J. et al. — How Agent Skills Evolve: A Large-Scale Empirical Study of Skills on GitHub.** 3 novembre 2026. **A-prépublication, source consultée.** 84 200 skills, 750 898 commits ; maintenance, redondance et évolution des connaissances.  
+https://arxiv.org/abs/2611.04456
+
+### Tests, sécurité, qualité
+
+**[N07] Banik, D., Chowdhury, K. & Shamim, S. I. — All Smoke, No Alarm: Oracle Signals in Agent-Authored Test Code.** Juin 2026. **A-prépublication, source consultée.** 86 156 patchs de tests ; 80,2 % sans signaux d'oracle explicites forts selon la classification de l'étude.  
+https://arxiv.org/abs/2606.18168
+
+**[N08] Dipongkor, A. K., Baral, T., Lam, W. & Moran, K. — Test Coverage Analysis of Agentic Pull Requests.** 20 juillet 2026. **A-prépublication, source consultée.** Analyse de 4 882 PR ; couverture du code modifié et lacunes dans les blocs de gestion d'erreur.  
+https://arxiv.org/abs/2607.18057
+
+**[N09] Sun, C., Mündler-Sasahara, N., Vero, M. & Vechev, M. — Coding Agents Propagate Vulnerabilities in Code Bases.** 8 novembre 2026. **A-prépublication, source consultée.** Étude de la réutilisation de vulnérabilités à partir de code voisin ; résultats spécifiques aux protocoles backend et C/C++.  
+https://arxiv.org/abs/2611.11455
+
+### Tokens, cache et coût
+
+**[N12] Li, A. J. et al. — TokenEconomizer: Experience-Driven Black-Box Cost Control for Coding Agents.** Microsoft Research, octobre 2026. **A-prépublication + B industriel, résumé officiel consulté.** Réduction moyenne de 18,4–30,9 % dans les configurations de l'étude.  
+https://www.microsoft.com/en-us/research/publication/tokeneconomizer-experience-driven-black-box-cost-control-for-coding-agents/
+
+**[N13] Bai, L. et al. — How Do AI Agents Spend Your Money? Analyzing and Predicting Token Consumption in Agentic Coding Tasks.** 24 avril 2026. **A-prépublication, source consultée.** Variabilité jusqu'à 30× selon trajectoires, saturation des gains de réussite avec plus de tokens.  
+https://arxiv.org/abs/2604.22750
+
+**[N14] Weinberger, S. & Hozez, A. — Token Reduction Is Not Cost Reduction.** 13 juillet 2026. **A-prépublication, source consultée.** 2 848 runs appariés analysés ; compression de sorties d'outils sans économie correspondante dans certains bras.  
+https://arxiv.org/abs/2607.12161
+
+**[N15] Chen, L. & Shi, J. — An Empirical Cost Attribution of Context-Compression Gateways in Multi-Turn Coding Agents.** Prépublication 2026. **A-prépublication, source consultée.** Décompose filtrage d'outils, compression et résumé.  
+https://arxiv.org/abs/2609.22114
+
+**[N16] Nguyen, T., Cho, E., Chen, B. & Dettmers, T. — CliffCompaction: Cost-Efficient Compaction for Long-Horizon Coding Agents.** 22 septembre 2026. **A-prépublication, source consultée.** Compression conservatrice, gains jusqu'à 50 % sur certains protocoles ; système avancé.  
+https://arxiv.org/abs/2609.26779
+
+**[N27] Microsoft — TokenEconomizer, dépôt et documentation plugin.** **D/C, dépôt consulté.** Conditions de fonctionnement, hooks, versions d'agents compatibles, limites et commands d'annulation. Son existence ne remplace pas la revue de sécurité avant installation.  
+https://github.com/microsoft/TokenEconomizer
+
+**[N28] OpenAI — Prompt caching (API documentation).** **C, source officielle consultée le 12/11/2026.** Explique préfixes, cache read/write, TTL, prix et impact des modifications d'outils, modèle et compaction ; **valeurs sujettes à changement**.  
+https://developers.openai.com/api/docs/guides/prompt-caching
+
+### Retours industriels et méthodes
+
+**[N18] Anthropic — Harness design for long-running application development.** 24 mars 2026. **B, retour détaillé consulté.** Planificateur/générateur/évaluateur, contrôle d'usage réel, budgets élevés et simplification de harness à mesure que les modèles progressent.  
+https://www.anthropic.com/research/harness-design-long-running-apps
+
+**[N19] OpenAI — Harness Engineering: Leveraging Codex in an Agent-First World.** Ryan Lopopolo, 11 février 2026. **B, retour industriel consulté.** Frontières imposées, connaissance versionnée dans le repo, nettoyage et feedback ; pas de conclusion universelle sur le framework.  
+https://openai.com/index/harness-engineering/
+
+**[N20] OpenAI — Rethinking skills and prompts for GPT-6 Astra.** Eric Provencher, 11 septembre 2026. **B/C, source consultée.** Descriptions courtes, chargement progressif, mise à jour des instructions historiques, non-imposition de lectures globales.  
+https://developers.openai.com/blog/rethinking-skills-and-prompts-for-gpt-6-astra
+
+**[N21] OpenAI — Maintaining Software with the GPT-6 Family.** Octobre 2026. **B, source consultée.** Nettoyage avec garanties, modèle/effort/coût sur tâche spécifique et importance des exceptions métier.  
+https://developers.openai.com/blog/maintaining-software-with-the-gpt-6-family
+
+**[N22] METR — We are Changing our Developer Productivity Experiment Design.** 24 février 2026. **A/B, source consultée.** Explique biais de sélection et prudence face à l'estimation récente de gains de productivité ; garder distinct de l'étude historique de juillet 2025 [S11].  
+https://metr.org/blog/2026-02-24-uplift-update/
+
+**[N29] Anthropic — Effective context engineering for AI agents.** 2025. **B, déjà présent en [S04], rappel conceptuel.** Gestion du contexte comme ressource finie et outils/références nécessaires à la demande.  
+https://www.anthropic.com/research/effective-context-engineering-for-ai-agents
+
+### Politique de fraîcheur
+
+- Mettre en avant la version et le jour de la source lorsqu'une étude reçoit une mise à jour.
+- Les sources [S01]–[S47] constituent l'**historique** et n'ont pas été intégralement reverifiées ici ; une fiche dédiée est nécessaire avant toute recommandation strictement dépendante de leur contenu actuel.
+- Tous les chiffres précédés d'un signe « + » ou « − » renvoient au protocole cité, **jamais** à une promesse générale.
+- Les fiches publiques doivent inclure un champ `last_checked` et, si nécessaire, `recheck_required`.
+
+---
+
+
