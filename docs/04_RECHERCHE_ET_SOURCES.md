@@ -98,3 +98,103 @@ URL : https://arxiv.org/abs/2606.18168
 **Constat :** beaucoup de modifications de tests générées par agent portent des signaux de vérification faibles ou absents selon la classification de l'étude.  
 **Transposition :** demander « quel bug ce test détecterait-il ? », pas seulement « est-ce qu'il passe ? ».
 
+**[R17] Test Coverage Analysis of Agentic Pull Requests** (arXiv 2607.18057, E).  
+URL : https://arxiv.org/abs/2607.18057  
+**Transposition :** signaler trous de tests sur API, transactions et code modifié ; la couverture n'est pas à elle seule un score de sûreté.
+
+**[R18] Sun et al. — Coding Agents Propagate Vulnerabilities in Code Bases** (arXiv 2611.11455, 8 nov. 2026, E).  
+URL : https://arxiv.org/abs/2611.11455  
+**Constat :** les agents peuvent reproduire des vulnérabilités voisines, même avec des consignes générales de sécurité.  
+**Transposition :** un harness doit contrôler les mauvaises conventions héritées par des tests et règles explicites. Résultats limités aux tâches/frameworks de l'étude.
+
+**[R19] Anthropic — Harness design for long-running application development** (24 mars 2026, I).  
+URL : https://www.anthropic.com/research/harness-design-long-running-apps  
+**Transposition :** plans, validations indépendantes et états de passation utiles pour tâches longues ; ne pas imposer son coût multi-agent à tous les projets.
+
+**[R20] OpenAI — Iterating Development Workflows with Codex** (3 août 2026, O/recette).  
+URL : https://developers.openai.com/cookbook/examples/codex/iterating-development-workflows-with-codex  
+**Transposition :** les fichiers de contrat et de logs par phase sont des conventions optionnelles ; l'utilisateur doit approuver les changements de secrets, infra, commits, pushes, déploiements et branch switching.
+
+## 5. Skills : bénéfices, non-bénéfices et sécurité
+
+**[R21] SkillsBench** (arXiv 2602.12670, E).  
+URL : https://arxiv.org/abs/2602.12670  
+**Résultats de la version consultée en v0.2 :** gain moyen positif sur tâches variées, plus modeste sur développement logiciel.  
+**Transposition :** compétences spécialisées plausibles, aucun gain universel.
+
+**[R22] SWE-Skills-Bench v2** (arXiv 2603.15401v2, révisée 27 oct. 2026, E).  
+URL : https://arxiv.org/html/2603.15401v2  
+**Résultats :** 98 skills étudiés ; 92 sans effet statistiquement significatif, 4 utiles et 2 nuisibles dans les conditions évaluées ; variation selon les modèles. Les chiffres de la première version de mars **ne doivent plus être présentés comme les résultats courants**.  
+**Transposition :** catalogue de skills existants avec source/version et preuves **individuelles** ; popularité != efficacité. Le benchmark n'autorise pas à dire que tous les skills non significatifs sont inutiles.
+
+**[R23] USENIX Security — “Do Not Mention This to the User”: Detecting and Understanding Malicious Agent Skills in the Wild** (2026, E conférence).  
+URL : https://www.usenix.org/conference/usenixsecurity26/presentation/liu-yi  
+**Résultats rapportés :** 157 skills malveillants confirmés dans 98 380 skills étudiés.  
+**Transposition :** revue des scripts, droits et provenance avant installation ; aucun « installer tous les skills ».
+
+**[R24] Agent Skills Specification** (O).  
+URL : https://agentskills.io/specification  
+**Transposition :** un format de packaging commun, pas une preuve que tous les agents activent les skills à l'identique.
+
+## 6. Consommation des tokens et coûts réels
+
+**[R25] Microsoft Research — TokenEconomizer** (oct. 2026, E/I).  
+URL publication : https://www.microsoft.com/en-us/research/publication/tokeneconomizer-experience-driven-black-box-cost-control-for-coding-agents/  
+URL code : https://github.com/microsoft/TokenEconomizer  
+**Résultats :** réduction de 18,4 à 30,9 % du coût moyen sur cinq combinaisons agent-modèle étudiées, avec efficacité de résolution au moins comparable dans l'étude ; mécanismes = petites informations persistantes, suppression des outils non utilisés, intervention sur boucles d'échec.  
+**Transposition :** documenter et potentiellement proposer **optionnellement** le plugin, selon versions/hook permissions ; P0.1 n'exécute aucun hook tiers.
+
+**[R26] Bai et al. — How Do AI Agents Spend Your Money?** (arXiv 2604.22750, E).  
+URL : https://arxiv.org/abs/2604.22750  
+**Constat :** forte variabilité des trajectoires, davantage de tokens n'assure pas une meilleure réponse.  
+**Transposition :** chercher les répétitions et l'exploration avant de compresser agressivement.
+
+**[R27] Weinberger & Hozez — Token Reduction Is Not Cost Reduction** (arXiv 2607.12161, E).  
+URL : https://arxiv.org/abs/2607.12161  
+**Résultats :** sur 2 848 exécutions analysées, une compression retirant ~38 % de tokens bruts de sorties d'outils aboutissait à ~6,8 % de coût facturé supplémentaire dans un bras ; réduction du contexte peut supprimer les preuves nécessaires.  
+**Transposition :** VCR sépare sortie masquée, cache, coût total et réussite ; n'ajoute pas de « compresseur universel ».
+
+**[R28] An Empirical Cost Attribution of Context-Compression Gateways in Multi-Turn Coding Agents** (arXiv 2609.22114, E).  
+URL : https://arxiv.org/abs/2609.22114  
+**Transposition :** éviter les descriptions d'outils inutiles et vérifier le coût réel du filtrage.
+
+**[R29] CliffCompaction** (arXiv 2609.26779, E).  
+URL : https://arxiv.org/abs/2609.26779  
+**Transposition :** option avancée ; les gains de coût rapportés ne rendent pas la compression systématique sûre.
+
+**[R30] OpenAI — Prompt Caching** (O, prix/version évolutifs).  
+URL : https://developers.openai.com/api/docs/guides/prompt-caching  
+**Transposition :** stabilité du préfixe et des outils pour optimiser **facturation API** ; les quotas des abonnements ChatGPT/Codex ne se déduisent pas de cette grille. En cas d'absence de `cached_tokens`, ne pas estimer.
+
+**[R31] METR — Measuring the Impact of Early-2025 AI on Experienced Open-Source Developer Productivity** (10 juil. 2025, E).  
+URL : https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/  
+**[R32] METR — We are Changing our Developer Productivity Experiment Design** (24 fév. 2026, E/I).  
+URL : https://metr.org/blog/2026-02-24-uplift-update/  
+**Transposition :** l'évaluation de l'efficacité des agents est difficile ; biais de sélection et de perception ; **ne pas prendre une réduction de latence ou de tokens pour un gain de productivité métier sans preuve**.
+
+## 7. Recherche avancée sur auto-amélioration des harness
+
+**[R33] Google Research — Harness²: Recursive Agent Harnessing for an Open World** (arXiv 2610.14224, E prépublication + G).  
+URL papier : https://arxiv.org/abs/2610.14224  
+URL code : https://github.com/google-research/harness2  
+URL setup : https://github.com/google-research/harness2/blob/main/docs/SETUP.md  
+**Description précise :** deux niveaux de récursion : (a) `Propose–Probe–Compose` appliqué au harness de la tâche à partir de comparaisons d'exécutions ; (b) enrichissement persistant d'une mémoire d'amélioration entre tâches. Huit composantes éditables : prompt système, garde-fous, mémoire, consignes pour outils, sous-agents, skills, scripts et plugins. Les auteurs rapportent des progrès sur trois benchmarks et plusieurs configurations, **pas** une supériorité universelle.  
+**Danger opérationnel :** le setup Codex indique une exécution avec sandbox désactivé dans certaines conditions. VCR doit lire cette source comme **recherche avancée** uniquement ; aucune commande d'installation/exécution sur de vrais projets.  
+**Idée à transposer sans la complexité :** IMPROVE transforme les incidents en propositions **réversibles, évaluables et soumises à validation humaine**.
+
+**[R34] Meta-Harness: End-to-End Optimization of Model Harnesses** (publication retrouvée comme travaux liés, mais pas assimilée sans preuve au visuel social).  
+Référence contextuelle : https://ishwarj.com/papers/meta-harness/read/  
+**Statut :** source de vulgarisation vérifiée, étude originale à retrouver/lire avant citation quantitative.  
+**Avertissement :** l'image circulant avec le titre « The End of Harness Engineering » et un modèle « 4B editor » n'a **pas de lien primaire identifiable dans la capture**. Ne pas la présenter comme un article de recherche validé ou comme une preuve de disparition de l'ingénierie humaine. Garder `UNVERIFIED_SOCIAL_CLAIM`.
+
+**[R35] TrishamBP — Harness Engineering, reference harness** (G, schéma pédagogique).  
+URL : https://github.com/TrishamBP/harness-engineering  
+**Description :** implémentation Python stdlib démonstrative (boucle, outils typés, permissions, journaux, compactage, vérification, coordination) et diagrammes, inspirée d'une étude de code ; ce code n'est ni le code des agents industriels ni une preuve de supériorité.  
+**Transposition :** bon exemple pour l'architecture d'interfaces, pas de raison de réécrire une boucle LLM dans P0.1.
+
+## 8. Contradictions et ce que VCR DOIT écrire
+
+| Question | Constat contradictoire | Décision défendable |
+|---|---|---|
+| `AGENTS.md` utile ? | pratiques industrielles favorables ; évaluations neutres/négatives sur certaines tâches | garder un **index court** avec commandes, invariants, docs liées ; éviter sur-prescription |
+| Skills = gain ? | benchmark général favorable ; SWE-Skills-Bench v2 très peu de gains significatifs | sélectionner skills **individuels** ; jamais copier un pack énorme par défaut |
