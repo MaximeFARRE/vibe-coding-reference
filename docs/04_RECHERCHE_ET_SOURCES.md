@@ -198,3 +198,14 @@ URL : https://github.com/TrishamBP/harness-engineering
 |---|---|---|
 | `AGENTS.md` utile ? | pratiques industrielles favorables ; évaluations neutres/négatives sur certaines tâches | garder un **index court** avec commandes, invariants, docs liées ; éviter sur-prescription |
 | Skills = gain ? | benchmark général favorable ; SWE-Skills-Bench v2 très peu de gains significatifs | sélectionner skills **individuels** ; jamais copier un pack énorme par défaut |
+| Compression = économie ? | réductions de tokens observables ; parfois coût API + échecs en hausse | préserver preuves et cache, mesurer/attribuer coût réel si disponible |
+| Vectoriel = indispensable ? | certains gains de rappel ; pas dominant partout ; absent des 11 harness étudiés | native/symbolique d'abord ; vectoriel optionnel |
+| Multi-agent supérieur ? | bénéfices sur certaines tâches ; coûts et défaillances de coordination | un agent principal par défaut ; délégation seulement quand utile |
+| Réécrire l'architecture d'un projet ? | mode changeant ; risques de régressions et données | KEEP/REFACTOR souvent préférable ; REBUILD seulement argumenté |
+| Auto-améliorer les règles ? | faisabilité de recherche ; risques de surajustement et dérive | **propositions humaines** d'abord, expérience récursive isolée plus tard |
+
+## 9. Règles d'entretien des connaissances
+
+Chaque fiche doit inclure `id`, `title`, `url`, `authors/owner`, `date`, `last_checked`, `source_type`, `evidence_scope`, `limitations`, `relevance`, `recommendation_tier`, `license_if_repo`, `review_required`. Une source non lue entièrement peut être `catalogued`, non `verified`. Les études arXiv doivent porter leur **version**. Les projets GitHub évoluent vite : les instructions d'installation et noms de skills sont à revalider au moment de l'usage.
+
+**Cette recherche est datée du 14 novembre 2026.** Une actualisation des sources externes sera nécessaire avant de publier officiellement le référentiel.
