@@ -33,3 +33,4 @@ Objectif : conserver les résultats, sources, options, avantages, inconvénients
 | Base existante, architecture et limites du prototype | [2026-11-14-socle-et-recherche-existante.md](2026-11-14-socle-et-recherche-existante.md) | Ouvert |
 | Preuves, rapport et décisions utilisateur | [2026-11-14-rapport-et-preuves.md](2026-11-14-rapport-et-preuves.md) | Décidé (lot 2) |
 | Questionnaire START et choix de stack | [2026-11-14-start-guide.md](2026-11-14-start-guide.md) | Décidé (lot 3) |
+| IMPROVE : observations et registre | [2026-11-14-improve-preuves.md](2026-11-14-improve-preuves.md) | Décidé (lot 4) |
