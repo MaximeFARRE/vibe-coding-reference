@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vibe-coding-reference"
+version = "0.1.0"
+requires-python = ">=3.11"
+description = "Audit local et passif de projets"
+
+[project.optional-dependencies]
+dev = ["pytest>=7"]
+
+[project.scripts]
+vcr = "vcr.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
