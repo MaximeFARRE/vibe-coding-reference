@@ -198,3 +198,103 @@ Nom public, licence précise, gouvernance des contributions, première sélectio
 - Tests de frontières architecturales **si** ces frontières existent.
 - Documentation courte : `AGENTS.md`, carte des fonctionnalités quand le projet grossit, décisions importantes.
 - Migrations de base, sauvegarde et restauration lorsque les données sont persistantes.
+- Skills spécialisés chargés à la demande, après examen de leur provenance.
+- Déploiement documenté, avec configuration minimale et rollback possible.
+
+**Non-obligation :** Playwright, Docker, Redis, PostgreSQL, monitoring distribué, RAG et MCP ne sont pas des dépendances de base universelles.
+
+---
+
+## 4.5 Nouveau pilier START — spécifier le besoin avant le code
+
+**RETENU (v0.2).** Les agents modernes peuvent écrire beaucoup de code, mais ne peuvent pas deviner des choix de produit non exprimés. *SWE-Journey* [N06] compare des interactions simulées avec des profils différents : dans ce protocole, la proportion de tests de fonctionnalité réussis dépasse 75 % avec des profils architectes logiciels et tombe sous 25 % avec des profils non-développeurs. Ce sont des résultats liés au benchmark, **pas** une probabilité de réussite personnelle. L'étude distingue notamment « demander juste », « trouver juste » et « corriger juste ».
+
+**Vocabulaire accessible :**
+
+- **Besoin** = résultat observable attendu pour l'utilisateur (« je peux importer ce relevé et retrouver mes opérations »).
+- **Règle métier** = contrainte de fond (« deux opérations portant le même identifiant ne doivent pas être comptées deux fois »).
+- **Critère d'acceptation** = essai concret qui permet de décider si la demande est terminée.
+- **Invariants** = choses qui doivent rester vraies après un changement (total, accès, confidentialité, soldes, etc.).
+- **Hors périmètre** = comportement à ne pas développer maintenant.
+
+### Flux minimal de spécification
+
+1. Décrire **qui** utilise l'application et **quelle tâche** il veut accomplir.
+2. Décrire les **entrées**, **sorties**, **cas limites** et données à protéger.
+3. Écrire **2–6 critères d'acceptation observables** pour une demande normale ; davantage uniquement si un flux complexe l'exige. Ceci est un *ordre de grandeur de rédaction*, pas un seuil empirique.
+4. Faire reformuler à l'agent **ce qu'il doit préserver** et **ce qu'il ne doit pas faire**.
+5. Lancer l'implémentation ; demander la **preuve d'exécution** des contrôles prévus.
+6. Faire vérifier l'usage réel à l'écran ou via un exemple d'entrée/sortie, surtout pour les flux critiques.
+
+**Mini-exemple (import de données)** : « Lorsque j'importe deux fois le même fichier, aucune opération n'est dupliquée ; si une ligne est incorrecte, elle est signalée sans supprimer les lignes valides ; je peux retrouver et contrôler les montants importés. » Un test qui vérifie seulement que la route renvoie HTTP 200 est insuffisant.
+
+### Priorité à l'invariant plutôt qu'au jargon
+
+On ne demande pas à un non-développeur de choisir entre *CQRS, DDD, ports/adapters* ou *vertical slices*. On lui demande de décrire ce qui doit marcher ; la sélection technique doit être argumentée par l'agent, puis reliée à des contrôles vérifiables. Les formalismes avancés restent documentaires [N06, S01, S05].
+
+## 4.6 Les trois niveaux d'adoption
+
+| Niveau | Critère | Exemples | Décision |
+|---|---|---|---|
+| **A. Prêt à l'emploi** | compréhensible, peu de configuration, contrôlable | Git/README, `.env.example`, tests pertinents, lint, build, consignes courtes, sauvegardes si données | proposé normalement |
+| **B. Conditionnel** | besoin identifié et bénéfice plausible | Playwright, vérification d'imports entre modules, analyse de code mort, skills Vercel sur Next.js | activer sur justification |
+| **C. Avancé / étude** | installation lourde, risques ou avantage incertain | RAG, base vectorielle, graphe persistant, microservices, système multi-agent autonome, proxy de compression, custom lint | garder dans la recherche et l'annuaire |
+
+Un élément peut changer de niveau selon le projet : Playwright est facultatif pour une page statique et pertinent pour une application dont des utilisateurs effectuent des opérations critiques.
+
+## 4.7 Décision de stack — filtres plutôt que palmarès
+
+**L'ordre de sélection demeure** : produit → exploitation → données/sécurité → langage/framework → architecture → outils. Les comparatifs de la section 4.3 sont **candidats**, non gagnants.
+
+| Situation | Candidats plausibles | Questions éliminatoires |
+|---|---|---|
+| Site principalement éditorial / vitrine | HTML/CSS/JS, Astro, parfois WordPress selon administration | faut-il de l'authentification, une rédaction non-technique, un CMS ? |
+| Outil interne simple avec formulaires | Django, Rails, parfois Next.js | faut-il Python scientifique ? une interface JS riche ? |
+| Tableau analytique personnel | Streamlit, Dash/équivalent, Next.js + calculs adaptés | quantité d'interactions complexes, autonomie hors réseau, format des données ? |
+| App web riche, frontend et backend intégrés | Next.js, SvelteKit, Rails/Django selon équipe | frontière données/client, SEO, compétences d'exploitation ? |
+| API et algorithmes Python essentiels | FastAPI, Django, parfois frontend séparé | est-il réellement nécessaire de maintenir deux serveurs ? |
+| Script/automatisation ciblée | Python simple, CLI, job planifié | une interface web est-elle indispensable ? |
+
+**Règle anti-surarchitecture** : ne pas ajouter de serveur, couche, bus, base ou orchestrateur pour un besoin seulement hypothétique. En revanche, ne pas économiser sur la sécurité, la persistance et les sauvegardes de données réelles. L'absence d'étude comparative agent/framework est une limite **explicitement maintenue** [N02, S36].
+
+## 4.8 Contrat de fin d'une fonctionnalité
+
+La demande n'est pas « terminée » au seul motif que le modèle déclare la modification effectuée. Un compte-rendu doit mentionner : **fichiers concernés, comportement livré, critères vérifiés, commandes effectivement exécutées, résultats, vérification manuelle si applicable, limites restantes**. « Non testé » est une réponse acceptable si honnête ; « testé » sans exécution n'en est pas une.
+
+Pour une modification minime, éviter un cérémonial disproportionné : la profondeur de contrôle doit refléter le risque de l'opération. Pour un changement de données, d'authentification ou de calcul financier, le niveau de preuve requis augmente.
+
+---
+
+
+# Partie III — Parcours RESCUE
+
+## 5. Objectif et philosophie
+
+**RESCUE** est le parcours le plus différenciant : remettre sur des rails un dépôt construit rapidement avec l'IA, devenu difficile à comprendre, maintenir ou faire évoluer.
+
+Un audit sérieux doit pouvoir conclure : « l'existant est sain », « répare ces quelques frontières », « reconstruis uniquement tel sous-système » ou « la reconstruction générale est mieux justifiée ». **Il ne doit pas chercher à produire artificiellement une longue liste d'erreurs.**
+
+## 6. Méthode de diagnostic
+
+### Phase A — Audit non destructif
+
+- Inventaire du produit, des parcours, de l'architecture et des contraintes de déploiement.
+- État Git et présence de modifications non sauvegardées ; ne pas les écraser.
+- Vérifications passives : lint, typage, tests, build, versions de dépendances.
+- Cartographie des modules, points d'entrée, imports, chemins de données, API.
+- Analyse du code mort, duplication, dépendances trop fortes et abstractions inutiles.
+- Revue de la sécurité : secrets, origines, permissions, validations, uploads, vulnérabilités.
+- Revue des bases : migrations, transactions, intégrité, restauration et accès concurrents.
+- Revue des parcours fonctionnels : redondances, complexité UX, fonctionnalités difficiles à justifier.
+- Revue de la documentation et du contexte agent : erreurs, obsolescence, recherches répétitives.
+- Limites explicites : pas de pentest, de test destructif ni d'accès à de vraies données sans autorisation.
+
+### Phase B — Décision formalisée
+
+| Verdict | Sens | Exemple |
+|---|---|---|
+| **KEEP** | fondations saines, petites corrections | documenter et verrouiller quelques conventions |
+| **REFACTOR** | réorganisation ciblée sans changer le produit | scinder un workflow complexe, éliminer un N+1 |
+| **PARTIAL REBUILD** | reconstruire une zone précisément délimitée | import fragilisé dont la frontière est claire |
+| **REBUILD** | reconstruction globale mieux justifiée | architecture inadaptée + coût/risque de réparation supérieurs |
+
