@@ -35,3 +35,4 @@ Objectif : conserver les résultats, sources, options, avantages, inconvénients
 | Questionnaire START et choix de stack | [2026-11-14-start-guide.md](2026-11-14-start-guide.md) | Décidé (lot 3) |
 | IMPROVE : observations et registre | [2026-11-14-improve-preuves.md](2026-11-14-improve-preuves.md) | Décidé (lot 4) |
 | TOKENS : diagnostic et import volontaire | [2026-11-14-tokens-diagnostic.md](2026-11-14-tokens-diagnostic.md) | Décidé (lot 5) |
+| Catalogue : liens et maintenance | [2026-11-14-catalogue-sources.md](2026-11-14-catalogue-sources.md) | Décidé (lot 6) |
