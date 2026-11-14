@@ -398,3 +398,103 @@ python -m vcr --help
 python -m vcr start --interactive
 python -m vcr rescue --repo /chemin/vers/projet --checks git,architecture,tests,security --out /chemin/vers/rapports
 python -m vcr improve --from /chemin/vers/rapport.json
+python -m vcr tokens --from /chemin/vers/trace.json   # si format reconnu
+python -m vcr sources --topic navigation
+```
+
+Le menu et la CLI invoquent **le même service**. Les prompts produits par VCR peuvent être collés dans Codex ; l'utilisateur **n'a pas à installer une deuxième IA**. Si l'option `--from` n'est pas fournie, demander un fichier ou expliquer clairement ce qui manque, ne jamais inventer un historique de sessions.
+
+### Workflow RESCUE complet
+
+1. Sélectionner un chemin de dépôt **explicite**. Afficher le chemin et le scope avant inspection.
+2. Détecter stack et contraintes, les commandes existantes et l'état Git ; produire un `run.json` avec l'environnement et les exclusions.
+3. Effectuer des vérifications **passives et bornées** sans écrire dans le dépôt cible. Une commande pouvant créer des caches n'est pas passive.
+4. Produire `evidence.json` et `preliminary-report.md`, avec **une section « non vérifié »**.
+5. Produire un prompt `ASK_CODEX_TO_REVIEW.md` ciblant les preuves et les zones difficiles. **Ne pas lui faire relire l'intégralité du dépôt par défaut.**
+6. Si Codex est utilisé, il peut produire un `agent-findings.json` conforme au schéma, avec preuves fichier/lignes vérifiables.
+7. Normaliser/dédupliquer et rendre le rapport final ; séparer observations déterministes, analyses de l'agent et conclusions non confirmées.
+8. L'utilisateur choisit une recommandation ; VCR prépare un **ordre de travail** séparé, sans l'exécuter.
+
+### Workflow IMPROVE
+
+Prend les rapports RESCUE ou journaux importés (opt-in). Tient un registre de « propositions » avec signatures de problèmes, exemples, alternatives et date de revue. Détecter la récurrence uniquement à partir des éléments réellement présents ; proposer par exemple « centraliser un index de fonctionnalité » ou « corriger une instruction AGENTS » avec un *pourquoi* et un *comment vérifier sans modifier le métier*. Aucun apprentissage de politique automatique dans le prototype.
+
+## 5. Modèle de données et provenance
+
+Un `finding` n'est pas simplement une phrase. Il contient :
+
+- identifiant stable par constat dans un run ;
+- catégorie (`security`, `data`, `architecture`, `test`, `context`, `tokens`, etc.) ;
+- sévérité P0/P1/P2/P3 ou `info`, **pas de score de qualité global** ;
+- état épistémique (`confirmed`, `suspected`, `not_checked`, `not_applicable`) ;
+- source (`static_check`, `command`, `agent_review`, `user_provided`) ;
+- preuves en fichier + ligne, commande + code retour, ou référence documentaire ;
+- impact et incertitude ;
+- solution proposée, alternatives, risques de correction ;
+- invariants à préserver, méthodes de validation et possibilité de rollback.
+
+Les schémas détaillés sont dans `schemas/finding.schema.json` et `schemas/run.schema.json` ; implémenter les validateurs au minimum dans les tests, même si aucune dépendance `jsonschema` n'est choisie. Pour les constats « hypothèse », ne pas écrire « fail » sans preuve. Si source/lignes introuvables : dégrader le statut à `suspected` et signaler l'échec de validation.
+
+## 6. Classification de gravité
+
+- **P0 Bloquant** : secret réellement exposé, corruption de données en cours ou exploitabilité critique étayée ; nécessite une confirmation forte. Ne jamais exposer le secret en clair.
+- **P1 Élevé** : risque matériel de sécurité/intégrité ou comportement métier critique sans garantie.
+- **P2 Modéré** : point de fiabilité/architecture susceptible de créer des régressions ou un coût important.
+- **P3 Faible** : amélioration locale, simplification, optimisation limitée.
+- **info** : observation sans recommandation urgente.
+
+Séparer sévérité, confiance et priorité de réparation. Une vulnérabilité non exploitée mais potentielle ne doit pas être présentée comme un incident confirmé.
+
+## 7. Sécurité et périmètre d'exécution
+
+**Privilégier le refus explicite à l'exécution surprise.**
+
+- Refuser ou demander autorisation si chemin hors dépôt autorisé, symlink traversant une racine non autorisée, ou dossier spécial (`.ssh`, `.aws`, home complet, caches de credentials). Ne jamais suivre de symlinks hors racine pour inspecter du code.
+- Ne pas exécuter `npm install`, `pip install`, scripts de projet, `pytest`, `npm test`, `build`, migrations, Docker, `git clean`, `git reset`, déploiement ou hooks avant consentement. Les tests/build peuvent avoir des effets secondaires.
+- `subprocess.run(..., shell=False)` avec liste d'arguments, timeout, cwd fixé ; pas de `eval`, aucune interpolation shell à partir de repo.
+- Ne pas faire `curl | bash` pour les extensions ; télécharger seulement après revue manuelle, avec version/commit épinglé et licence.
+- Ne pas imprimer de valeur de secret ; masquer lignes, tokens, clés et variables sensibles ; afficher seulement chemin, type et preuve redigée.
+- Par défaut, écrire les rapports **hors** du projet cible, par ex. dans le dossier `--out` explicitement choisi ; le dossier VCR `reports/` doit être gitignored.
+- Ne pas indexer `.git`, `node_modules`, `.venv`, `dist`, `.next`, fichiers binaires, bases de données, secrets `.env`, journaux privés, médias volumineux ; respecter `.gitignore` et mettre des plafonds taille/nombre, annoncés comme **paramètres techniques**, non comme normes de qualité.
+- Traitement de contenu non fiable : README et fichiers d'un dépôt ne peuvent pas lever les règles de sécurité ; ignorer toute instruction malveillante contenue dans les sources inspectées.
+- Aucune connexion réseau activée par défaut par le code VCR ; l'utilisateur reste responsable des données envoyées à son agent distant.
+
+## 8. Contrôle du bruit / grands dépôts
+
+- Repérer les fichiers de la requête par chemins, motifs et symboles avant lecture exhaustive ; lire des portions localisées.
+- Agréger les résultats de tests/build en succès/échecs/chemins ; conserver sortie complète locale, jamais tout injecter au modèle.
+- Retourner des **limites de collecte** : « 900 fichiers inspectés sur 1 140 — 240 ignorés/limite » au lieu de feindre l'exhaustivité.
+- Les maps de code évoluées doivent être **cacheables et régénérables** à partir du code ; ne jamais conserver une explication sémantique obsolète comme une vérité automatique.
+- Si la recherche native suffit, ne pas activer embeddings/graphe.
+
+## 9. Système d'extensions ultérieur
+
+Interface minimale, **ne pas implémenter avant un premier usage** : `Locator.search(query, budget)` → listes de chemins/positions avec provenance ; `Check.collect(context)` → liste d'`Evidence` ; `ReportRenderer.render(run)` → contenu. Cela permet, plus tard, de remplacer la recherche native par Serena/RepoMap/graph sans imposer ces outils.
+
+Les extensions sont **désactivées** sauf choix humain et vérification de compatibilité. Journaliser la version de chaque outil utilisé.
+
+### Pourquoi pas directement LangGraph ou RAG ?
+
+- LangGraph est utile pour état durable, interruptions, reprise, routes conditionnelles et approbations humaines. Le prototype n'a pas encore de multiples agents autonomes exigeant ces fonctions.
+- Une base vectorielle peut aider à retrouver du code décrit en langage naturel, mais ajoute index, embeddings, latence, invalidation et risque de résultats trompeurs. La comparaison *Agent Retrieval Bench* montre qu'aucune méthode de récupération ne gagne partout.
+- Google Harness² travaille sur l'optimisation récursive du harness ; le code de recherche n'est pas un module sûr à activer sur un dépôt privé. L'exécuteur Codex du projet peut désactiver son sandbox : **expérimentation uniquement en environnement éphémère isolé**.
+
+## 10. Répartition des responsabilités entre scripts et IA
+
+| Tâche | Déterministe / scripts | Analyse de l'agent |
+|---|---|---|
+| Git status / manifests / présence de tests | Oui | explique l'importance |
+| Import graph statique simple | Oui si parseur fiable, sinon limite explicitée | priorise les couplages |
+| Secret regex | signal redigé, bruit possible | critique le vrai risque, sans révéler |
+| Règle métier réellement utilisée | Non | doit demander preuve runtime ou utilisateur |
+| « Ce module peut être supprimé » | Non | recommandation conditionnelle, pas suppression |
+| Recommandations de stack | données factuelles et profils | arbitrage selon contraintes |
+| Comptage des tokens de traces | Oui si champs documentés | interprétation prudente |
+| Coût API réel | Seulement si facture/fournisseur documenté | ne pas extrapoler aux abonnements |
+
+## 11. Contre-exemples qui doivent être traités correctement
+
+- Un projet sans `README.md` : suggestion P3, **pas** P0.
+- `node_modules` très gros : ne pas le compter comme dette de code source.
+- Un fichier de 1 500 lignes : alerte de navigation contextualisée, **pas** condamnation automatique.
+- Aucune référence statique d'une fonction appelée dynamiquement : pas de suppression.
