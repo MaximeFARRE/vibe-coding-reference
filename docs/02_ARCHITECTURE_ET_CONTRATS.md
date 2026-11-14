@@ -198,3 +198,38 @@ Les extensions sont **désactivées** sauf choix humain et vérification de comp
 - LangGraph est utile pour état durable, interruptions, reprise, routes conditionnelles et approbations humaines. Le prototype n'a pas encore de multiples agents autonomes exigeant ces fonctions.
 - Une base vectorielle peut aider à retrouver du code décrit en langage naturel, mais ajoute index, embeddings, latence, invalidation et risque de résultats trompeurs. La comparaison *Agent Retrieval Bench* montre qu'aucune méthode de récupération ne gagne partout.
 - Google Harness² travaille sur l'optimisation récursive du harness ; le code de recherche n'est pas un module sûr à activer sur un dépôt privé. L'exécuteur Codex du projet peut désactiver son sandbox : **expérimentation uniquement en environnement éphémère isolé**.
+
+## 10. Répartition des responsabilités entre scripts et IA
+
+| Tâche | Déterministe / scripts | Analyse de l'agent |
+|---|---|---|
+| Git status / manifests / présence de tests | Oui | explique l'importance |
+| Import graph statique simple | Oui si parseur fiable, sinon limite explicitée | priorise les couplages |
+| Secret regex | signal redigé, bruit possible | critique le vrai risque, sans révéler |
+| Règle métier réellement utilisée | Non | doit demander preuve runtime ou utilisateur |
+| « Ce module peut être supprimé » | Non | recommandation conditionnelle, pas suppression |
+| Recommandations de stack | données factuelles et profils | arbitrage selon contraintes |
+| Comptage des tokens de traces | Oui si champs documentés | interprétation prudente |
+| Coût API réel | Seulement si facture/fournisseur documenté | ne pas extrapoler aux abonnements |
+
+## 11. Contre-exemples qui doivent être traités correctement
+
+- Un projet sans `README.md` : suggestion P3, **pas** P0.
+- `node_modules` très gros : ne pas le compter comme dette de code source.
+- Un fichier de 1 500 lignes : alerte de navigation contextualisée, **pas** condamnation automatique.
+- Aucune référence statique d'une fonction appelée dynamiquement : pas de suppression.
+- Une migration appelée sur des lectures : possible risque mais confirmer avec le code et les effets réels.
+- Des tests verts sans tests d'API : distinguer lacune de couverture et bug avéré.
+- Un `.env.example` contenant `API_KEY=placeholder` : ne pas déclarer une fuite de secret.
+- Des tokens cache read élevés : ne pas annoncer un coût au tarif normal pour tous.
+
+## 12. Matrice de compatibilité initiale
+
+| Projet audité | Niveau P0.1 |
+|---|---|
+| Next.js/React/TypeScript | identification et checks génériques JS/TS ; tests/build optionnels uniquement |
+| Python/FastAPI/Django/scripts | identification et checks génériques Python ; tests/lint optionnels |
+| HTML/CSS/JS statique | collecteurs génériques, pas de recommandations serveur par défaut |
+| Autre langage | rapport d'inventaire et limites ; ne pas prétendre auditer les invariants métier |
+
+Toute sophistication ultérieure doit améliorer un cas d'usage prouvé et rester remplaçable.
