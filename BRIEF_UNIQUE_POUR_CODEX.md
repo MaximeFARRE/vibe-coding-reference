@@ -798,3 +798,103 @@ Ces procédures sont à implémenter dans le prototype, puis à exposer sous for
 
 | Axe | Chercher | Pièges à éviter |
 |---|---|---|
+| Produit / UX | parcours métier, redondances, états d'erreur | supprimer sans comprendre le besoin |
+| Architecture | flux, modules-centres, imports, frontière API | gros fichier ≠ mauvais code |
+| Code | duplication réelle, fonctions mortes confirmées, complexité | imports dynamiques, reflection, feature flags |
+| Dépendances | lockfile, audit vulnérabilités, versions | « dépendance vieille » ≠ exploitable |
+| Sécurité | secrets, droits, origines, validations, uploads | révéler secrets ou inventer exploitabilité |
+| Tests/fiabilité | tests critiques, assertion, intégration, erreurs | tests verts ≠ absence de bug |
+| Données/migrations | schéma, transactions, sauvegarde/restauration | toucher données réelles, migration sur lecture |
+| Performances | N+1, I/O répétés, parcours coûteux | chiffres de latence non mesurés |
+| Infrastructure | démarrage, CI, déploiement, rollback | imposer Docker/Postgres arbitrairement |
+| Documentation/IA | AGENTS, navigation, index, drift, coûts de contexte | générer des kilomètres de documentation |
+
+### Distinguer trois couches de preuve
+
+1. **Certain** : `package.json` indique tel script ; `git status` indique des modifications ; une route HTTP contient tel code à telle ligne ; une commande a vraiment échoué.
+2. **Interprétation forte** : l'absence probable d'un test adapté ; un module concentrant plusieurs responsabilités ; une frontière non respectée.
+3. **Question ouverte** : une fonctionnalité semble obsolète, mais il manque la mesure d'usage ; un fichier paraît inutile mais peut être chargé dynamiquement.
+
+### Verdicts
+
+- **KEEP** : fondations saines, quelques corrections utiles.
+- **REFACTOR** : même stack et produit, changements ciblés et vérifiables.
+- **PARTIAL REBUILD** : reconstruire une sous-zone avec migration/risque limité, comportement figé par tests.
+- **REBUILD** : seulement si l'existant est structurellement inadapté, la réparation plus risquée/coûteuse, données/fonctions migrables et justificatif solide.
+- **INCONCLUSIVE** : manque de contexte ou de vérifications, verdict reporté.
+
+### Fiche type d'un finding
+
+```markdown
+### P1 — Validation insuffisante dans une route sensible (EXEMPLE)
+État : suspecté, à confirmer sur source précise
+Preuve : fichier/route/ligne, commande ou extrait REDIGÉ
+Pourquoi : risque de modification sans entrée valide
+Impact : intégrité / permission / expérience utilisateur
+Proposition A : validation runtime à la frontière HTTP + refus clair
+Proposition B : validation du service interne + route minimale
+À préserver : compatibilité des clients existants et métier
+Vérification : tests de route autorisé/refusé + non-régression
+Risque de la correction : changement de comportements attendus
+Décision humaine : valider contrat API avant modification
+```
+
+### Suite de RESCUE
+
+1. L'utilisateur examine les 3 à 5 problèmes à plus fort impact, pas 200 alertes brutes.
+2. Sélectionne un problème ; l'outil génère un ordre de travail pour Codex.
+3. Codex **confirme la preuve et la viabilité** de la solution dans le projet avant de modifier.
+4. Branche/commit/sauvegardes et tests de référence ; changement limité à une zone ; vérification ; rapport ; possibilité de retour arrière.
+5. Aucun projet ne peut être « entièrement sécurisé » sur la base d'un audit statique rapide. Toujours noter ce qui n'a pas été vérifié.
+
+## 3. IMPROVE — feedback supervisé du harness
+
+**Principes** : un problème **observé et répétitif** peut motiver une amélioration des règles, des docs, de l'architecture, de la recherche ou des contrôles. L'objectif n'est pas de modifier le harness chaque jour, mais de réduire les échecs répétés.
+
+### Sources admissibles
+
+- Rapports RESCUE vérifiables.
+- Résultats de lint/tests/CI remis volontairement par l'utilisateur.
+- Notes de passation courtes d'agents antérieurs.
+- Export de sessions uniquement sur **opt-in explicite**, avec filtre secrets et données privées.
+
+### Pipeline minimal
+
+```mermaid
+flowchart LR
+  O[Observations vérifiées] --> R{Récurrence réelle?}
+  R -- non --> K[Cas isolé / à surveiller]
+  R -- oui --> H[Hypothèses de cause]
+  H --> S[Solutions A/B et risques]
+  S --> P[Proposition lisible]
+  P --> A{Humain accepte?}
+  A -- non --> C[Documenter décision]
+  A -- oui --> E[Action séparée, tests, rollback]
+```
+
+### Exemples de propositions IMPROVE
+
+**Exemple 1 — l'agent relit la même architecture à chaque ticket.** Preuve : sorties de sessions importées + fichiers concernés. Solution : carte de fonctionnalités de 30 lignes pointant vers modules et tests, pas RAG systématique. Mesure utilisateur : modifications plus faciles à localiser ; pas de promesse chiffrée.
+
+**Exemple 2 — règles d'AGENTS trompeuses.** Preuve : instruction qui ordonne d'exécuter tous les tests à chaque micro-changement ; logs de commandes énormes. Solutions : tests ciblés d'abord, suite complète avant livraison ; supprimer règle obsolète. Risque : tests trop peu exécutés ; conserver garde-fous critiques.
+
+**Exemple 3 — agent propose suppression d'un calcul métier complexe.** Preuve : fonctions imbriquées, tests partiels. Solution : tests de référence et carte de dépendances avant tout refactor ; ne pas supprimer ce qu'on ne sait pas qualifier.
+
+**Exemple 4 — changements de contexte coûteux.** Preuve : même session mélange plusieurs sujets non liés. Solution : note de passation courte, nouvelle session ; ne pas casser un long workflow qui dépend réellement d'un état partagé.
+
+**Exemple 5 — une migration SQLite est rappelée lors de lectures.** Preuve : chemins d'appel et usages de la routine. Solution : isoler les migrations versionnées au démarrage/maintenance après sauvegarde ; évaluer les risques de concurrence et de données. Ne pas modifier à l'aveugle.
+
+## 4. TOKEN EFFICIENCY — ne pas confondre les métriques
+
+### Ce que chaque rapport doit annoncer
+
+```text
+volume_total_tokens      = input + output selon le schéma disponible
+cached_input_tokens      = sous-ensemble d'input si fourni
+uncached_input_tokens    = input - cached_input (si défini et cohérent)
+api_cost_actual          = montant fourni par une source de facturation fiable
+subscription_quota       = NOT AVAILABLE sauf API/documentation officielle explicite
+success_per_cost         = NON CALCULABLE sans jugement fiable du résultat
+```
+
+Il faut éviter les déductions erronées : input cached peut représenter beaucoup de trafic et être facturé à un taux réduit ; les quotas d'une application ne suivent pas forcément les tarifs de l'API. Le nombre de tokens de raisonnement peut faire partie de la sortie et il ne faut **pas le doubler** si déjà inclus.
