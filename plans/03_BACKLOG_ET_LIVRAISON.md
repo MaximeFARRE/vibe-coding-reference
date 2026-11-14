@@ -198,3 +198,14 @@ Limiter les sous-agents aux tâches parallélisables sans conflits de fichiers, 
 ## 12. Conditions de fin de prototype (Definition of Done)
 
 - `python -m vcr` et commandes documentées fonctionnent sur OS validés, sans API.
+- Un dépôt TS et un dépôt Python fixture donnent des rapports utiles, JSON validable, Markdown lisible.
+- Aucun secret, chemin privé, contenu sensible ou code du dépôt cible ne part automatiquement vers un service tiers.
+- Le système ne modifie pas le dépôt cible dans une commande d'analyse.
+- START génère un document métier et des choix conditionnels, pas de déploiement.
+- IMPROVE formule au moins une proposition justifiée à partir de fixtures récurrentes, sans mutation.
+- TOKENS distingue chiffres disponibles et inconnus.
+- Catalogue cite sources réelles, statuts, limites et dates ; aucune dépendance lourde par défaut.
+- Des tests confirment garde-fous et comportement hors nominal ; README d'utilisation vérifié.
+- `IMPLEMENTATION_STATUS.md` indique honnêtement les limitations et les chantiers futurs.
+
+**En cas de retard/difficulté :** conserver le RESCUE vertical opérationnel et documenter honnêtement les autres parcours, plutôt que produire une fausse UI qui donne l'impression que tout est implémenté.
