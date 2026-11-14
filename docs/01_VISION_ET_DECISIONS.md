@@ -98,3 +98,20 @@ Les développeurs débutants ou « vibe coders » capables de générer une appl
 
 ## 7. Décisions éditoriales et statut
 
+- `D-P01` **retenu** : START/RESCUE restent les piliers ; IMPROVE est la boucle de retour supervisée.
+- `D-P02` **retenu** : un petit point d'entrée local + prompts standards ; pas de SaaS.
+- `D-P03` **retenu** : multi-agent, mémoire vectorielle, graphs = **adaptateurs optionnels** et recherche, pas fondation obligatoire.
+- `D-P04` **retenu** : audit non destructif et reporting structuré, correction seulement après approbation.
+- `D-P05` **retenu** : catalogue de skills **existants**, pas de création de skills internes revendiqués « prouvés ».
+- `D-P06` **retenu** : coût par tâche correcte est un critère de lecture de la littérature, pas une métrique maison obligatoire.
+- `D-P07` **à arbitrer** : licence publique MIT/Apache-2.0 ; ne pas copier sans vérifier les licences tierces.
+- `D-P08` **à arbitrer** : CLI Python stdlib vs packaging uv ; commencer par le plus simple qui fonctionne et fonctionne sous macOS/Linux, Windows si raisonnable.
+- `D-P09` **hypothèse** : UI terminal + HTML statique suffisent pour première version. Site web/local dashboard seulement si retour utilisateur le justifie.
+
+## 8. Concurrence et différenciation
+
+`walkinglabs/learn-harness-engineering` = cursus pratique ; `TrishamBP/harness-engineering` = runtime de référence ; `Awesome-Agent-Harness` = panorama ; `github/spec-kit` = processus de spécification ; `EveryInc/compound-engineering-plugin` = boucle orientée skills ; `Serena` et `codebase-memory-mcp` = navigation/index ; `TokenEconomizer` = coût ; `Harness²` = recherche d'auto-optimisation. **Notre projet connecte ces choix aux besoins utilisateurs, à la preuve et aux contrôles de risque**, sans les recopier ni les installer tous.
+
+## 9. Critère de qualité du produit (sans score synthétique arbitraire)
+
+Le rapport doit donner une réponse actionable : *quoi*, *où*, *pourquoi on y croit*, *quel dommage potentiel*, *que faire*, *quoi préserver*, *quelle incertitude*, *quand vérifier à nouveau*. Un débutant doit pouvoir prioriser sans voir le code, et un expert doit pouvoir vérifier chaque constat.
