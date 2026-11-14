@@ -2,7 +2,7 @@
 
 - Date : 2026-11-14 ; statut : décidé pour le lot 6.
 - Question : rendre les sources et outils consultables sans installation ni classement artificiel.
-- Sources : [backlog lot 6](../plans/03_BACKLOG_ET_LIVRAISON.md), [catalogue](../src/vcr/catalog.json), [chargeur](../src/vcr/catalog.py), [tests](../tests/test_catalog.py).
+- Sources : [backlog lot 6](https://github.com/MaximeFARRE/vibe-coding-reference/blob/c8d94cb14c27270f430277034d4b280431001d3f/plans/03_BACKLOG_ET_LIVRAISON.md), [catalogue](../src/vcr/catalog.json), [chargeur](../src/vcr/catalog.py), [tests](../tests/test_catalog.py).
 
 ## Résultats et limites
 

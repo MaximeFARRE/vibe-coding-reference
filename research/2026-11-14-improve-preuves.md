@@ -2,7 +2,7 @@
 
 - Date : 2026-11-14 ; statut : décidé pour le lot 4.
 - Question : proposer des améliorations à partir de sources choisies sans inventer une récurrence ni modifier le projet.
-- Sources : [backlog lot 4](../plans/03_BACKLOG_ET_LIVRAISON.md), [collecte](../src/vcr/improve_sources.py), [registre](../src/vcr/improve_registry.py), [tests rapports](../tests/test_improve.py), [tests notes](../tests/test_improve_notes.py).
+- Sources : [backlog lot 4](https://github.com/MaximeFARRE/vibe-coding-reference/blob/c8d94cb14c27270f430277034d4b280431001d3f/plans/03_BACKLOG_ET_LIVRAISON.md), [collecte](../src/vcr/improve_sources.py), [registre](../src/vcr/improve_registry.py), [tests rapports](../tests/test_improve.py), [tests notes](../tests/test_improve_notes.py).
 
 ## Résultats
 

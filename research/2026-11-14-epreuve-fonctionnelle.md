@@ -2,7 +2,7 @@
 
 - Date : 2026-11-14 ; statut : décidé, CI distante vérifiée sur le commit indiqué ci-dessous.
 - Question : le parcours local est-il reproductible et que reste-t-il à vérifier avant diffusion ?
-- Sources : [backlog lot 7](../plans/03_BACKLOG_ET_LIVRAISON.md), [parcours](../tests/test_journey.py), [CI](../.github/workflows/ci.yml), [état d'avancement](../docs/IMPLEMENTATION_STATUS.md).
+- Sources : [backlog lot 7](https://github.com/MaximeFARRE/vibe-coding-reference/blob/c8d94cb14c27270f430277034d4b280431001d3f/plans/03_BACKLOG_ET_LIVRAISON.md), [parcours](../tests/test_journey.py), [CI](../.github/workflows/ci.yml), [état d'avancement](../docs/IMPLEMENTATION_STATUS.md).
 
 ## Résultats
 

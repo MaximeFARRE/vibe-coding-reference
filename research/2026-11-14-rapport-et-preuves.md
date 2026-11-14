@@ -2,7 +2,7 @@
 
 - Date : 2026-11-14 ; statut : décidé pour le lot 2.
 - Question : rendre les constats vérifiables et permettre une décision sans modifier le projet audité.
-- Sources : [backlog, lot 2](../plans/03_BACKLOG_ET_LIVRAISON.md) ; [schéma Finding](../schemas/finding.schema.json) ; [normalisation](../src/vcr/normalize.py) ; [tests](../tests/test_normalize.py) et [parcours de décision](../tests/test_decisions.py).
+- Sources : [backlog, lot 2](https://github.com/MaximeFARRE/vibe-coding-reference/blob/c8d94cb14c27270f430277034d4b280431001d3f/plans/03_BACKLOG_ET_LIVRAISON.md) ; [schéma Finding](../schemas/finding.schema.json) ; [normalisation](../src/vcr/normalize.py) ; [tests](../tests/test_normalize.py) et [parcours de décision](../tests/test_decisions.py).
 
 ## Résultats
 
