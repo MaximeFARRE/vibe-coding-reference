@@ -3,6 +3,8 @@ import sys
 from pathlib import Path
 
 from .feedback import DECISIONS, record_feedback
+from .improve import prepare, write_improve
+from .improve_registry import STATUSES, update_status
 from .rescue import audit, write_reports
 from .start import write_start
 from .start_questions import ask, load_answers
@@ -18,13 +20,24 @@ def main(argv=None):
     rescue = sub.add_parser("rescue", help="Analyser un dossier sans le modifier")
     rescue.add_argument("--repo", required=True, help="Dossier à analyser")
     rescue.add_argument("--out", required=True, help="Nouveau dossier de rapports, extérieur au projet")
+    improve = sub.add_parser("improve", help="Proposer des améliorations à partir de sources choisies")
+    improve.add_argument("--project", required=True, help="Dossier du projet concerné")
+    improve.add_argument("--from", dest="reports", action="append", default=[], help="Rapport RESCUE run.json ; option répétable")
+    improve.add_argument("--note", action="append", default=[], help="Note volontairement fournie ; option répétable")
+    improve.add_argument("--log", action="append", default=[], help="Journal volontairement fourni ; option répétable")
+    improve.add_argument("--registry", help="Registre IMPROVE précédent du même projet")
+    improve.add_argument("--out", required=True, help="Nouveau dossier de sortie, extérieur au projet")
+    improve_feedback = sub.add_parser("improve-feedback", help="Enregistrer une décision sur une proposition")
+    improve_feedback.add_argument("--registry", required=True, help="Chemin du fichier registry.json")
+    improve_feedback.add_argument("--proposal", required=True, help="Identifiant de la proposition")
+    improve_feedback.add_argument("--decision", required=True, choices=sorted(STATUSES - {'pending'}))
     feedback = sub.add_parser("feedback", help="Enregistrer une décision dans le dossier du rapport")
     feedback.add_argument("--report", required=True, help="Dossier contenant run.json")
     feedback.add_argument("--finding", required=True, help="Identifiant du constat")
     feedback.add_argument("--decision", required=True, choices=sorted(DECISIONS))
     args = parser.parse_args(argv)
     if args.command is None:
-        print("Vibe Coding Reference — outil local\n[1] START — cadrer un projet\n[2] RESCUE — analyser un projet\n[0] Quitter\nIMPROVE, TOKENS et SOURCES : pas encore disponibles.")
+        print("Vibe Coding Reference — outil local\n[1] START — cadrer un projet\n[2] RESCUE — analyser un projet\n[3] IMPROVE — examiner des observations\n[0] Quitter\nTOKENS et SOURCES : pas encore disponibles.")
         if not sys.stdin.isatty():
             return 0
         try:
@@ -35,11 +48,38 @@ def main(argv=None):
                 args.command = 'rescue'
                 args.repo = input("Dossier à analyser : ").strip()
                 args.out = input("Nouveau dossier de rapports extérieur au projet : ").strip()
+            elif choice == '3':
+                args.command = 'improve'
+                args.project = input("Dossier du projet : ").strip()
+                args.out = input("Nouveau dossier de sortie extérieur au projet : ").strip()
+                args.reports, args.note, args.log, args.registry = [], [], [], None
+                while True:
+                    path = input("Rapport RESCUE run.json (vide pour terminer) : ").strip()
+                    if not path:
+                        break
+                    args.reports.append(path)
             else:
                 return 0
         except (EOFError, KeyboardInterrupt):
             print("\nAnnulé.")
             return 0
+    if args.command == 'improve':
+        try:
+            project, registry, proposals, limitations = prepare(args.project, args.reports, args.note, args.log, args.registry)
+            output = write_improve(project, args.out, registry, proposals, limitations)
+            print(f"Rapport IMPROVE créé : {output} ; propositions : {len(proposals)}")
+            return 0
+        except (OSError, ValueError) as exc:
+            print(f"Erreur : {exc}", file=sys.stderr)
+            return 2
+    if args.command == 'improve-feedback':
+        try:
+            update_status(args.registry, args.proposal, args.decision)
+            print('Décision enregistrée dans le registre IMPROVE.')
+            return 0
+        except (OSError, ValueError) as exc:
+            print(f"Erreur : {exc}", file=sys.stderr)
+            return 2
     if args.command == 'start':
         try:
             output = args.out or input("Nouveau dossier pour les documents START : ").strip()
