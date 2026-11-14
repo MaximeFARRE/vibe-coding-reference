@@ -1,10 +1,10 @@
 # Vibe Coding Reference — prototype local
 
-START aide à cadrer une idée et propose des options techniques conditionnelles. RESCUE inspecte passivement un dossier et produit un rapport en français, un fichier JSON et un prompt de revue. IMPROVE propose des pistes à partir de sources choisies ; TOKENS fournit un diagnostic descriptif ou analyse une trace volontaire. Les outils ne lancent pas de test du projet et ne contactent aucun service. RESCUE et IMPROVE imposent une sortie extérieure au projet ; TOKENS peut appliquer cette protection avec `--project`. Python 3.11 ou supérieur est requis. SOURCES n'est pas encore disponible.
+START aide à cadrer une idée et propose des options techniques conditionnelles. RESCUE inspecte passivement un dossier et produit un rapport en français, un fichier JSON et un prompt de revue. IMPROVE propose des pistes à partir de sources choisies ; TOKENS fournit un diagnostic descriptif ou analyse une trace volontaire ; SOURCES consulte un catalogue local. Les outils ne lancent pas de test du projet et ne contactent aucun service. RESCUE et IMPROVE imposent une sortie extérieure au projet ; TOKENS peut appliquer cette protection avec `--project`. Python 3.11 ou supérieur est requis.
 
 > **Prototype en cours de développement.** L'analyse est partielle et ne remplace ni les tests du projet ni une revue de sécurité.
 
-**English:** VCR is a local-first prototype for project scoping, passive repository inspection, supervised improvements and token-context diagnostics. Its workflows produce French reports locally without an API. The sources catalog is planned.
+**English:** VCR is a local-first prototype for project scoping, passive repository inspection, supervised improvements, token-context diagnostics and a local source catalog. Its workflows produce French reports locally without an API.
 
 Les recherches et décisions sont conservées dans les [notes destinées aux agents](research/README.md), avec leurs sources et limites.
 
@@ -81,9 +81,19 @@ Pour importer volontairement une trace et créer un rapport hors du projet :
 python3 -m vcr tokens --from "/chemin/trace.json" --out "/chemin/nouveau-diagnostic" --project "/chemin/projet"
 ```
 
-L'option `--out` est facultative ; sans elle, le résultat est affiché dans le terminal. Si un projet est concerné, `--project` protège son dossier contre les sorties. Sans cette option, choisir soi-même un dossier extérieur au projet. Les résultats peuvent contenir `tokens.json`, `report.md` et un prompt de revue. L'import accepte uniquement le [format VCR documenté](docs/TOKEN_TRACE_FORMAT.md) : aucun format natif Codex ou autre n'est reconnu automatiquement. Les mesures sont reprises, mais les noms de modèles, outils et sessions, les empreintes et les contenus bruts ne sont pas recopiés ; conserver la trace sélectionnée pour retrouver les références numériques.
+L'option `--out` est facultative ; sans elle, le résultat est affiché dans le terminal. Si un projet est concerné, `--project` protège son dossier contre les sorties. Sans cette option, choisir soi-même un dossier extérieur au projet. Les résultats peuvent contenir `tokens.json`, `report.md` et un prompt de revue. L'import accepte le [format VCR documenté](docs/TOKEN_TRACE_FORMAT.md) et, avec `--format openai-responses` ou `--format anthropic-messages`, l'objet `usage` d'une réponse API individuelle choisie. Les journaux natifs Codex et Claude Code ne sont pas reconnus automatiquement. Les mesures sont reprises, mais les noms de modèles, outils et sessions, les empreintes et les contenus bruts ne sont pas recopiés ; conserver la trace sélectionnée pour retrouver les références numériques.
 
 Les compteurs sont déclaratifs, pas vérifiés indépendamment. Les champs absents restent `unavailable` ; les coûts déclarés ne sont ni des économies calculées ni un quota d'abonnement. Aucune surveillance des historiques, aucun tarif figé et aucun accès réseau ne sont effectués.
+
+## Consulter le catalogue SOURCES
+
+```sh
+python3 -m vcr sources --topic tokens
+python3 -m vcr sources --topic navigation
+python3 -m vcr sources
+```
+
+Le filtre correspond à un thème exact ; un thème inconnu affiche la liste des thèmes disponibles. Les fiches séparent le niveau d'adoption A/B/C, l'état des preuves et celui des liens. Les liens officiels, plusieurs licences et les métadonnées d'activité GitHub ont été consultés le 14 novembre 2026 ; cela ne prouve ni efficacité ni sécurité, et les versions, compatibilités et retraits restent à vérifier avant usage. Le statut `unverified` ne constitue pas une recommandation. VCR lui-même n'ouvre pas les liens et n'installe rien.
 
 ## Ce qui est examiné
 

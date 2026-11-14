@@ -1,6 +1,6 @@
 # Format de trace TOKENS V1
 
-Seul le format explicite `vcr-token-trace-v1` est accepté. Il ne s'agit pas d'un format natif Codex, Claude ou fournisseur : aucune conversion automatique ni lecture d'historique n'est effectuée. L'utilisateur choisit volontairement le fichier et doit vérifier la signification de ses données avant toute conversion. Fichier UTF-8, JSON, 4 Mio et 10 000 enregistrements maximum ; champs inconnus, valeurs invalides et liens symboliques directs refusés.
+Le format `vcr-token-trace-v1` ci-dessous est accepté par défaut. Deux imports explicites d'une réponse API individuelle sont également disponibles (voir plus bas) ; aucun historique Codex ou Claude Code n'est lu automatiquement. L'utilisateur choisit volontairement le fichier et doit vérifier la signification de ses données avant toute conversion. Fichier UTF-8, JSON, 4 Mio et 10 000 enregistrements maximum pour VCR ; champs VCR inconnus, valeurs invalides, clés JSON dupliquées et liens symboliques directs refusés.
 
 Chaque élément de `records` représente **une requête distincte**, pas un compteur cumulatif ni un instantané. Ne pas importer plusieurs fois la même requête. Les champs sont optionnels : leur absence signifie « indisponible », jamais zéro. Chaque entier est positif ou nul ; les booleens ne sont pas des entiers. Les totaux ne sont calculés que si tous les enregistrements contiennent le champ nécessaire. Les montants ne sont pas une estimation de quota ni d'économie.
 
@@ -49,3 +49,16 @@ Les nombres et noms ci-dessus sont des **fixtures inventées** pour décrire le 
 Une somme des entrées sur plusieurs requêtes peut inclure plusieurs fois du contexte réutilisé : elle n'est pas le nombre de tokens uniques. Le total entrée + sortie ne doit pas être confondu avec le coût. Cache lu et écriture sont présentés séparément ; l'entrée hors cache lu peut inclure les écritures selon la source. Aucun quota d'abonnement n'est déduit. Aucun prix ni pourcentage de gain n'est calculé.
 
 Les champs libres (`model`, `session_id`, `tool`, `provider`), empreintes et contenus bruts ne sont pas recopiés dans les rapports. Les références `record_refs` utilisent les positions **à partir de 1** dans `records` ; les sorties listent dix références/groupes au plus et indiquent les couvertures partielles. Le code de l'outil ne possède ni collecte automatique, ni télémétrie, ni envoi externe. L'utilisateur reste responsable de sécuriser le fichier importé et de contrôler les sorties avant partage.
+
+## Import volontaire d'une réponse API individuelle
+
+`--format openai-responses` accepte un objet JSON contenant le champ `usage` d'une réponse **Responses API** OpenAI unique. Le compteur `input_tokens` inclut les entrées mises en cache, dont `input_tokens_details.cached_tokens` ; la sortie inclut les éventuels tokens de raisonnement. VCR ne les additionne pas une seconde fois. Si une valeur manque ou vaut `null`, elle reste indisponible. Référence : [OpenAI — observabilité et usage](https://developers.openai.com/api/docs/guides/agents-api/observability) et [OpenAI — prompt caching](https://developers.openai.com/api/docs/guides/prompt-caching).
+
+`--format anthropic-messages` accepte un objet JSON contenant le champ `usage` d'une réponse **Messages API** Anthropic unique. Le total d'entrée est calculé uniquement si les trois champs `input_tokens`, `cache_read_input_tokens` et `cache_creation_input_tokens` sont présents : ils sont distincts selon [Anthropic — prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching). Si l'un manque, le total est indisponible ; le cache observé reste séparé. La somme est indiquée comme calculée (`estimated`), les compteurs source comme déclarés (`measured`).
+
+```sh
+python3 -m vcr tokens --format openai-responses --from "/chemin/reponse-openai.json"
+python3 -m vcr tokens --format anthropic-messages --from "/chemin/reponse-anthropic.json"
+```
+
+Il appartient à l'utilisateur de sélectionner **une seule réponse** de l'API indiquée, pas une synthèse de session, une liste de réponses ni un compteur cumulé. Un `usage` nul reste indisponible. Le contenu de réponse et les champs non nécessaires sont ignorés et non recopiés ; aucun appel API n'est effectué. Ces formats ne sont **pas** les journaux natifs de session Codex ou Claude Code et ne permettent pas de déduire leur quota ni le coût d'un abonnement. Aucun coût n'est déduit de ces réponses.
