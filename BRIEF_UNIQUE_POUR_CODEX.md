@@ -898,3 +898,103 @@ success_per_cost         = NON CALCULABLE sans jugement fiable du résultat
 ```
 
 Il faut éviter les déductions erronées : input cached peut représenter beaucoup de trafic et être facturé à un taux réduit ; les quotas d'une application ne suivent pas forcément les tarifs de l'API. Le nombre de tokens de raisonnement peut faire partie de la sortie et il ne faut **pas le doubler** si déjà inclus.
+
+### Leviers prioritaires sur gros dépôts
+
+**A. Navigation ciblée** — repo map/symboles et recherche de fichiers pertinents avant lecture massive ; ne jamais limiter le contexte au point de manquer les dépendances nécessaires.
+
+**B. Sessions cohérentes** — nouveau contexte par problème distinct ; état de passation court ; ne pas reset en plein workflow sans préserver les décisions importantes.
+
+**C. Sorties d'outils compactes et sûres** — résultats globaux, chemins, extraits d'erreurs ; logs complets conservés localement. Ne pas compresser à l'aveugle les anchors de patchs ni les exceptions importantes.
+
+**D. Outils/plugins proportionnés** — inventorier les MCP réellement nécessaires et réduire les descriptions injectées sans perte fonctionnelle.
+
+**E. Boucles d'échec** — après des erreurs identiques et rapprochées, changer d'hypothèse, examiner le contrat ou demander intervention ; éviter un « retry forever ».
+
+**F. Tests étagés** — vérification ciblée puis test complet lorsque la surface de changement le requiert.
+
+### Diagnostic sans logs
+
+Avec seulement un dépôt source, classer les risques de surconsommation comme **hypothèses**. Par exemple : une énorme sortie de test **pourrait** charger le contexte ; un AGENTS.md de plusieurs centaines de lignes **pourrait** imposer du travail inutile ; les tokens réels restent inconnus.
+
+### Intégrations optionnelles
+
+- TokenEconomizer : voir `docs/05_PROJETS_EXTERNES_ET_SKILLS.md` ; hooks à auditer.
+- Codebase Memory MCP/Serena/RepoMap : recherche ciblée, besoin justifié ; ne pas leur attribuer sans étude une économie chiffrée.
+- Cache API : documenter les préfixes stables ; ne pas dériver les quotas des abonnements.
+- Compression résumée : expérimentale, car l'étude *Token Reduction Is Not Cost Reduction* signale des échecs et coûts accrus possibles.
+
+## 5. RESEARCH / CATALOGUE — quel parcours pour choisir un skill ?
+
+1. L'utilisateur décrit une tâche (ex. tests API FastAPI, debugging Next.js, interface React).
+2. VCR filtre **un nombre réduit** de skills existants avec mainteneur, périmètre, version, licence, et niveau de preuve.
+3. Par défaut, **recommandation sans installation** : l'utilisateur peut consulter le skill.
+4. Si installation demandée ultérieurement : prévisualiser fichiers, scripts et permissions, conflit avec skills déjà installés, choix global/projet, origine, validation humaine, commandes de désinstallation.
+5. Éviter toute activation cachée ou chargement complet du catalogue à chaque session.
+
+**Cas difficile :** un skill « prouvé utile » en environnement Go et Java ne doit pas être recommandé pour un projet Python faute d'applicabilité, même si son benchmark est positif.
+
+## 6. Rapports : deux niveaux de lecture
+
+### Résumé pour débutant (première page)
+
+```markdown
+# Résumé
+L'analyse a examiné 5 domaines ; 2 vérifications importantes nécessitent ton accord.
+
+1. [P1] ... — Pourquoi c'est important, ce que tu risques, solution en une phrase.
+2. [P2] ... — Même chose.
+3. [P3] ... — Non urgent.
+
+Ce qui a bien fonctionné : ...
+Ce que l'analyse n'a pas vérifié : ...
+Pour continuer, choisis 1, 2, 3 ou « aucun ».
+```
+
+### Annexe pour expert/agent
+
+- version et commande des outils, source et configuration, timestamp, statut Git, fichiers inclus/exclus ;
+- preuve exacte file:line ou commande/exit code ;
+- statistiques de couverture **de la collecte** (pas de l'exactitude) ;
+- findings JSON, schéma et provenance ;
+- décisions et état de validation humaine ;
+- limites, faux positifs, problèmes non traités.
+
+## 7. Prompts de travail générés par l'outil
+
+### Audit ciblé à coller dans Codex
+
+```text
+Tu travailles dans le dépôt cible avec un objectif d'audit, pas de correction.
+Révise uniquement les domaines sélectionnés : [liste].
+L'inventaire et les observations déterministes sont ici : [chemin rapport].
+Valide toute preuve avant de conclure, et complète ce qui nécessite une analyse sémantique.
+N'exécute ni migration, installation, commande risquée ou écriture dans le dépôt cible sans accord.
+Pour chaque constat : statut, preuve fichier/ligne, conséquence concrète, solutions, risques,
+comportements métier à préserver et vérifications possibles. Si tu ne sais pas, écris-le.
+Ne déclare aucun pourcentage de gains de tokens, coût ou performance sans mesure/source.
+Produis un `agent-findings.json` conforme au schéma et un résumé court en français.
+```
+
+### Correction après validation humaine
+
+```text
+Constat retenu : [identifiant]. Objectif métier : [description].
+Commence par confirmer la preuve, inspecter les dépendances et évaluer si la solution proposée
+est viable dans ce dépôt ; propose une meilleure alternative si nécessaire et explique pourquoi.
+Préserve explicitement [invariants]. N'écrase pas mes modifications Git.
+Prépare un changement localisé et des tests de non-régression, sans suppression non validée.
+N'exécute pas de migration/destruction de données, commit, push ou déploiement sans accord.
+Fournis les tests réellement exécutés, le résultat et les risques résiduels.
+```
+
+### Revue d'un harness après incidents
+
+```text
+Lis seulement les rapports sélectionnés [chemins] et les courtes instructions de dépôt.
+Identifie les problèmes récurrents réellement prouvés qui empêchent l'agent de travailler.
+Propose 0 à 3 améliorations de contexte/outillage/tests/processus, chacune avec preuve,
+solution minimale, alternative, risques, maintenance, stratégie de validation et rollback.
+Aucune modification d'AGENTS.md, configuration, skill ou hook sans validation de l'utilisateur.
+```
+
