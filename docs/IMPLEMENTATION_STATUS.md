@@ -33,3 +33,9 @@ Vérification locale : `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -m unit
 Le README principal est intégralement en anglais ; le guide français est conservé dans `README.fr.md` et relié dans les deux sens. Les rapports et le menu de VCR restent en français. Les documents publics de contribution, sécurité, conduite, feuille de route et changelog sont également en anglais ; les documents historiques, techniques et notes de recherche restent en français.
 
 Vérifications : `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -m unittest discover -s tests -v` : 59 tests réussis sur macOS/Python 3.12.9 ; exemple fictif RESCUE, IMPROVE, TOKENS et SOURCES exécuté ; liens locaux des deux README vérifiés et `git diff --check` sans erreur. Traduction du reste de la documentation technique et essais par des lecteurs anglophones restent à faire.
+
+## Nettoyage du dépôt
+
+Retrait du brief initial fusionné, du prompt initial dupliqué et du manifeste SHA-256 du kit documentaire historique. Leurs copies locales sont conservées dans `.vcr-local-archive/`, ignoré par Git ; elles sont identiques aux fichiers de `origin/main` au moment du nettoyage. Les notes de recherche et leurs sources liées, le backlog, les consignes et le prompt de lancement référencé restent en place. Les fichiers retirés restent accessibles dans l'historique Git ; l'archive locale n'est pas distribuée aux nouveaux clones.
+
+Vérifications sur macOS/Python 3.12.9 : `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -m unittest discover -s tests -v` : 59 tests réussis ; comparaison `git show ... | cmp` des trois copies locales : identiques ; `git check-ignore` confirme l'exclusion ; `git diff origin/main --check` sans erreur. Prochaine étape : vérifier la CI de la pull request et les retours des utilisateurs ; ne pas supprimer les sources historiques référencées sans traiter leurs liens.

@@ -9,3 +9,6 @@ reports/
 *.egg-info/
 build/
 dist/
+
+# Local archive of the original bootstrap kit
+.vcr-local-archive/
