@@ -298,3 +298,103 @@ Un audit sérieux doit pouvoir conclure : « l'existant est sain », « répare 
 | **PARTIAL REBUILD** | reconstruire une zone précisément délimitée | import fragilisé dont la frontière est claire |
 | **REBUILD** | reconstruction globale mieux justifiée | architecture inadaptée + coût/risque de réparation supérieurs |
 
+Chaque verdict doit traiter au minimum : preuves, comportements à préserver, données, tests disponibles, coût de transition, régressions probables, sécurité, bénéfice attendu et incertitudes. **Pas de score arbitraire « 3/10 donc à réécrire ».**
+
+### Phase C — Recovery contrôlé, après validation humaine
+
+1. Préserver les données et créer une branche distincte.
+2. Établir des tests/fixtures de référence sur les comportements critiques.
+3. Corriger d'abord les risques de sécurité ou d'intégrité confirmés.
+4. Retirer les dépendances et chemins morts **confirmés**.
+5. Réparer les problèmes de persistance et les frontières API.
+6. Simplifier le produit et les workflows sans perte métier décidée implicitement.
+7. Refactorer une zone cohérente à la fois, avec vérifications et commits séparés.
+8. Mettre à jour documents, cartes et commandes de tests.
+9. Signaler les risques non résolus et ce qui n'a pas pu être testé.
+
+### 6.1 Les dix axes minimaux d'audit
+
+Architecture ; code ; fonctionnalité et UX ; dépendances ; sécurité ; fiabilité/tests ; données/migrations ; performances ; infrastructure ; documentation/maintenabilité IA.
+
+### 6.2 Exemples de mauvaises conclusions à éviter
+
+- « 1 500 lignes = code mauvais » : la taille seule est un signal.
+- « Aucun import trouvé = fonctionnalité inutilisée » : présence possible d'appels dynamiques ou externes.
+- « Plus de patterns = architecture meilleure » : les abstractions peuvent masquer le flux réel.
+- « Framework récent = reconstruction rentable » : migration et régression peuvent dépasser les bénéfices.
+- « Les tests passent = l'UX fonctionne » : un parcours complet peut manquer de couverture.
+- « L'IA veut dix documents supplémentaires » : leur maintenance peut coûter plus que leur usage.
+
+### 6.3 Le cas Patrimoine : enseignements à conserver
+
+Un audit de l'application Next.js/SQLite de référence a fait ressortir une stack globalement cohérente mais des difficultés localisées : dépendances vulnérables, 28 appels à une routine de migration depuis des lectures, gros composants orchestrateurs, import Trade Republic complexe et maintenu pour des raisons fonctionnelles, risques de routes POST locales, trous de tests API/migrations et documentation périmée. Les parcours Portefeuille et Projections ont été réorganisés conceptuellement en **essentiel + avancé**, sans suppression de calculs. Le bon verdict dans ce cas était **REFACTOR**, pas **REBUILD**.
+
+**Leçon transférable :** une architecture globalement saine peut devenir difficile à maintenir par accumulation locale ; mieux vaut retirer la complexité réelle plutôt que réécrire la stack.
+
+---
+
+## 6.4 Actualisation RESCUE — preuves et priorités
+
+**RETENU (v0.2).** Chaque constat d'audit doit séparer : **preuve observée**, **risque plausible**, **impact métier**, **recommandation**, **conditions de correction**, **incertitude** et **moyen de contrôler la correction**. Une conclusion peut être « pas assez de preuves pour supprimer ceci ». L'audit **ne confond jamais code volumineux et code inutile**, ni test vert et absence de bug.
+
+### Format minimal d'une fiche de constat
+
+| Champ | Exemple |
+|---|---|
+| Constat | Une migration de base est déclenchée à chaque requête de lecture |
+| Preuve | Fonctions/chemins et appels vérifiés dans le dépôt, commandes exécutées |
+| Impact | latence, contention ou risque d'échec selon l'implémentation réelle |
+| Incertitude | faut-il mesurer la fréquence et les transactions avant de conclure ? |
+| Correction proposée | migration explicite, versionnée, effectuée à l'initialisation/déploiement |
+| Sécurité du changement | sauvegarde, migration réversible si possible, tests sur copie |
+| Critère d'acceptation | lectures sans appel de migration, données intactes, démarrage vérifié |
+
+### Séquence pratique d'audit, sans modification destructive
+
+1. **Préserver le travail** : vérifier les changements non commités, l'état des branches, les secrets et l'emplacement des sauvegardes. Ne pas forcer de reset Git.
+2. **Comprendre le produit** : quelles fonctions comptent, quelles données ne peuvent être perdues, quels utilisateurs et intégrations ?
+3. **Relever les contrôles disponibles** : `lint`, typage, build, tests, sécurité des dépendances, sauvegarde/restauration.
+4. **Établir la carte réelle** : routes/endpoints, modules, fichiers centraux, DB, bibliothèques, chemins de déploiement ; distinguer ce qui est inspecté de ce qui est supposé.
+5. **Examiner les zones à risque** : accès et permissions, validation à la frontière, migrations, transactions, import/export, jobs planifiés, appels externes.
+6. **Chercher les anomalies fonctionnelles** : comportements redondants, calculs sans test, données incohérentes, tests ne reproduisant pas l'usage.
+7. **Proposer des corrections limitées** : classées par risque et valeur, avec verdict KEEP / REFACTOR / PARTIAL REBUILD / REBUILD.
+8. **Faire valider la direction** avant toute transformation de données, suppression de fonctionnalité ou reconstruction.
+
+### Règle pour les modèles capables de relire le code mais non l'usage
+
+Les modèles peuvent produire une explication plausible d'une application dont ils n'ont jamais testé le parcours réel. Le diagnostic doit signaler si une conclusion vient de la lecture du code, d'une reproduction locale, d'un test automatisé ou d'un contrôle utilisateur. Le retour d'Anthropic sur le harness long [N18] montre précisément des applications convaincantes en apparence dont des interactions fondamentales ne fonctionnaient pas.
+
+## 6.5 Risque de reproduction de défauts par les agents
+
+L'étude *Coding Agents Propagate Vulnerabilities in Code Bases* [N09], publiée le 8 novembre 2026, constate que le contexte de code vulnérable peut pousser l'agent à produire des vulnérabilités analogues. Dans son sous-ensemble C/C++ mémoire-sûre, l'écart moyen entre contextes sûrs et vulnérables atteint **35,4 points**, un chiffre **non transposable** aux applications Next.js ou Python sans étude complémentaire.
+
+**Ajout à RESCUE :** repérer les patterns existants qui ne doivent **pas** devenir des modèles de génération (routes sans contrôle d'accès, désérialisation trop permissive, transactions absentes, secrets en dur, bypass de validation). Les corriger à la source quand c'est pertinent, et faire appliquer des tests/linters pour prévenir leur réintroduction. Ne pas compter exclusivement sur une phrase « fais attention à la sécurité ».
+
+## 6.6 REBUILD : l'exception doit rester étayée
+
+Le coût d'une réécriture inclut les fonctionnalités invisibles, cas limites, migrations de données, processus métier, intégrations, déploiement, pertes de connaissances et risque de nouvelles failles. Un nouveau framework ne supprime pas ces coûts.
+
+**Motifs envisageables** : architecture réellement incompatible avec une contrainte confirmée ; socle abandonné et non maintenable ; coût/risque d'une réparation localisée manifestement supérieur ; système sans chemins de migration raisonnables. **Contre-motifs** : gros fichier, code « laid », version non récente ou désir de changer de technologie.
+
+Quand la preuve est insuffisante, proposer un **spike réversible ciblé** uniquement si le commanditaire accepte une expérimentation locale ; notre référentiel ne prescrit pas de benchmark maison pour construire ses conclusions générales.
+
+## 6.7 Qualité des tests dans un projet RESCUE
+
+Trois travaux de 2026 justifient cette rubrique :
+
+- *All Smoke, No Alarm* [N07] : 86 156 patchs de fichiers de tests provenant de 33 596 PR d'agents ; **80,2 %** ont des signaux syntaxiques d'« oracle » (affirmations vérifiables) faibles ou absents. Ce n'est **pas** le taux de tests incorrects.
+- *Test Coverage Analysis of Agentic Pull Requests* [N08] : sur les échantillons étudiés, les tests existants couvrent **61,5 % des lignes modifiées exécutables en Java** et **27 % en Python** ; la couverture ne prouve pas qu'un test détecte les mauvaises valeurs.
+- *SWE-Journey* [N06] : l'expression du besoin et l'interaction utilisateur influent fortement sur la réussite dans ce protocole.
+
+**Conséquence opérationnelle** : pendant RESCUE, prioriser les tests des comportements critiques et de l'intégrité des données, vérifier les assertions, puis contrôler les cas limites. Les outils de mutation testing et la revue indépendante sont **options avancées**, pas exigences universelles.
+
+---
+
+
+# Partie IV — Architecture et agents
+
+## 7. Architectures à documenter
+
+| Architecture | Atout possible | Limite / contexte |
+|---|---|---|
+| Monolithe simple | peu d'infrastructure, découverte facile | risques de couplage en grandissant |
