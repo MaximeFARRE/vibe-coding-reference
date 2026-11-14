@@ -2,6 +2,7 @@ import argparse
 import sys
 from pathlib import Path
 
+from .feedback import DECISIONS, record_feedback
 from .rescue import audit, write_reports
 
 
@@ -11,7 +12,19 @@ def main(argv=None):
     rescue = sub.add_parser("rescue", help="Analyser un dossier sans le modifier")
     rescue.add_argument("--repo", required=True, help="Dossier à analyser")
     rescue.add_argument("--out", required=True, help="Nouveau dossier de rapports, extérieur au projet")
+    feedback = sub.add_parser("feedback", help="Enregistrer une décision dans le dossier du rapport")
+    feedback.add_argument("--report", required=True, help="Dossier contenant run.json")
+    feedback.add_argument("--finding", required=True, help="Identifiant du constat")
+    feedback.add_argument("--decision", required=True, choices=sorted(DECISIONS))
     args = parser.parse_args(argv)
+    if args.command == 'feedback':
+        try:
+            path = record_feedback(args.report, args.finding, args.decision)
+            print(f"Décision enregistrée : {path}")
+            return 0
+        except (OSError, ValueError) as exc:
+            print(f"Erreur : {exc}", file=sys.stderr)
+            return 2
     if args.command is None:
         print("Vibe Coding Reference — outil local\n[1] RESCUE — analyser un projet\n[0] Quitter\nSTART, IMPROVE, TOKENS et SOURCES : pas encore disponibles.")
         if not sys.stdin.isatty():
