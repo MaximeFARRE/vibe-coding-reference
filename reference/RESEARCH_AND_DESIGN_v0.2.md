@@ -1098,3 +1098,103 @@ vibe-coding-reference/
 ├── agent-context/
 │   ├── documentation/
 │   ├── code-navigation/
+│   ├── indexing/
+│   └── automatic-updates/
+├── skills/
+│   ├── start/
+│   ├── rescue/
+│   └── maintenance/
+├── catalog/
+│   ├── tools/
+│   ├── libraries/
+│   ├── skills/
+│   └── repositories/
+├── quality-gates/
+│   ├── testing/
+│   ├── security/
+│   ├── architecture/
+│   └── ci/
+└── configurations/
+    ├── universal/
+    ├── nextjs/
+    ├── react/
+    ├── fastapi/
+    ├── django/
+    └── python/
+```
+
+**Attention :** c'est un inventaire de domaines documentaires, pas une injonction de créer tous ces dossiers dès la V1. Un dépôt beaucoup plus compact est envisageable.
+
+---
+
+# Partie VIII bis — Playbooks et annexes pratiques réutilisables
+
+**Statut : documentation copiée et adaptée, PAS des skills originaux.** Ces modèles servent de supports de travail et de démonstrations pédagogiques. Ils ne constituent ni un nouvel agent, ni une bibliothèque de skills à installer. Toute commande doit être adaptée au projet ; ne pas laisser un agent lancer une action destructive au prétexte qu'un exemple de prompt la mentionne.
+
+## 16.1 START — fiche de besoin en langage ordinaire
+
+```markdown
+# Fonctionnalité : [nom]
+Objectif utilisateur : [ce que la personne doit pouvoir faire]
+Données utilisées : [source, format, exemples non sensibles]
+Résultat attendu : [écran, fichier, calcul, action]
+Règles métier : [conditions qui doivent rester vraies]
+Cas limites : [fichier vide, doublons, droits insuffisants, réseau absent…]
+À préserver : [fonctionnalités, format, données, sécurité]
+Hors périmètre : [ce qu'on ne construit pas maintenant]
+Critères d'acceptation :
+1. Étant donné […], lorsque […], alors […]
+2. Étant donné […], lorsque […], alors […]
+3. Une erreur de […] ne doit pas […]
+Vérifications attendues : [tests/usage réel pertinents]
+```
+
+**Rappel** : la fiche peut tenir en dix lignes pour un petit bug. Ne pas créer un dossier de 20 documents pour changer un bouton.
+
+## 16.2 Exemple de `AGENTS.md` minimal (à adapter, pas à imposer)
+
+```markdown
+# Travail dans ce dépôt
+- Lire le README pour les commandes de démarrage et de validation.
+- Ne lire les documents détaillés que lorsqu'ils concernent la tâche :
+  - docs/architecture.md : frontières de modules et changements transversaux
+  - docs/data.md : schéma, import/export, migrations et sauvegardes
+  - docs/domain.md : règles métier et décisions non évidentes
+- Avant une modification de données, vérifier la sauvegarde et la procédure de restauration.
+- Ne pas supprimer une fonctionnalité ni modifier une migration historique sans justification et validation.
+- Vérifier les tests ciblés, puis les contrôles plus larges selon le risque.
+- Dans le compte rendu final, distinguer exécuté, non exécuté et à vérifier.
+```
+
+Ne pas ajouter ces chemins s'ils n'existent pas. Remplacer par les vrais noms de scripts et de répertoires, et retirer toute règle déjà triviale pour l'agent [N03, N20].
+
+## 16.3 Prompt START — avant de coder
+
+> Analyse mon besoin et le dépôt existant, puis propose le **minimum** de décisions techniques nécessaires. Commence par les fonctionnalités et les données à protéger. Si un choix technique a un impact important, donne les alternatives et ta recommandation conditionnelle en langage simple. N'ajoute aucun serveur, outil, package, skill ou couche sans besoin identifié. Définis les critères d'acceptation ; ensuite seulement, propose les modifications de code et les contrôles associés.
+
+## 16.4 Prompt RESCUE — audit lecture seule
+
+> Audite ce dépôt **sans modifier les fichiers et sans opération destructive**. Identifie les fonctionnalités et les données critiques, vérifie l'état Git, les scripts de contrôle, les frontières de sécurité et les migrations. Distingue constats prouvés, hypothèses et éléments non vérifiés. Ne transforme pas la taille d'un fichier en défaut automatique et ne propose aucune suppression de fonctionnalité sans preuve d'inutilité et validation métier. Pour chaque point important : emplacement précis, risque, impact probable, solution(s) compatibles avec la stack, contrôles de régression, incertitudes. Termine par un verdict KEEP / REFACTOR / PARTIAL REBUILD / REBUILD argumenté et une **liste courte de priorités**, sans lancer les corrections.
+
+## 16.5 Prompt RESCUE — corriger progressivement après audit
+
+> À partir des constats retenus, traite **une zone cohérente à la fois**. Préserve le comportement métier et les données, crée des tests de référence lorsque nécessaires, vérifie la cause avant de modifier, puis exécute les contrôles adaptés au risque. Ne réécris pas tout le projet. Signale les dépendances, migrations ou changements d'UX exigeant mon choix. Fournis les résultats de tests réellement obtenus et les risques non résolus.
+
+## 16.6 Prompt TOKEN EFFICIENCY — audit descriptif
+
+> Examine les facteurs possibles de consommation inutile de tokens dans la **configuration actuelle** de cet agent et de ce dépôt, **sans benchmark maison ni modification automatique** : contexte chargé par défaut, instructions et skills, MCP/outils inutiles, répétition de lectures de code, commandes trop bavardes, allers-retours de tests, boucles d'échecs, absence de carte de fonctionnalités ou de handoff. Pour chaque point, donne une **preuve locale si disponible**, sinon marque « à vérifier ». Propose seulement les changements simples qui préservent la qualité des résultats. Ne chiffre aucune économie sans publication pertinente et ne confonds pas tokens bruts, facture API et quota.
+
+## 16.7 Compte-rendu de tâche vérifiable
+
+```markdown
+# Livraison : [tâche]
+Comportement attendu : [résumé]
+Fichiers modifiés : [liste]
+Vérifications exécutées :
+- [commande] — [succès/échec, date facultative]
+- [parcours d'utilisation] — [résultat ou non réalisé]
+Tests non exécutés : [avec raison]
+Données / migrations / permissions touchées : [oui/non, détail]
+Limites restantes : [faits et incertitudes]
+Prochaine étape éventuelle : [courte]
+```
