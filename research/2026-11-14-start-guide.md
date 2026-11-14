@@ -2,7 +2,7 @@
 
 - Date : 2026-11-14 ; statut : décidé pour le lot 3.
 - Question : transformer une idée en documents exploitables sans nouvel agent ni installation.
-- Sources : [backlog lot 3](../plans/03_BACKLOG_ET_LIVRAISON.md), [playbook START](../docs/06_PLAYBOOKS_ET_AUDITS.md), [questionnaire](../src/vcr/start_questions.py), [options](../src/vcr/start_options.py), [tests](../tests/test_start.py) et [cas de stack](../tests/test_start_options.py).
+- Sources : [backlog lot 3](https://github.com/MaximeFARRE/vibe-coding-reference/blob/c8d94cb14c27270f430277034d4b280431001d3f/plans/03_BACKLOG_ET_LIVRAISON.md), [playbook START](https://github.com/MaximeFARRE/vibe-coding-reference/blob/c8d94cb14c27270f430277034d4b280431001d3f/docs/06_PLAYBOOKS_ET_AUDITS.md), [questionnaire](../src/vcr/start_questions.py), [options](../src/vcr/start_options.py), [tests](../tests/test_start.py) et [cas de stack](../tests/test_start_options.py).
 
 ## Résultats et limites
 

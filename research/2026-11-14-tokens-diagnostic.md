@@ -2,7 +2,7 @@
 
 - Date : 2026-11-14 ; statut : décidé pour le lot 5.
 - Question : rendre les leviers de contexte compréhensibles sans inventer de quota, coût ou gain.
-- Sources : [backlog lot 5](../plans/03_BACKLOG_ET_LIVRAISON.md), [playbook TOKENS](../docs/06_PLAYBOOKS_ET_AUDITS.md), [format d'import](../docs/TOKEN_TRACE_FORMAT.md), [calculs](../src/vcr/tokens_analysis.py), [tests](../tests/test_tokens.py) et [validation](../tests/test_tokens_trace.py).
+- Sources : [backlog lot 5](https://github.com/MaximeFARRE/vibe-coding-reference/blob/c8d94cb14c27270f430277034d4b280431001d3f/plans/03_BACKLOG_ET_LIVRAISON.md), [playbook TOKENS](https://github.com/MaximeFARRE/vibe-coding-reference/blob/c8d94cb14c27270f430277034d4b280431001d3f/docs/06_PLAYBOOKS_ET_AUDITS.md), [format d'import](../docs/TOKEN_TRACE_FORMAT.md), [calculs](../src/vcr/tokens_analysis.py), [tests](../tests/test_tokens.py) et [validation](../tests/test_tokens_trace.py).
 
 ## Résultats et limites
 
