@@ -1,6 +1,6 @@
 """Calculs bornés sur des mesures déclarées, sans estimation de quota."""
 from collections import defaultdict
-from decimal import Decimal
+from decimal import Decimal, localcontext
 
 from .tokens_trace import METRICS
 
@@ -22,7 +22,9 @@ def cost_measure(records):
     costs = [r['cost'] for r in records]
     if len({c['currency'] for c in costs}) != 1 or len({c['kind'] for c in costs}) != 1:
         return unavailable('Devises ou natures de coûts mélangées ; aucun total calculé.')
-    total = sum((Decimal(c['amount']) for c in costs), Decimal(0))
+    with localcontext() as context:
+        context.prec = 50
+        total = sum((Decimal(c['amount']) for c in costs), Decimal(0))
     return {'status': 'measured' if costs[0]['kind'] == 'actual' else 'estimated', 'value': str(total), 'currency': costs[0]['currency'], 'reason': 'Montants déclarés par l’import, non vérifiés sur une facture ; aucun tarif externe appliqué.', 'references': [{'record': i, 'date': c['date']} for i, c in enumerate(costs, 1)][:10]}
 
 

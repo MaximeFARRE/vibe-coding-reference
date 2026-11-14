@@ -54,6 +54,8 @@ def validate_cost(cost):
         raise ValueError('Montant invalide.')
     if amount < 0 or amount > 10**15:
         raise ValueError('Montant hors limites.')
+    if isinstance(amount, Decimal) and amount.as_tuple().exponent < -18:
+        raise ValueError('Précision du montant trop élevée (18 décimales maximum).')
     if not isinstance(cost['currency'], str) or not re.fullmatch(r'[A-Z]{3}', cost['currency']):
         raise ValueError('Devise invalide : code à trois lettres attendu.')
     if cost['kind'] not in ('actual', 'estimated') or not isinstance(cost['provider'], str) or not 1 <= len(cost['provider']) <= 256:
