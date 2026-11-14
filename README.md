@@ -20,7 +20,31 @@ python3 -m vcr start --interactive --out "/chemin/vers/nouveau-cadrage"
 python3 -m vcr rescue --repo "/chemin/du/projet" --out "/chemin/vers/nouveau-rapport"
 ```
 
-Sous Windows PowerShell, remplacer la première ligne par `$env:PYTHONPATH = "$PWD/src"` et utiliser `python` si nécessaire. Il est aussi possible d'installer le paquet localement avec `python -m pip install --no-build-isolation -e .` si `pip` et les outils de construction sont déjà disponibles ; cette installation n'a pas été vérifiée dans cette session. Aucun téléchargement n'est nécessaire pour l'utilisation avec `PYTHONPATH`.
+Sous Windows PowerShell, remplacer la première ligne par `$env:PYTHONPATH = "$PWD/src"` et utiliser `python` si nécessaire ; Windows n'a pas encore été vérifié. Aucun téléchargement n'est nécessaire pour l'utilisation avec `PYTHONPATH`.
+
+### Essayer sur un projet fictif
+
+Sur macOS ou Linux, après l'`export PYTHONPATH` ci-dessus :
+
+```sh
+VCR_DEMO_DIR="$(mktemp -d)"
+mkdir "$VCR_DEMO_DIR/projet"
+printf '{"dependencies":{"next":"fixture"}}\n' > "$VCR_DEMO_DIR/projet/package.json"
+python3 -m vcr rescue --repo "$VCR_DEMO_DIR/projet" --out "$VCR_DEMO_DIR/rapport-1"
+python3 -m vcr rescue --repo "$VCR_DEMO_DIR/projet" --out "$VCR_DEMO_DIR/rapport-2"
+python3 -m vcr improve --project "$VCR_DEMO_DIR/projet" --from "$VCR_DEMO_DIR/rapport-1/run.json" --from "$VCR_DEMO_DIR/rapport-2/run.json" --out "$VCR_DEMO_DIR/ameliorations"
+python3 -m vcr tokens
+python3 -m vcr sources --topic tokens
+printf 'Rapports locaux : %s\n' "$VCR_DEMO_DIR"
+```
+
+Ouvrir `rapport-1/report.md` puis `ameliorations/report.md` dans le dossier affiché. Le projet et les rapports sont fictifs ; le dossier temporaire reste disponible jusqu'à sa suppression par l'utilisateur. Pour essayer START, lancer `python3 -m vcr start --interactive --out "$VCR_DEMO_DIR/cadrage"` et répondre avec des données fictives.
+
+### Installer ou retirer le paquet
+
+L'utilisation sans installation ci-dessus est la plus courte. Pour installer dans un environnement virtuel dédié sur macOS/Linux : `python3 -m venv .venv`, puis `. .venv/bin/activate` et `python -m pip install .`. La préparation du paquet peut télécharger les outils de construction Python ; installation et désinstallation ont été vérifiées dans un environnement temporaire sous macOS/Python 3.12. L'installation editable et Windows restent non vérifiés. Une fois installé, `vcr --help` fonctionne depuis l'environnement activé.
+
+Pour retirer une installation, activer le même environnement puis exécuter `python -m pip uninstall vibe-coding-reference`. Supprimer éventuellement l'environnement virtuel uniquement s'il est dédié à VCR ; les rapports créés ailleurs sont à supprimer séparément si souhaité. Sans installation, supprimer le dossier VCR et ses rapports séparés suffit.
 
 ## Cadrer une idée avec START
 
@@ -36,7 +60,7 @@ Les réponses déjà enregistrées, y compris « à préciser », ne sont pas re
 
 ## Analyser un projet avec RESCUE
 
-Le dossier `--out` doit être nouveau, extérieur au projet, et ne pas contenir le projet. Ouvrir `report.md` ; `run.json` contient les mêmes constats structurés et `ASK_CODEX_TO_REVIEW.md` un prompt facultatif. Pour supprimer l'outil utilisé sans installation, supprimer son dossier et les rapports créés séparément. Si le paquet a été installé, utiliser aussi `python -m pip uninstall vibe-coding-reference`.
+Le dossier `--out` doit être nouveau, extérieur au projet, et ne pas contenir le projet. Ouvrir `report.md` ; `run.json` contient les mêmes constats structurés et `ASK_CODEX_TO_REVIEW.md` un prompt facultatif.
 
 Chaque constat présente ses preuves, son niveau de confiance, deux options et un ordre de revue à copier. Pour enregistrer une décision, utiliser l'identifiant affiché dans le rapport :
 
@@ -94,6 +118,8 @@ python3 -m vcr sources
 ```
 
 Le filtre correspond à un thème exact ; un thème inconnu affiche la liste des thèmes disponibles. Les fiches séparent le niveau d'adoption A/B/C, l'état des preuves et celui des liens. Les liens officiels, plusieurs licences et les métadonnées d'activité GitHub ont été consultés le 14 novembre 2026 ; cela ne prouve ni efficacité ni sécurité, et les versions, compatibilités et retraits restent à vérifier avant usage. Le statut `unverified` ne constitue pas une recommandation. VCR lui-même n'ouvre pas les liens et n'installe rien.
+
+La [politique des sources](docs/SOURCE_POLICY.md) précise comment conserver les versions, preuves et limites. Pour un problème de sécurité, consulter la [politique de signalement](SECURITY.md) avant toute publication.
 
 ## Ce qui est examiné
 
