@@ -23,11 +23,21 @@ Sous Windows PowerShell, remplacer la première ligne par `$env:PYTHONPATH = "$P
 
 Le dossier `--out` doit être nouveau, extérieur au projet, et ne pas contenir le projet. Ouvrir `report.md` ; `run.json` contient les mêmes constats structurés et `ASK_CODEX_TO_REVIEW.md` un prompt facultatif. Pour supprimer l'outil utilisé sans installation, supprimer son dossier et les rapports créés séparément. Si le paquet a été installé, utiliser aussi `python -m pip uninstall vibe-coding-reference`.
 
+Chaque constat présente ses preuves, son niveau de confiance, deux options et un ordre de revue à copier. Pour enregistrer une décision, utiliser l'identifiant affiché dans le rapport :
+
+```sh
+python3 -m vcr feedback --report "/chemin/vers/nouveau-rapport" --finding tests-unknown --decision deferred
+```
+
+Les décisions possibles sont `accepted` (accepté), `rejected` (rejeté), `false_positive` (faux positif) et `deferred` (reporté). Le dernier choix par constat est stocké dans `feedback.json` à côté du rapport, sans modifier le projet audité. Cette décision ne lance aucune correction. Les liens vers des fichiers ordinaires sont locaux ; les fichiers sensibles sont affichés sans lien cliquable.
+
 ## Ce qui est examiné
 
 Inventaire limité, filtres de dossiers, règles Git ignore lorsque Git fonctionne, statut et HEAD Git, manifestes courants, indices de scripts test/lint/build, noms de documentation d'architecture et fichiers `.env` non exclus. Les commandes et valeurs de manifestes ne sont pas recopiées. Les fichiers `.env` ne sont jamais lus ; leur présence n'établit pas qu'un secret existe. Les fichiers ignorés ne sont pas inspectés. Les dépendances sont comptées partiellement, sans analyse de vulnérabilités.
 
 Un constat `confirmed` correspond à un fait observé ; `suspected` demande vérification. Les contrôles `not_checked` n'ont pas été établis ; `not_applicable` signifie non applicable. L'absence d'alerte ne prouve ni sécurité ni bon fonctionnement. Le verdict reste inconclusif. L'analyse ne couvre ni le métier ni l'exécution. Les noms et chemins du dossier ciblé, le hash Git et les observations figurent dans les rapports : vérifiez-les avant partage. Ne copiez pas de données sensibles dans un agent sans les examiner.
+
+Les champs et énumérations produits sont vérifiés avant rendu ; une preuve sans localisation valide entraîne un avertissement et une confiance diminuée. Cette validation interne ne remplace pas un validateur JSON Schema complet. Un tri automatique par priorité et un rapport HTML ne sont pas fournis.
 
 L'inventaire exclut les liens symboliques et les fichiers de plus de 1 Mio ; il est limité à 10 000 fichiers. Un dépôt modifié simultanément peut changer pendant l'analyse : ne pas auditer une arborescence contrôlée activement par un tiers hostile. Les erreurs de lecture et les règles Git non disponibles sont indiquées. Les règles de fichiers ignorés ne sont pas évaluées hors Git ; plusieurs manifestes sont relevés, sans interprétation complète des monorepos.
 
