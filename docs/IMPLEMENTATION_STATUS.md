@@ -27,3 +27,9 @@ GitHub consulté en lecture seule : `main` est la branche par défaut ; `feat/in
 README bilingue d'accueil avec badges CI, Python et licence, schéma des parcours et guide français détaillé. Ajout de consignes de contribution, code de conduite, modèle de pull request et de signalement de bug, journal des changements et feuille de route. Les retours de personnes extérieures, Windows et l'installation editable restent à vérifier.
 
 Vérification locale : `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -m unittest discover -s tests -v` : 59 tests réussis sur macOS/Python 3.12.9. La [pull request #1](https://github.com/MaximeFARRE/vibe-coding-reference/pull/1) a été fusionnée après réussite de ses quatre configurations CI ; le signalement privé des vulnérabilités est activé. Prochaines étapes : première préversion, essais par des personnes extérieures et traitement des retours.
+
+## README anglais et français
+
+Le README principal est intégralement en anglais ; le guide français est conservé dans `README.fr.md` et relié dans les deux sens. Les rapports et le menu de VCR restent en français. Les documents publics de contribution, sécurité, conduite, feuille de route et changelog sont également en anglais ; les documents historiques, techniques et notes de recherche restent en français.
+
+Vérifications : `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -m unittest discover -s tests -v` : 59 tests réussis sur macOS/Python 3.12.9 ; exemple fictif RESCUE, IMPROVE, TOKENS et SOURCES exécuté ; liens locaux des deux README vérifiés et `git diff --check` sans erreur. Traduction du reste de la documentation technique et essais par des lecteurs anglophones restent à faire.
