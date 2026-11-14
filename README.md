@@ -1,10 +1,10 @@
 # Vibe Coding Reference — prototype local
 
-RESCUE inspecte passivement un dossier et produit un rapport en français, un fichier JSON et un prompt de revue. Il ne lance aucun test du projet, ne contacte aucun service et ne modifie pas le projet analysé. Python 3.11 ou supérieur est requis. Les autres modes ne sont pas encore disponibles.
+START aide à cadrer une idée et propose des options techniques conditionnelles. RESCUE inspecte passivement un dossier et produit un rapport en français, un fichier JSON et un prompt de revue. Il ne lance aucun test du projet, ne contacte aucun service et ne modifie pas le projet analysé. Python 3.11 ou supérieur est requis. IMPROVE, TOKENS et SOURCES ne sont pas encore disponibles.
 
 > **Prototype en cours de développement.** L'analyse est partielle et ne remplace ni les tests du projet ni une revue de sécurité.
 
-**English:** VCR is a local-first prototype for passive repository inspection. Its RESCUE workflow generates JSON and French Markdown reports without running project scripts or using an API. Other workflows are planned, not yet implemented.
+**English:** VCR is a local-first prototype for project scoping and passive repository inspection. START and RESCUE generate French Markdown documents locally without an API. Other workflows are planned, not yet implemented.
 
 Les recherches et décisions sont conservées dans les [notes destinées aux agents](research/README.md), avec leurs sources et limites.
 
@@ -16,10 +16,25 @@ Dans ce dossier, sur macOS ou Linux :
 export PYTHONPATH="$PWD/src"
 python3 -m vcr --help
 python3 -m vcr
+python3 -m vcr start --interactive --out "/chemin/vers/nouveau-cadrage"
 python3 -m vcr rescue --repo "/chemin/du/projet" --out "/chemin/vers/nouveau-rapport"
 ```
 
 Sous Windows PowerShell, remplacer la première ligne par `$env:PYTHONPATH = "$PWD/src"` et utiliser `python` si nécessaire. Il est aussi possible d'installer le paquet localement avec `python -m pip install --no-build-isolation -e .` si `pip` et les outils de construction sont déjà disponibles ; cette installation n'a pas été vérifiée dans cette session. Aucun téléchargement n'est nécessaire pour l'utilisation avec `PYTHONPATH`.
+
+## Cadrer une idée avec START
+
+Le questionnaire demande le besoin, une action et son résultat visible, les utilisateurs, données et contraintes. Une réponse vide indique « à préciser ». Il produit un brief, des critères à valider, des options de stack et un prompt Codex, ainsi que `answers.json` pour reprendre les réponses. Aucune infrastructure ni compte n'est créé.
+
+Pour reprendre un cadrage dans un **nouveau** dossier :
+
+```sh
+python3 -m vcr start --interactive --from "/chemin/vers/nouveau-cadrage/answers.json" --out "/chemin/vers/autre-cadrage"
+```
+
+Les réponses déjà enregistrées, y compris « à préciser », ne sont pas redemandées. Pour les changer, recommencer sans `--from`. Les documents contiennent vos réponses en clair : ne saisissez pas de secret ni de donnée personnelle et vérifiez-les avant partage. Les choix de stack et les critères restent des hypothèses à confirmer avec le propriétaire ; ils ne remplacent pas une analyse de sécurité ou de faisabilité.
+
+## Analyser un projet avec RESCUE
 
 Le dossier `--out` doit être nouveau, extérieur au projet, et ne pas contenir le projet. Ouvrir `report.md` ; `run.json` contient les mêmes constats structurés et `ASK_CODEX_TO_REVIEW.md` un prompt facultatif. Pour supprimer l'outil utilisé sans installation, supprimer son dossier et les rapports créés séparément. Si le paquet a été installé, utiliser aussi `python -m pip uninstall vibe-coding-reference`.
 
