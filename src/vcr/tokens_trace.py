@@ -50,7 +50,7 @@ def validate_cost(cost):
     if not isinstance(cost, dict) or set(cost) != COST_FIELDS:
         raise ValueError('Coût invalide : montant, devise, nature, fournisseur et date requis.')
     amount = cost['amount']
-    if isinstance(amount, bool) or not isinstance(amount, (int, Decimal)) or not amount.is_finite() if isinstance(amount, Decimal) else isinstance(amount, bool) or not isinstance(amount, int):
+    if isinstance(amount, bool) or not isinstance(amount, (int, Decimal)) or (isinstance(amount, Decimal) and not amount.is_finite()):
         raise ValueError('Montant invalide.')
     if amount < 0 or amount > 10**15:
         raise ValueError('Montant hors limites.')
