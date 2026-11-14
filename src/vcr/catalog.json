@@ -1,0 +1,97 @@
+{
+  "version": 1,
+  "review_date": "2026-11-14",
+  "review_basis": "Fiches locales docs/04_RECHERCHE_ET_SOURCES.md et docs/05_PROJETS_EXTERNES_ET_SKILLS.md ; liens consultés le 2026-11-14. L’ouverture des liens ne prouve ni efficacité ni sécurité.",
+  "entries": [
+    {
+      "id": "tokeneconomizer", "name": "TokenEconomizer", "kind": "tool", "topics": ["tokens", "cost", "hooks"],
+      "level": "B", "evidence_type": "publication fournisseur et dépôt", "evidence_status": "unverified", "maintenance_status": "verified", "maintenance_verified_at": "2026-11-14", "maintenance_source": "https://api.github.com/repos/microsoft/TokenEconomizer", "maintenance_detail": "Dépôt non archivé ; dernier push déclaré : 2026-11-12T21:48:20Z. Métadonnée GitHub, pas une garantie de support.",
+      "official_url": "https://github.com/microsoft/TokenEconomizer", "scientific_url": "https://www.microsoft.com/en-us/research/publication/tokeneconomizer-experience-driven-black-box-cost-control-for-coding-agents/", "link_status": "verified", "scientific_link_status": "verified", "link_checked_at": "2026-11-14",
+      "problem": "Étudier des contrôles de contexte et de coûts pour agents de code.",
+      "incompatibilities": "Versions d'agents et hooks à vérifier ; aucune compatibilité actuelle confirmée.", "hidden_costs": "Maintenance des hooks, stockage et coûts éventuels de modèles supplémentaires à examiner.",
+      "permissions": "Examiner accès aux traces, fichiers de configuration, processus et réseau avant tout usage.", "license": "Apache-2.0 selon https://github.com/microsoft/TokenEconomizer (consulté le 2026-11-14).", "maintainer": "Microsoft", "version": "Plages Codex 0.153.1–0.164.0 annoncées par le README consulté ; non testées par VCR.",
+      "verification": "Contrôler source, version de l'agent, dépendances et documentation ; essayer seulement dans un profil et projet jetables après accord.",
+      "rollback": "Avant installation éventuelle, sauvegarder la configuration et relever les étapes officielles de retrait ; aucune désinstallation automatique."
+    },
+    {
+      "id": "serena", "name": "Serena", "kind": "tool", "topics": ["navigation", "symbols", "mcp"],
+      "level": "B", "evidence_type": "dépôt et documentation", "evidence_status": "unverified", "maintenance_status": "verified", "maintenance_verified_at": "2026-11-14", "maintenance_source": "https://api.github.com/repos/oraios/serena", "maintenance_detail": "Dépôt non archivé ; dernier push déclaré : 2026-11-14T13:24:35Z. Métadonnée GitHub, pas une garantie de support.",
+      "official_url": "https://github.com/oraios/serena", "scientific_url": null, "link_status": "verified", "link_checked_at": "2026-11-14",
+      "problem": "Explorer une navigation de code par symboles et références.",
+      "incompatibilities": "Langages, serveurs LSP et agents pris en charge à vérifier selon version.", "hidden_costs": "Installation, indexation, mémoire et entretien des serveurs de langage.",
+      "permissions": "Examiner l'accès au code, aux fichiers de configuration, aux processus et au réseau.", "license": "GPL-3.0-or-later pour l’application ; SolidLSP sous MIT selon https://github.com/oraios/serena (consulté le 2026-11-14).", "maintainer": "oraios", "version": "Serena v2 annoncée ; version et compatibilité locales non testées.",
+      "verification": "Comparer aux recherches natives sur un besoin réel ; inspecter version, permissions et dépendances.",
+      "rollback": "Sauvegarder la configuration avant essai ; relever fichiers créés et méthode officielle de retrait."
+    },
+    {
+      "id": "aider-repomap", "name": "Aider RepoMap", "kind": "tool", "topics": ["navigation", "tokens", "context"],
+      "level": "B", "evidence_type": "documentation de l'outil", "evidence_status": "unverified", "maintenance_status": "verified", "maintenance_verified_at": "2026-11-14", "maintenance_source": "https://api.github.com/repos/Aider-AI/aider", "maintenance_detail": "Dépôt non archivé ; dernier push déclaré : 2026-05-22T14:02:20Z. Métadonnée GitHub, pas une garantie de support.",
+      "official_url": "https://aider.chat/docs/repomap.html", "scientific_url": null, "link_status": "verified", "link_checked_at": "2026-11-14",
+      "problem": "Étudier une carte compacte de symboles pour la navigation.",
+      "incompatibilities": "Réutilisation autonome et prise en charge des langages à confirmer.", "hidden_costs": "Construction et actualisation d'une carte, dépendances éventuelles.",
+      "permissions": "Vérifier lecture du dépôt, éventuels services de modèle et données transmises.", "license": "Apache-2.0 selon https://github.com/Aider-AI/aider (consulté le 2026-11-14).", "maintainer": "Aider-AI", "version": "Non vérifiée.",
+      "verification": "Examiner l'interface et la licence de la version visée avant toute intégration.",
+      "rollback": "Identifier les configurations et index créés avant tout essai ; documenter leur retrait après sauvegarde."
+    },
+    {
+      "id": "repomix", "name": "Repomix", "kind": "tool", "topics": ["context", "export", "tokens"],
+      "level": "B", "evidence_type": "documentation de l'outil", "evidence_status": "unverified", "maintenance_status": "verified", "maintenance_verified_at": "2026-11-14", "maintenance_source": "https://api.github.com/repos/yamadashy/repomix", "maintenance_detail": "Dépôt non archivé ; dernier push déclaré : 2026-11-14T10:09:44Z. Métadonnée GitHub, pas une garantie de support.",
+      "official_url": "https://repomix.com/", "scientific_url": null, "link_status": "verified", "link_checked_at": "2026-11-14",
+      "problem": "Étudier un export ponctuel de fichiers de projet pour revue.",
+      "incompatibilities": "Formats d'export, exclusions et compatibilité à vérifier sur la version choisie.", "hidden_costs": "Exports volumineux, stockage et risque de divulgation de contenu.",
+      "permissions": "Inspecter les fichiers lus et destinations des exports ; aucun envoi externe implicite.", "license": "MIT selon https://github.com/yamadashy/repomix (consulté le 2026-11-14).", "maintainer": "yamadashy", "version": "Non vérifiée.",
+      "verification": "Vérifier les exclusions et essayer uniquement sur un projet fictif sans secrets après accord.",
+      "rollback": "Repérer les fichiers d'export créés et la procédure de retrait avant tout essai."
+    },
+    {
+      "id": "import-linter", "name": "Import Linter", "kind": "tool", "topics": ["architecture", "python", "dependencies"],
+      "level": "B", "evidence_type": "documentation de l'outil", "evidence_status": "unverified", "maintenance_status": "verified", "maintenance_verified_at": "2026-11-14", "maintenance_source": "https://api.github.com/repos/import-linter/import-linter", "maintenance_detail": "Dépôt non archivé ; dernier push déclaré : 2026-11-13T12:29:16Z. Métadonnée GitHub, pas une garantie de support.",
+      "official_url": "https://import-linter.readthedocs.io/en/stable/", "scientific_url": null, "link_status": "verified", "link_checked_at": "2026-11-14",
+      "problem": "Étudier des contrats de dépendances entre modules Python.",
+      "incompatibilities": "Version Python, imports dynamiques et couverture des contrats à vérifier.", "hidden_costs": "Maintenance des contrats et interprétation des faux positifs.",
+      "permissions": "Vérifier fichiers lus, caches et commandes avant usage.", "license": "BSD-2-Clause selon https://github.com/import-linter/import-linter (consulté le 2026-11-14).", "maintainer": "import-linter", "version": "Non vérifiée.",
+      "verification": "Définir une frontière utile et vérifier la licence, la version et les limites sur une fixture.",
+      "rollback": "Documenter les dépendances et fichiers de configuration ajoutés avant toute installation."
+    },
+    {
+      "id": "dependency-cruiser", "name": "Dependency Cruiser", "kind": "tool", "topics": ["architecture", "javascript", "dependencies"],
+      "level": "B", "evidence_type": "dépôt et documentation", "evidence_status": "unverified", "maintenance_status": "verified", "maintenance_verified_at": "2026-11-14", "maintenance_source": "https://api.github.com/repos/sverweij/dependency-cruiser", "maintenance_detail": "Dépôt non archivé ; dernier push déclaré : 2026-11-12T19:27:30Z. Métadonnée GitHub, pas une garantie de support.",
+      "official_url": "https://github.com/sverweij/dependency-cruiser", "scientific_url": null, "link_status": "verified", "link_checked_at": "2026-11-14",
+      "problem": "Étudier les frontières et dépendances d'imports JS/TS.",
+      "incompatibilities": "Versions Node/TS et imports dynamiques à examiner.", "hidden_costs": "Dépendances, configuration des règles et maintenance du graphe.",
+      "permissions": "Vérifier les fichiers lus, scripts d'installation et sorties écrites.", "license": "MIT selon https://github.com/sverweij/dependency-cruiser (consulté le 2026-11-14).", "maintainer": "sverweij", "version": "Non vérifiée.",
+      "verification": "Tester sur fixture une règle correspondant à un besoin démontré, après revue de la version.",
+      "rollback": "Sauvegarder les fichiers modifiés et identifier dépendances/configuration à retirer avant essai."
+    },
+    {
+      "id": "langgraph", "name": "LangGraph", "kind": "tool", "topics": ["orchestration", "agents", "architecture"],
+      "level": "C", "evidence_type": "documentation et dépôt", "evidence_status": "unverified", "maintenance_status": "verified", "maintenance_verified_at": "2026-11-14", "maintenance_source": "https://api.github.com/repos/langchain-ai/langgraph", "maintenance_detail": "Dépôt non archivé ; dernier push déclaré : 2026-11-14T01:43:55Z. Métadonnée GitHub, pas une garantie de support.",
+      "official_url": "https://github.com/langchain-ai/langgraph", "scientific_url": null, "link_status": "verified", "link_checked_at": "2026-11-14",
+      "problem": "Étudier une orchestration avec état et reprise lorsque le besoin existe.",
+      "incompatibilities": "Versions Python, composants de persistance et intégrations à vérifier.", "hidden_costs": "Dépendances, stockage d'état, complexité opérationnelle et coûts éventuels des modèles.",
+      "permissions": "Examiner accès aux services, secrets, stockage et appels de modèles avant tout essai.", "license": "MIT selon https://github.com/langchain-ai/langgraph (consulté le 2026-11-14).", "maintainer": "LangChain", "version": "Non vérifiée.",
+      "verification": "Établir un cas réel exigeant reprise ou coordination ; évaluer dans un environnement isolé.",
+      "rollback": "Préparer la sauvegarde des états et configurations et la suppression des dépendances avant expérimentation."
+    },
+    {
+      "id": "harness2", "name": "Google Research Harness²", "kind": "tool", "topics": ["research", "agents", "harness"],
+      "level": "C", "evidence_type": "dépôt de recherche et prépublication", "evidence_status": "unverified", "maintenance_status": "verified", "maintenance_verified_at": "2026-11-14", "maintenance_source": "https://api.github.com/repos/google-research/harness2", "maintenance_detail": "Dépôt non archivé ; dernier push déclaré : 2026-11-02T02:17:27Z. Métadonnée GitHub, pas une garantie de support.",
+      "official_url": "https://github.com/google-research/harness2", "scientific_url": "https://arxiv.org/abs/2610.14224", "link_status": "verified", "scientific_link_status": "verified", "link_checked_at": "2026-11-14",
+      "problem": "Étudier la recherche sur l'amélioration de harness d'agents.",
+      "incompatibilities": "Compatibilité et configuration actuelles non vérifiées ; la documentation historique signale une possible exécution sans sandbox.", "hidden_costs": "Coûts de modèles, boucles itératives et risque de surajustement.",
+      "permissions": "Examiner exécution de commandes, réseau, accès aux fichiers et sandbox avant tout essai.", "license": "Apache-2.0 selon https://github.com/google-research/harness2 (consulté le 2026-11-14).", "maintainer": "Google Research", "version": "Non vérifiée.",
+      "verification": "Lecture seule d'abord ; toute expérimentation nécessite environnement jetable, limites explicites et accord humain.",
+      "rollback": "Prévoir un environnement jetable et un plan de retour arrière avant tout test autorisé."
+    },
+    {
+      "id": "context-engineering-anthropic", "name": "Effective context engineering for AI agents", "kind": "publication", "topics": ["tokens", "context", "agents"],
+      "level": "A", "evidence_type": "retour industriel", "evidence_status": "unverified", "maintenance_status": "unverified",
+      "official_url": "https://www.anthropic.com/research/effective-context-engineering-for-ai-agents", "scientific_url": null, "link_status": "verified", "link_checked_at": "2026-11-14",
+      "problem": "Référence sur la sélection et la gestion du contexte d'agents.",
+      "incompatibilities": "Applicabilité à une tâche et un agent donnés à examiner ; pas de comparaison universelle.", "hidden_costs": "Temps de lecture et d'adaptation ; aucune économie quantifiée inférée.",
+      "permissions": "Lecture de documentation ; aucun accès au projet nécessaire pour consulter la fiche locale.", "license": "Conditions de reproduction non vérifiées.", "maintainer": "Anthropic", "version": "Publication du 2025-09-29 ; pas de version logicielle.",
+      "verification": "Lire la source primaire, sa date et ses limites avant d'en tirer une recommandation.",
+      "rollback": "Aucune installation depuis le catalogue ; annuler séparément tout changement adopté après revue."
+    }
+  ]
+}

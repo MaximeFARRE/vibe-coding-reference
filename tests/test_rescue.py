@@ -118,6 +118,15 @@ class RescueTests(unittest.TestCase):
         self.assertEqual(next(c.status for c in run.checks if c.id == 'ignored_files'), 'not_checked')
         self.assertEqual(run.profile, ['generic'])
 
+    def test_file_limit_marks_inventory_incomplete(self):
+        (self.repo / 'one.py').write_text('pass')
+        (self.repo / 'two.py').write_text('pass')
+        with patch('vcr.rescue.MAX_FILES', 1):
+            run = audit(self.repo)
+        self.assertEqual(next(c.status for c in run.checks if c.id == 'inventory'), 'not_checked')
+        self.assertNotIn('architecture-doc', [f.id for f in run.findings])
+        self.assertTrue(any('incomplet' in item for item in run.limitations))
+
     def test_clean_project_no_findings(self):
         (self.repo / 'architecture.md').write_text('fixture')
         (self.repo / 'test_ok.py').write_text('pass')

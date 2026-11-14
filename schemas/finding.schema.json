@@ -81,6 +81,14 @@
     "summary": {
       "type": "string"
     },
+    "rule_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "cause": {
+      "type": "string",
+      "minLength": 1
+    },
     "impact": {
       "type": "string"
     },
