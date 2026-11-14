@@ -1498,3 +1498,103 @@ Serena, Aider RepoMap, Google Code Wiki, RepoAgent, Repomix, Feature-Sliced Desi
 
 ## Condition de changement du périmètre
 
+Si Codex découvre une option radicalement plus simple ou beaucoup plus puissante, il doit :
+
+1. résumer le problème concret visé ;
+2. citer la preuve ou dire qu'il s'agit d'une hypothèse ;
+3. comparer coût de mise en place et maintenance avec la solution minimale ;
+4. expliquer implications de sécurité et compatibilité ;
+5. proposer une bascule réversible et la soumettre à validation humaine.
+
+L'innovation complexe est autorisée, mais jamais **cachée dans le backend simplement parce qu'elle est techniquement intéressante**.
+
+
+
+---
+
+## Annexe de schéma `finding.schema.json`
+
+```json
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "VCR Finding",
+  "type": "object",
+  "required": [
+    "id",
+    "title",
+    "category",
+    "severity",
+    "status",
+    "confidence",
+    "origin",
+    "summary",
+    "evidence",
+    "recommendations"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "security",
+        "data",
+        "architecture",
+        "code",
+        "testing",
+        "performance",
+        "operations",
+        "documentation",
+        "context",
+        "tokens",
+        "product",
+        "dependencies",
+        "other"
+      ]
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "P0",
+        "P1",
+        "P2",
+        "P3",
+        "info"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "confirmed",
+        "suspected",
+        "not_checked",
+        "not_applicable"
+      ]
+    },
+    "confidence": {
+      "type": "string",
+      "enum": [
+        "high",
+        "medium",
+        "low",
+        "unknown"
+      ]
+    },
+    "origin": {
+      "type": "string",
+      "enum": [
+        "static_check",
+        "command",
+        "agent_review",
+        "user_provided"
+      ]
+    },
+    "summary": {
+      "type": "string"
+    },
