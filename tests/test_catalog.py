@@ -49,7 +49,7 @@ class CatalogTests(unittest.TestCase):
                     self.assertTrue(item[field])
                 self.assertIn(item['level'], ('A', 'B', 'C'))
                 self.assertEqual(item['evidence_status'], 'unverified')
-                self.assertEqual(item['maintenance_status'], 'unverified')
+                self.assertEqual(item['maintenance_status'], 'verified' if item['kind'] == 'tool' else 'unverified')
                 self.assertEqual(item['link_status'], 'verified')
                 self.assertFalse(item['recommended_by_default'])
                 self.assertTrue(valid_url(item['official_url']))
@@ -59,7 +59,7 @@ class CatalogTests(unittest.TestCase):
         item.update(evidence_status='verified', maintenance_status='verified', maintainer='fixture', version='1', license='fixture')
         data = {'version': 1, 'review_date': '2026-11-14', 'entries': [item]}
         self.assertEqual(normalize_catalog(data)['entries'][0]['evidence_status'], 'unverified')
-        item.update(evidence_verified_at='2026-11-14', verification_source='https://example.com/evidence', maintenance_verified_at='2026-11-14', maintenance_source='https://example.com/maintenance')
+        item.update(evidence_verified_at='2026-11-14', verification_source='https://example.com/evidence', maintenance_verified_at='2026-11-14', maintenance_source='https://example.com/maintenance', maintenance_detail='Métadonnée de fixture')
         result = normalize_catalog(data)['entries'][0]
         self.assertEqual(result['evidence_status'], 'verified')
         self.assertEqual(result['maintenance_status'], 'verified')
