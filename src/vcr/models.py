@@ -54,3 +54,19 @@ class Run:
     checks: list[CheckResult]
     limitations: list[str]
     findings: list[Finding]
+
+
+@dataclass
+class ImprovementProposal:
+    id: str
+    scope: str
+    title: str
+    sources: list[dict]
+    suspected_cause: str
+    solution_a: str
+    solution_b: str
+    risk: str
+    maintenance: str
+    approval_status: str
+    updated_at: str
+    reevaluate_when: str
