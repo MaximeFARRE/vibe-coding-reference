@@ -298,3 +298,103 @@ Le retour *Harness Engineering* décrit un dépôt produit par Codex, une docume
 |---|---|
 | Fichier déplacé ou renommé | réparation des références/index automatiques |
 | Fonction/signature modifiée | réindexation déterministe de la zone concernée |
+| API/route ajoutée | inventaire des routes mis à jour |
+| Module découpé | révision ciblée de la carte des fonctionnalités |
+| Règle métier changée | revue humaine/agent de la décision documentée |
+| Pull request | contrôle de dérive docs-code, proposition révisable |
+| Échéance périodique | contrôle de cohérence, non réécriture intégrale |
+
+Indexation des symboles et imports : **outil déterministe** de préférence. Explication du sens des changements : **IA ciblée** si nécessaire. Les modifications proposées par agent devraient passer par une PR relisible, à l'image de [S31].
+
+### 8.3 Outils de contexte à suivre
+
+- **Serena** [S26] : navigation à base de symboles et références.
+- **Aider Repository Map** [S27] : carte compacte et sélection d'éléments importants.
+- **Codebase Memory MCP** [S28] : graphe/index local persistant ; claims de performance à ne pas reprendre sans étude indépendante.
+- **Google Code Wiki** [S29] : référence de documentation structurée mise à jour avec les dépôts.
+- **RepoAgent** [S30] : génération/mise à jour de documentation, fonctionnement et portée à approfondir.
+- **GitHub Agentic Workflows Docs Updater** [S31] : proposition de PR documentaire.
+- **Repomix** [S32] : export compact ponctuel, différent d'un système de connaissance vivant.
+
+### 8.4 Question de recherche ouverte
+
+Quelles publications établissent, à périmètre comparable, l'effet des **cartes de code**, de la **recherche symbolique**, du **chargement progressif** et des **instructions de dépôt** sur la réussite d'un agent ? [S04, S09] sont des points d'entrée ; elles ne règlent pas toutes les comparaisons.
+
+---
+
+# Partie VI — Outillage et Quality Gates
+
+## 9. Politique générale
+
+**RETENU :** une règle importante doit autant que possible être contrôlée par un outil reproductible. Une consigne vague dans `AGENTS.md` ne suffit pas lorsqu'un linter ou un test peut vérifier le comportement.
+
+### 9.1 Catalogue initial d'outils (non prescriptif)
+
+| Besoin | JavaScript / TypeScript | Python / transversal |
+|---|---|---|
+| Paquets / verrouillage | npm ou pnpm | uv |
+| Format et lint | Biome ou ESLint/Prettier | Ruff |
+| Typage | TypeScript strict | Pyright |
+| Tests | Vitest | pytest |
+| Tests navigateur | Playwright si parcours critiques | Playwright si application web |
+| Code inutilisé | Knip | Vulture / Deptry selon besoin |
+| Audit dépendances | npm audit / OSV-Scanner | pip-audit / OSV-Scanner |
+| Secrets | Gitleaks | Gitleaks |
+| Contrats modules | Dependency Cruiser / Boundaries | Import Linter |
+| CI | GitHub Actions | GitHub Actions |
+| Dépendances à jour | Dependabot / Renovate | Dependabot / Renovate |
+
+### 9.2 Politique des contrôles
+
+- Format, lint, typage, tests et build : peuvent être bloquants lorsqu'ils sont applicables et stables.
+- Sécurité : bloquer en cas de secret exposé ou risque grave confirmé ; examiner les exceptions.
+- Complexité cognitive, duplication et gros fichiers : **signalement contextualisé**, pas suppression mécanique.
+- Contrôle du schéma et sauvegarde : renforcés pour applications manipulant des données précieuses.
+- End-to-end : commencer par les parcours à risque réel ; éviter de multiplier les tests fragiles pour une page statique.
+- Contrôles d'architecture : uniquement pour des frontières choisies et documentées.
+
+Les seuils de 400 lignes/fichier et 80 lignes/fonction, évoqués au cours de la recherche, sont **des exemples pédagogiques, non des normes validées**. Aucun seuil fixe n'est adopté.
+
+## 10. Skills et agents
+
+### Bibliothèque fonctionnelle envisagée
+
+- START : `choose-stack`, `initialize-project`, `implement-feature`, `fix-bug`, `review-code`, `deploy`.
+- RESCUE : `audit-existing-project`, `audit-architecture`, `audit-dependencies`, `audit-security`, `audit-tests`, `audit-maintainability`, `audit-performance`, `simplify-project`, `recovery-plan`, `safe-refactoring`, `evaluate-rebuild`.
+- CONTEXTE : `map-codebase`, `find-relevant-code`, `update-documentation`, `audit-documentation`.
+
+**Ces noms décrivent des capacités recherchées, pas des skills déjà créés.** Réutiliser d'abord les skills existants après audit de qualité, licence et compatibilité. Le format [Agent Skills](https://agentskills.io/specification) est une base d'interopérabilité, non la preuve que tous les agents interprètent un skill exactement de la même manière [S40].
+
+### Pratiques retenues
+
+- Des descriptions très courtes et précises pour déclencher les skills [S02, S17].
+- Chargement des références détaillées seulement à la demande.
+- Pas de double installation du même skill ou de douze compétences quasi identiques.
+- Scripts reproductibles pour opérations déterministes.
+- Vérifier les effets et droits des scripts tiers avant installation.
+- Révision périodique des skills anciens, particulièrement après un changement de modèle [S02, S05].
+- Pour tâches longues/risquées : contrat de résultat et revue indépendante, sans imposer par défaut un dispositif multi-agents coûteux [S05, S07].
+
+---
+
+# Partie VII — Doctrine de recherche
+
+## 11. Politique de preuve
+
+**Décision explicite : pas de benchmarks maison.** La bibliothèque s'appuie sur la littérature existante et les sources techniques originales. Si une question n'a pas de preuve, l'indiquer plutôt que créer un classement intuitif.
+
+### Hiérarchie pratique
+
+- **A — Étude empirique** : protocole, groupe(s), conditions, résultats et limites disponibles. L'effet observé n'est valable que pour ce périmètre.
+- **B — Retour industriel détaillé** : OpenAI, Anthropic, Google, etc. Contexte concret, apprentissages précieux mais possible biais de sélection.
+- **C — Documentation/spécification officielle** : description de comportements et d'interfaces, non preuve de productivité.
+- **D — Dépôt/pratique personnelle/opinion** : excellente source d'idées ; conclusions à confirmer indépendamment.
+
+### Sources prioritaires
+
+OpenAI et les équipes Codex ; Anthropic et Claude Code ; DeepSeek ; Google DeepMind et Google ; publications scientifiques sur agents de code, génie logiciel et interfaces ; organismes indépendants comme METR ; auteurs identifiés (Andrej Karpathy, Matt Pocock, Peter Steinberger) pour leurs pratiques, **pas comme garantie scientifique**.
+
+### Règles d'édition pour une recommandation
+
+Chaque fiche devra préciser : (1) problème visé ; (2) contexte applicable ; (3) recommandation ; (4) contre-exemples ; (5) sources primaires ; (6) type de preuve ; (7) limites ; (8) date de dernière revue ; (9) décision retenue/à tester/écartée ; (10) changement depuis version précédente.
+
