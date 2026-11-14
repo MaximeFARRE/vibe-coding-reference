@@ -898,3 +898,103 @@ OpenAI et les équipes Codex ; Anthropic et Claude Code ; DeepSeek ; Google Deep
 Chaque fiche devra préciser : (1) problème visé ; (2) contexte applicable ; (3) recommandation ; (4) contre-exemples ; (5) sources primaires ; (6) type de preuve ; (7) limites ; (8) date de dernière revue ; (9) décision retenue/à tester/écartée ; (10) changement depuis version précédente.
 
 ### Précautions essentielles
+
+- Un papier de performance de modèle ne prouve pas une supériorité de framework.
+- Un repo très populaire n'est pas une preuve de gain en tokens.
+- Un retour de production d'OpenAI ne s'applique pas automatiquement à un petit projet individuel.
+- Une étude sur les modèles 2024–2025 peut perdre de sa pertinence avec les modèles 2026.
+- Une publication d'éditeur peut avoir un biais commercial : comparer avec des résultats indépendants.
+- On doit laisser les conclusions ouvertes si les preuves sont insuffisantes.
+
+## 12. Résultats publiés déjà utiles, sans extrapolation excessive
+
+- OpenAI montre l'intérêt d'un **environnement agent lisible**, des garde-fous et d'une documentation utilisée comme source de référence dans un projet Codex [S01]. **Nature B**.
+- OpenAI recommande de réduire les descriptions de skills inutiles et de ne charger les documents que lorsque la tâche le demande [S02]. **Nature B**.
+- Anthropic décrit le contexte comme une ressource finie et recommande un contenu à forte valeur informationnelle [S04]. **Nature B**.
+- Anthropic rapporte que la revue séparée, l'évaluation active et les artefacts de transmission peuvent aider des tâches de génération longues, avec un coût et une complexité supplémentaires [S05]. **Nature B**.
+- SWE-agent étudie expérimentalement l'influence de l'interface agent-ordinateur pour manipuler un dépôt et exécuter les outils [S09]. **Nature A**.
+- METR trouve que, dans ses conditions expérimentales du début 2025, les développeurs expérimentés ont mis en moyenne **19 % de temps en plus** avec IA, malgré une perception inverse ; le résultat n'est pas transposable tel quel aux modèles actuels [S11]. **Nature A**.
+- METR explique que des biais de participation rendent sa mise à jour de 2026 difficile à utiliser pour quantifier les gains récents [S12]. **Nature A/B**.
+- Google Code Wiki illustre un système de documentation rattachée à des références de code ; c'est une annonce produit et non une validation indépendante de gain de productivité [S29]. **Nature C/B**.
+
+---
+
+# Partie VII bis — Revues croisées de la recherche (novembre 2026)
+
+## 12.1 Dossier de recherche A — Maintenabilité et architecture des logiciels générés par agents
+
+**Question :** une organisation logicielle réduit-elle les erreurs et les coûts de maintenance des agents sans augmenter excessivement la complexité ?
+
+**Éléments de preuve** : [N02] mesure la localisation des changements sur des projets Java ; [N10] et [N01] examinent le repérage du contexte ; [N19] rapporte la pratique industrielle d'un dépôt agent-first ; [N09] documente la propagation de défauts existants. Ces quatre types de travaux ne mesurent **pas le même résultat**. Les regrouper en une prétendue preuve « monolithe + feature-first gagne » serait une erreur.
+
+**Convergences plausibles :** rendre les points d'entrée faciles à identifier ; fixer les frontières qu'un agent peut enfreindre par des contrôles reproductibles ; garder le code métier isolable et testable ; éviter l'accumulation de doublons et de routes d'accès à la donnée. Une architecture conçue pour être navigable n'est pas forcément plus courte.
+
+**Résultats contradictoires ou lacunes :** aucune comparaison robuste trouvée entre Next.js, Rails, Django, FastAPI+React et SvelteKit sur des tâches homogènes avec des agents récents. Les différences de stack, compétences humaines, cadre de tests et taille de projet créent des confusions. L'exemple OpenAI représente un investissement organisationnel sans commune mesure avec un site de petite entreprise.
+
+**Décision** : conserver *monolithe simple/modulaire + regroupement par fonctionnalité* comme **hypothèse de départ** sous conditions, **pas** dogme. Passer aux contrôles d'architecture lorsque des dépendances mal maîtrisées apparaissent. Pour RESCUE, réparer en priorité les limites dangereuses plutôt que changer de framework.
+
+**Ce qui invaliderait la recommandation** : une publication multi-repos comparative démontrant, à complexité et qualité comparables, une meilleure maintenabilité IA d'un autre découpage ou un contre-exemple concret où la configuration proposée complique inutilement le projet.
+
+## 12.2 Dossier de recherche B — Contexte, documentation et localisation
+
+**Question :** quels artefacts persistent d'une session à l'autre sans créer du contexte inutile ?
+
+**Éléments de preuve** : [N03] montre que des fichiers de contexte peuvent augmenter coût et exploration sans améliorer la réussite ; [N20] recommande de réduire les descriptions de skills ; [N01] observe les échecs de récupération de bons fichiers ; [N11] montre qu'un retriever spécialisé peut réduire des explorations dans un benchmark ; [N28] établit qu'un historique stable peut bénéficier d'un cache API.
+
+**Tension centrale :** *moins de contexte brut* peut réduire la charge d'un modèle, mais *un contexte mieux organisé* peut prévenir les erreurs. Le cache peut aussi rendre une répétition moins chère qu'une compression imprécise. Il faut donc distinguer :
+
+- **Navigation** : où se trouve le code ? → index/symboles/repomap.
+- **Intentions** : pourquoi cette règle existe ? → documentation métier/ADR.
+- **Contraintes globales** : quelles commandes et interdictions sont constantes ? → `AGENTS.md` court.
+- **État temporaire** : quelle tâche et quels tests restent ? → handoff ciblé.
+
+**Décision** : quatre couches documentaires de la v0.1 maintenues, avec lecture progressive. Les cartes sont révisées lors de modifications pertinentes et les index techniques sont de préférence régénérés par des outils déterministes.
+
+**Limite** : un dépôt très petit n'a pas besoin d'un inventaire des symboles, encore moins d'une base de recherche vectorielle. Une documentation obsolète peut être pire que son absence lorsqu'un agent la traite comme source de vérité.
+
+## 12.3 Dossier de recherche C — Vérification, QA et confiance
+
+**Question :** comment détecter les erreurs produites par des agents lorsque l'utilisateur ne lit pas toutes les lignes de code ?
+
+Les sources [N07], [N08], [N06] et [N18] traitent des **dimensions différentes** : qualité syntaxique des assertions, couverture de modifications, interaction de spécification, capacité d'un évaluateur à exercer l'application. Elles convergent sur une faiblesse pratique : une implémentation peut sembler satisfaisante sans avoir prouvé qu'elle réalise le bon comportement.
+
+**Doctrine en trois preuves :**
+
+1. **Preuve d'intention** : ce que l'utilisateur veut, les données et invariants concernés, les critères observables.
+2. **Preuve technique** : tests, lint, typage, build, revue de configuration ou de dépendances réellement exécutés.
+3. **Preuve d'usage** : parcours réel (manuel ou Playwright si justifié) et comparaison des sorties/états aux critères métier.
+
+**Limite des tests générés** : le modèle peut écrire une implémentation et un test contenant la même hypothèse incorrecte. Si le test est conçu pour valider seulement le comportement du code qu'il vient d'écrire, il ne garantit pas l'exigence originale. Pour les systèmes à risque, demander au moins un contrôle à partir d'exemples métier établis indépendamment.
+
+**Moyens optionnels** : tests de mutation, fuzzing ciblé, revue indépendante, snapshots explicites, Playwright, audit de sécurité spécialisé. **Pas d'obligation par défaut** de monter un second agent critique ou un harness multi-étapes ; [N18] rappelle le coût important de ces dispositifs.
+
+**Critère final** : réussite métier, intégrité des données, sécurité et limites résiduelles explicitement rapportées — pas simple pourcentage de couverture ou compteur de tests verts.
+
+## 12.4 Dossier de recherche D — Économie des tokens, coûts et cache
+
+**Question :** économise-t-on de l'argent en réduisant le texte envoyé à un agent de code ?
+
+**État des preuves** : [N13] démontre la variabilité de la consommation et l'absence de lien monotone entre volume et exactitude. [N12] présente un contrôleur externe capable de faire baisser les coûts dans plusieurs configurations. [N11] relie une récupération de fichiers ciblée à des gains de tokens *sur les instances résolues*. [N14] montre au contraire qu'une compression de sorties peut augmenter la facture. [N28] explique la logique et les tarifs de cache.
+
+**Leçon de méthode** : les coûts *par trajectoire* et surtout *par tâche correcte* sont plus pertinents que le pourcentage de caractères supprimés. Une compaction, un routeur ou un second modèle peuvent eux-mêmes consommer des tokens. Les gains publiés doivent inclure ces frais quand l'étude les mesure.
+
+**Décision** : adopter les pratiques « low-tech » immédiatement (tâches claires, navigation ciblée, sorties de commandes maîtrisées, contexte utile, lutte contre les boucles) ; n'activer plugins ou proxies de réduction que sur version compatible et compréhension des limites. Le référentiel ne promet **aucune économie forfaitaire**.
+
+## 12.5 Dossier de recherche E — Skills utiles versus skills populaires
+
+**Question :** faut-il accroître le nombre de skills installés pour accroître la réussite des agents ?
+
+**Réponse du corpus étudié : non, pas de relation universelle démontrée.** [N04] constate des gains appréciables pour des skills sélectionnés multi-domaines, mais plus faibles en software engineering. [N05] v2 rapporte 92/98 skills sans effet statistiquement significatif sur ses tâches. [N17] documente les risques de distribution malveillante ; [N31] examine l'évolution et la redondance.
+
+**Décision** : cataloguer les meilleurs skills **existants** et évaluer leurs preuves sans les réécrire. Le projet peut être très riche comme **bibliothèque de choix**, mais chaque projet utilisateur reste léger.
+
+## 12.6 Pièges de lecture des publications — obligatoire dans les fiches
+
+- **Corrélation / causalité** : un dépôt avec AGENTS.md n'a pas nécessairement de meilleures performances *à cause* du fichier.
+- **Prépublication / version révisée** : utiliser la version datée effectivement lue (exemple [N05] v2 du 27/10/2026).
+- **Succès observé / succès attribué** : une hausse de 1,2 point sur un benchmark n'est pas automatiquement statistiquement établie.
+- **Score / comportement utile** : précision de localisation, qualité des tests, réussite finale et coût ne se remplacent pas.
+- **Sous-groupe** : « tokens sur les instances résolues » ne dit pas le coût de toutes les tentatives.
+- **Tokens comptés / prix** : entrée cachée, sortie et écriture de cache peuvent suivre des tarifs différents.
+- **Versions changeantes** : un skill ou plugin peut évoluer après l'étude et devenir inefficace, dangereux ou incompatible.
+- **Étude de laboratoire / usage produit** : un protocole sur GitHub public ne se transporte pas directement à une application locale avec données sensibles.
