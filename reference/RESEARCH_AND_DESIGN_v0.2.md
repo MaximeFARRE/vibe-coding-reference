@@ -698,3 +698,103 @@ La recherche USENIX Security 2026 [N17] étudie **98 380 skills** collectés aup
 *How Agent Skills Evolve* [N31] analyse **84 200 skills / 750 898 commits** en novembre 2026 et souligne les difficultés de maintenance, duplication et changements liés à la sécurité. Cela justifie de **préférer des liens vers la source et une installation maîtrisée**, plutôt que de figer à jamais des copies. L'étude n'établit pas qu'une source officielle soit invulnérable.
 
 ## 10.4 Gouvernance des recommandations de skills
+
+- **Référencer** de nombreux candidats : oui ; **en installer beaucoup** dans un projet individuel : non.
+- Réexaminer les descriptions et conditions de déclenchement après mise à jour des modèles [N20].
+- Éviter plusieurs skills qui contrôlent le même workflow ou imposent des instructions contradictoires.
+- Privilégier un skill de domaine vérifié à un « guide universel du bon code » trop général.
+- Si un outil officiel fait déjà nativement une tâche, le skill doit montrer une valeur ajoutée claire ; sinon il reste optionnel.
+- **Aucun « score d'efficacité » fictif** fondé sur des étoiles GitHub ou le nombre de téléchargements.
+
+---
+
+
+# Partie VI bis — TOKEN EFFICIENCY : efficacité sans dégrader la qualité
+
+## 10.5 Objet et définition
+
+**RETENU (v0.2).** Ajouter **TOKEN EFFICIENCY** comme domaine transversal aux deux parcours START et RESCUE, sans créer un système de facturation ni un optimiseur propriétaire. L'enjeu est d'éviter du **travail inutile** plutôt que de sacrifier les lectures, validations ou raisonnements nécessaires.
+
+On doit distinguer **cinq métriques** :
+
+| Métrique | Définition | Ce qu'elle ne dit pas |
+|---|---|---|
+| **Tokens d'entrée bruts** | total effectivement fourni au modèle, y compris une grande partie du contexte et des résultats d'outils | ni le prix réellement payé ni la pertinence du contenu |
+| **Tokens d'entrée en cache** | portion réutilisée à un tarif spécifique selon le fournisseur/API | ce n'est pas zéro token, ni nécessairement zéro quota |
+| **Tokens de sortie / raisonnement** | générations et éventuels tokens de réflexion comptabilisés | ne correspondent pas directement au nombre de lignes de code produites |
+| **Coût API facturé** | somme des catégories aux tarifs réels (entrées, cache read/write, sorties, options) | ne représente pas une limite d'abonnement Codex/Claude Code |
+| **Coût par tâche correcte** | coût total des tentatives nécessaires pour obtenir un résultat qui passe les contrôles métier | nécessite un succès défini ; un taux de compression seul ne suffit pas |
+
+**Sixième notion distincte** : le **quota/usage d'abonnement** (notamment Codex avec ChatGPT, ou Claude Code) dépend des règles internes et de la charge des tâches. Une économie API ne prouve **pas** une réduction proportionnelle de consommation de quota. Éviter le vocabulaire « 30 % de tokens économisés = 30 % de sessions supplémentaires » tant que le fournisseur ne le documente pas.
+
+## 10.6 Ce que disent les études — chiffres et contextes
+
+| Source | Protocole et résultat | Limite d'interprétation |
+|---|---|---|
+| *How Do AI Agents Spend Your Money?* [N13] | 8 modèles, tâches SWE-bench Verified ; variabilité jusqu'à **30×** entre exécutions d'une même tâche ; fort poids de l'entrée ; plus de tokens ne garantit pas plus de réussite | ne quantifie pas l'économie d'une configuration locale pour une application donnée |
+| *TokenEconomizer* Microsoft Research [N12] | Codex, Claude Code, Copilot CLI ; contrôle black-box ; **−18,4 à −30,9 % de coût moyen en tokens** dans les configurations étudiées avec réussite comparable | plugin et résultats dépendants de versions, repos et tâches ; mécanismes expérimentaux |
+| *CodeGrep* REALM 2026 [N11] | sur instances résolues SWE-bench Verified : **−19 % tokens**, **−15 % tours** avec retriever spécialisé | n'est pas un simple script à installer ; effet de sélection « instances résolues » |
+| *Token Reduction Is Not Cost Reduction* [N14] | **2 848** exécutions appariées analysées ; bras à **−38 % de tokens bruts de sortie d'outils** et **+6,8 % de coût réellement facturé** | campagne sur Claude Code et modèles étudiés ; prouve la possibilité d'un contre-effet, pas l'inutilité de toute réduction |
+| *An Empirical Cost Attribution of Context-Compression Gateways* [N15] | distingue filtrage de schémas d'outils, compression et résumé ; filtrage de **21K–57K tokens sur certains tours** dans leurs configurations | tokens retirés d'un prompt ≠ dollars économisés ; méthode de passerelle complexe |
+| *CliffCompaction* [N16] | jusqu'à **50 % de coût en moins** sous certaines conditions de contextes longs dans Terminal-Bench et autres protocoles | prépublication et proxy sophistiqué, pas standard START |
+| *Evaluating AGENTS.md* [N03] | **>20 % de coût d'inférence supplémentaire** en moyenne dans son protocole | ne condamne pas toute instruction projet minimale |
+
+**Conclusion de recherche :** aucun gain en pourcentage ne doit être annoncé comme applicable à tous les dépôts. L'optimisation est une hiérarchie **plausible** fondée sur la théorie des outils, des études et du coût d'adoption, pas un palmarès causal sur les projets du lecteur.
+
+## 10.7 Les coûts évitables courants dans un gros dépôt
+
+1. **Lecture trop large** : ouvrir des fichiers entiers, générer l'arborescence complète, exporter tout le repo alors que seules quelques zones sont pertinentes.
+2. **Navigation répétitive** : rechercher plusieurs fois la même relation route → service → DB à cause d'une carte de fonctionnalités absente ou inexacte.
+3. **Historique de session devenu inutile** : résultats de build, logs, anciennes erreurs, code rendu obsolète par les correctifs ultérieurs.
+4. **Sorties d'outils trop verboses** : tests, lint, diff ou logs retournant des milliers de lignes sans signal utile.
+5. **Descriptions de skills/MCP chargées inutilement** : beaucoup d'outils et de descriptions disponibles, parfois redondantes.
+6. **Boucles de correction inefficaces** : même erreur, mêmes commandes, essais successifs sans nouvelle hypothèse ni preuve.
+7. **Vérifications trop larges trop tôt** : relancer l'ensemble des tests après chaque micro-édition au lieu de vérifier ciblé puis global avant livraison.
+8. **Contexte difficile à transmettre** : nouvelle session sans état utile, impliquant de tout redécouvrir.
+9. **Spécifications instables** : l'agent implémente le mauvais comportement, puis doit en réécrire de grandes portions.
+10. **Mauvais choix de modèle/effort** : surcoût pour les tâches simples ou, inversement, échec répété avec un modèle trop faible.
+
+Le **coût de compréhension initiale** n'est pas automatiquement du gaspillage : explorer le code peut éviter une régression. On cherche la meilleure exploration, pas un minimum dogmatique.
+
+## 10.8 Mesures immédiatement recommandées (niveau A)
+
+### A1. Une tâche cohérente par session — règle souple
+
+Avant un changement de sujet important, une nouvelle conversation peut éviter de réinjecter un historique sans rapport. **Ne pas imposer** de nouveau fil pour chaque petite modification : les caches et l'état accumulé ont aussi de la valeur. Pour poursuivre un chantier interrompu, conserver un petit document de passation contenant les informations qui ne peuvent être redécouvertes facilement. Anthropic [N18] a utilisé des resets avec artefacts de transmission dans un harness long, puis les a parfois retirés avec des modèles plus capables.
+
+**Exemple** : finir un bug d'authentification puis commencer une refonte d'export CSV = deux tâches distinctes ; corriger trois assertions du même import = une tâche cohérente.
+
+### A2. Recherche ciblée avant lecture massive
+
+Commencer par points d'entrée, recherche de symboles, références, tests et historique. Développer l'exploration lorsque les dépendances le justifient. Exemples de commandes illustratives si l'environnement les permet :
+
+```bash
+rg -n 'calculatePortfolio|importTransactions' src tests
+rg --files | rg '(portfolio|transactions|import|test)'
+git log --oneline -10 -- path/to/relevant/module
+```
+
+Ne pas intégrer les résultats d'un `rg` sur tout le dépôt comme preuve de non-utilisation : imports dynamiques, conventions de framework et appels externes existent. Voir [N01], [N10], [N11].
+
+### A3. Réduire le bruit, préserver les preuves
+
+Des commandes peuvent écrire leur journal complet **sur disque** et ne retourner au modèle qu'un résumé et les erreurs pertinentes. Le journal doit rester consultable, et il ne faut pas supprimer silencieusement une erreur de sécurité ou un message nécessaire à une correction.
+
+Exemples de **stratégie** (non commandes universelles) : option quiet de pytest, affichage des tests échoués, filtrage des avertissements connus seulement après justification, sortie `--json` parsable pour certains linters ; pas de `| tail -20` comme méthode qui pourrait masquer un code retour si le shell est mal configuré.
+
+### A4. Vérifications par étages
+
+- Après une modification locale : test ciblé correspondant au comportement modifié.
+- Avant déclaration de fin : suite plus large selon le risque et les scripts du dépôt.
+- Avant migration de données ou déploiement : sauvegarde, vérification d'intégrité, plan de rollback et contrôle humain si applicable.
+
+C'est une règle de **séquencement**, pas une autorisation de ne jamais tester le reste du projet. L'agent doit mentionner les vérifications réellement effectuées.
+
+### A5. Instructions et skills courts
+
+Réserver `AGENTS.md` aux chemins, commandes et exceptions ; les skills pertinents ne doivent être chargés qu'à la demande. Supprimer les instructions périmées, contradictoires et « lire tous les docs avant toute action ». Les nouveaux modèles peuvent déjà appliquer les comportements qu'un vieux prompt leur imposait [N20].
+
+### A6. Sortir d'une boucle d'échecs par la preuve
+
+Après plusieurs tentatives infructueuses, demander explicitement une **nouvelle hypothèse testable**, identifier ce qui a changé et arrêter les modifications aléatoires. Un protocole simple : « Reproduis, isole l'origine, propose une cause, teste-la sur une zone limitée, puis corrige ». Un nombre fixe de tentatives est une heuristique d'usage, pas une règle scientifiquement universelle.
+
