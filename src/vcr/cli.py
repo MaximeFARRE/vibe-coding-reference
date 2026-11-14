@@ -1,7 +1,12 @@
 import argparse
+import json
+from dataclasses import asdict
 import sys
 from pathlib import Path
 
+from .check import run_checks
+from .normalize import normalize
+from .rescue import compact
 from .catalog import load_catalog, render as render_catalog
 from .feedback import DECISIONS, record_feedback
 from .improve import prepare, write_improve
@@ -22,6 +27,12 @@ def main(argv=None):
     start.add_argument("--interactive", action="store_true", help="Poser les questions en terminal (mode par défaut)")
     start.add_argument("--out", help="Nouveau dossier pour les documents START")
     start.add_argument("--from", dest="answers_from", help="Reprendre un fichier answers.json")
+    check = sub.add_parser("check", help="Contrôler passivement un projet")
+    check.add_argument("--repo", default=".", help="Dossier à contrôler")
+    check.add_argument("--json", action="store_true", help="Afficher le JSON")
+    check.add_argument("--format", choices=("text", "json"), default="text")
+    check.add_argument("--out", help="Nouveau fichier hors du projet")
+    check.add_argument("--full", action="store_true", help="Signaler les commandes repérées sans les exécuter")
     rescue = sub.add_parser("rescue", help="Analyser un dossier sans le modifier")
     rescue.add_argument("--repo", required=True, help="Dossier à analyser")
     rescue.add_argument("--out", required=True, help="Nouveau dossier de rapports, extérieur au projet")
@@ -86,6 +97,41 @@ def main(argv=None):
         except (EOFError, KeyboardInterrupt):
             print("\nAnnulé.")
             return 0
+    if args.command == 'check':
+        try:
+            target = Path(args.repo).expanduser().resolve(strict=True)
+            if not target.is_dir():
+                raise ValueError("Le projet doit être un dossier existant.")
+            output = None
+            if args.out:
+                output = Path(args.out).expanduser().resolve(strict=False)
+                if output == target or output.is_relative_to(target) or target.is_relative_to(output):
+                    raise ValueError("Le fichier de sortie doit être extérieur au projet.")
+            run = normalize(run_checks(target, args.full), target)
+            data = compact(asdict(run))
+            data['target'] = run.target
+            if args.json or args.format == 'json':
+                rendered = json.dumps(data, ensure_ascii=False, indent=2) + '\n'
+            else:
+                rendered = f"Project Health Check — {target}\n"
+                for c in run.checks:
+                    rendered += f"{c.id} [{c.status}] {c.reason}\n"
+                    if c.applicability_reason:
+                        rendered += f"  Contexte {c.id} : {c.applicability_reason}\n"
+                    if c.evidence:
+                        rendered += f"  Preuve {c.id} : " + '; '.join(e.summary + (f' ({e.path})' if e.path else '') for e in c.evidence) + "\n"
+                    if c.limitation:
+                        rendered += f"  Limite {c.id} : {c.limitation}\n"
+                rendered += "Limites générales : " + ' '.join(run.limitations) + "\n"
+            if output:
+                with output.open('x', encoding='utf-8') as stream:
+                    stream.write(rendered)
+            else:
+                print(rendered, end='')
+            return 1 if any(c.status == 'failed' for c in run.checks) else 0
+        except (OSError, ValueError) as exc:
+            print(f"Erreur : {exc}", file=sys.stderr)
+            return 2
     if args.command == 'sources':
         try:
             print(render_catalog(load_catalog(), args.topic), end='')

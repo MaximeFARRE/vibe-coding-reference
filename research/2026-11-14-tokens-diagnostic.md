@@ -1,26 +1,26 @@
-# TOKENS : diagnostic et données déclarées
+# TOKENS: diagnosis and declared data
 
-- Date : 2026-11-14 ; statut : décidé pour le lot 5.
-- Question : rendre les leviers de contexte compréhensibles sans inventer de quota, coût ou gain.
-- Sources : [backlog lot 5](https://github.com/MaximeFARRE/vibe-coding-reference/blob/c8d94cb14c27270f430277034d4b280431001d3f/plans/03_BACKLOG_ET_LIVRAISON.md), [playbook TOKENS](https://github.com/MaximeFARRE/vibe-coding-reference/blob/c8d94cb14c27270f430277034d4b280431001d3f/docs/06_PLAYBOOKS_ET_AUDITS.md), [format d'import](../docs/TOKEN_TRACE_FORMAT.md), [calculs](../src/vcr/tokens_analysis.py), [tests](../tests/test_tokens.py) et [validation](../tests/test_tokens_trace.py).
+- Date: 2026-11-14; status: decided for batch 5.
+- Question: make context-related options understandable without inventing quotas, costs or savings.
+- Sources: [batch 5 backlog](https://github.com/MaximeFARRE/vibe-coding-reference/blob/c8d94cb14c27270f430277034d4b280431001d3f/plans/03_BACKLOG_ET_LIVRAISON.md), [TOKENS playbook](https://github.com/MaximeFARRE/vibe-coding-reference/blob/c8d94cb14c27270f430277034d4b280431001d3f/docs/06_PLAYBOOKS_ET_AUDITS.md), [import format](../docs/TOKEN_TRACE_FORMAT.md), [calculations](../src/vcr/tokens_analysis.py), [tests](../tests/test_tokens.py) and [validation](../tests/test_tokens_trace.py).
 
-## Résultats et limites
+## Findings and limitations
 
-- **Confirmé sur fixtures** : sans trace, diagnostic descriptif ; sans cache ou coût, champs `unavailable` et aucune valeur monétaire inventée. Les compteurs cumulés et sommes calculées sont distingués ; aucun quota d'abonnement n'est déduit.
-- **Confirmé sur fixtures** : traces partielles, devises mélangées, formats inconnus, champs dupliqués et valeurs invalides sont traités explicitement ; identifiants, empreintes et contenus sensibles fictifs ne sont pas recopiés.
-- **Limite** : mesures et coûts sont déclarés par l'importateur et ne sont pas vérifiés sur une source de facturation ; le format impose une requête distincte par enregistrement. Les noms de fichiers sources ne sont pas mémorisés : conserver la trace pour vérifier les références.
-- **Non vérifié** : conversion de traces natives Codex/Claude, ergonomie externe et Windows. Aucune preuve de gain de tokens ou de performance propre à VCR.
+- **Confirmed on fixtures:** without a trace the diagnosis is descriptive; missing cache or cost fields are `unavailable`, with no invented monetary value. Cumulative counters and calculated sums are distinguished; no subscription quota is inferred.
+- **Confirmed on fixtures:** partial traces, mixed currencies, unknown formats, duplicate fields and invalid values are handled explicitly; dummy identifiers, fingerprints and sensitive contents are not copied.
+- **Limitation:** measurements and costs are declared by the importer, not verified against billing; the format requires one request per record. Source filenames are not stored: retain the trace to check references.
+- **Not checked:** conversion of native Codex/Claude traces, outside usability and Windows. No evidence of VCR-specific token or performance gains.
 
-## Options et décision
+## Options and decision
 
-- Diagnostic sans trace : immédiatement utilisable, sans surveillance ; ne mesure pas l'usage réel.
-- Format VCR explicite avec champs facultatifs : sémantique stable et séparation des absences ; conversion manuelle nécessaire pour d'autres formats, avec risque d'erreur de l'importateur.
-- Parser natif multi-fournisseur : plus direct pour certains utilisateurs ; formats et interprétations variables, maintenance et risques de données privées. Non retenu tant que les formats réels et permissions ne sont pas étudiés.
-- Décision : format JSON volontaire, borné et documenté ; aucune télémétrie ni tarification figée. Statuts `measured` pour valeurs déclarées, `estimated` pour calculs dérivés ou coût déclaré estimé, `unavailable` si non calculable.
+- Diagnosis without a trace: immediately usable without monitoring; does not measure actual usage.
+- Explicit VCR format with optional fields: stable semantics and distinction between missing fields; other formats require manual conversion with importer error risk.
+- Multi-provider native parser: more direct for some users; variable formats and interpretations, maintenance and private-data risks. Not selected until actual formats and permissions are investigated.
+- Decision: voluntary, bounded and documented JSON; no telemetry or fixed pricing. Statuses are `measured` for declared values, `estimated` for derived calculations or declared estimated costs, and `unavailable` when not calculable.
 
-## Mise à jour du 2026-11-14 — sources publiques autorisées
+## Update of 2026-11-14 — public sources authorized
 
-- La précédente limitation « conversion manuelle nécessaire pour tous les formats fournisseurs » est partiellement remplacée : imports explicites d'une réponse Responses API OpenAI ou Messages API Anthropic, sans accès automatique aux comptes ni journaux privés.
-- [OpenAI — observabilité et usage](https://developers.openai.com/api/docs/guides/agents-api/observability) : cache lu inclus dans l'entrée ; raisonnement inclus dans la sortie ; compteurs d'usage potentiellement manquants et non équivalents à une facture.
-- [Anthropic — prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching) : les compteurs d'entrée ordinaire, cache lu et création de cache sont distincts ; le total n'est calculé que si les trois sont disponibles.
-- **Confirmé sur fixtures** : import d'une réponse, champs partiels indisponibles, aucun contenu fictif privé recopié ; voir [tests](../tests/test_tokens_native.py). **Non vérifié** : journaux natifs de session Codex/Claude Code, conversion de plusieurs réponses ou trace de production réelle.
+- The former limitation that all provider formats require manual conversion is partially superseded: explicit imports of one OpenAI Responses API or Anthropic Messages API response are supported, without automatic access to accounts or private logs.
+- [OpenAI — observability and usage](https://developers.openai.com/api/docs/guides/agents-api/observability): cache reads are included in input; reasoning in output; usage counters can be missing and are not equivalent to a bill.
+- [Anthropic — prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching): ordinary input, cache-read and cache-creation counters are distinct; the total is calculated only when all three are available.
+- **Confirmed on fixtures:** one-response import, missing partial fields, no fictional private content copied; see [tests](../tests/test_tokens_native.py). **Not checked:** native Codex/Claude Code session logs, conversion of multiple responses or a real production trace.

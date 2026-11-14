@@ -32,7 +32,7 @@ def git(repo, *args, input_bytes=None):
         return None, b''
 
 
-def audit(repo):
+def audit(repo, *, health=False, full=False):
     checks, findings = [], []
     limits = ['Audit statique partiel : aucune exécution des tests, build, analyse réseau ou revue métier.', 'Les contenus du projet ne sont pas recopiés ; les fichiers sensibles ne sont pas lus.', 'Verdict : inconclusive ; ces contrôles ne permettent pas de conclure sur la qualité ou la sécurité.']
     def check(name, status, reason):
@@ -129,6 +129,7 @@ def audit(repo):
     if len([p for p in manifests if p.name in {'package.json', 'pyproject.toml'}]) > 1:
         limits.append('Plusieurs manifestes détectés : couverture monorepo partielle, sans résolution des workspaces.')
     scripts_found = []
+    health_scripts = set()
     deps_count = 0
     parse_errors = False
     for path in manifests:
@@ -147,6 +148,7 @@ def audit(repo):
                 scripts = obj.get('scripts', {})
                 if isinstance(scripts, dict):
                     scripts_found += [s for s in ('test', 'lint', 'build') if s in scripts]
+                    health_scripts.update(s for s in ('test', 'lint', 'build', 'typecheck') if isinstance(scripts.get(s), str) and scripts[s].strip())
                 for key in ('dependencies', 'devDependencies', 'peerDependencies', 'optionalDependencies'):
                     if isinstance(obj.get(key), dict): deps_count += len(obj[key])
                 if isinstance(obj.get('dependencies'), dict) and 'next' in obj['dependencies']:
@@ -177,6 +179,9 @@ def audit(repo):
         finding('env-present', 'Fichier de configuration sensible potentiel', 'security', 'info', 'suspected', 'Un fichier de type .env est présent ; son contenu n’a pas été lu et la présence d’un secret n’est pas confirmée.', [Evidence('file', 'Nom de fichier sensible détecté ; contenu non lu.', path='.env' if '.env' in paths else None, redacted=True)], 'Vérifier localement son suivi Git et ses permissions sans partager ses valeurs.')
     check('secrets', 'not_checked', 'Seule la présence de noms .env non exclus est recherchée ; aucun contenu ni secret confirmé.')
     limits.append('Les fichiers ignorés et exemples .env ne sont pas examinés à la recherche de secrets ; aucun secret ne peut être déclaré absent.')
+    if health:
+        from .check import health_checks
+        checks = health_checks(repo, files, incomplete, is_git, health_scripts, full)
     return Run('0.1', str(uuid.uuid4()), datetime.now(timezone.utc).isoformat(), 'rescue', {'path': str(repo), 'mode': 'read_only', 'git_head': head, 'git_dirty': dirty}, profile, checks, limits, findings)
 
 

@@ -1,22 +1,22 @@
-# Validation des preuves et rapport de décision
+# Evidence validation and decision report
 
-- Date : 2026-11-14 ; statut : décidé pour le lot 2.
-- Question : rendre les constats vérifiables et permettre une décision sans modifier le projet audité.
-- Sources : [backlog, lot 2](https://github.com/MaximeFARRE/vibe-coding-reference/blob/c8d94cb14c27270f430277034d4b280431001d3f/plans/03_BACKLOG_ET_LIVRAISON.md) ; [schéma Finding](../schemas/finding.schema.json) ; [normalisation](../src/vcr/normalize.py) ; [tests](../tests/test_normalize.py) et [parcours de décision](../tests/test_decisions.py).
+- Date: 2026-11-14; status: decided for batch 2.
+- Question: make findings verifiable and enable decisions without modifying the audited project.
+- Sources: [batch 2 backlog](https://github.com/MaximeFARRE/vibe-coding-reference/blob/c8d94cb14c27270f430277034d4b280431001d3f/plans/03_BACKLOG_ET_LIVRAISON.md); [Finding schema](../schemas/finding.schema.json); [normalization](../src/vcr/normalize.py); [tests](../tests/test_normalize.py) and [decision workflow](../tests/test_decisions.py).
 
-## Résultats
+## Findings
 
-- **Confirmé par tests fonctionnels** : une ligne inexistante dégrade le statut et la confiance ; les doublons sont écartés seulement lorsque règle, cause et localisation concordent. Les décisions utilisateur sont enregistrées hors cible pour les fixtures testées.
-- **Limite** : la validation interne couvre les champs utilisés par le prototype ; les tests contrôlent un sous-ensemble des mots-clés des schémas, pas une conformité JSON Schema exhaustive. Les fichiers d'environnement ne sont pas lus pour vérifier des lignes.
-- **Non vérifié** : Windows et comportement face à un acteur modifiant simultanément les fichiers et liens pendant l'opération.
+- **Confirmed by functional tests:** a nonexistent line lowers status and confidence; duplicates are removed only when rule, cause and location agree. User decisions are stored outside the target for tested fixtures.
+- **Limitation:** internal validation covers fields used by the prototype; tests check a subset of schema keywords, not full JSON Schema compliance. Environment files are not read to validate lines.
+- **Not checked:** Windows and behavior when an actor simultaneously changes files and links during the operation.
 
-## Options et décision
+## Options and decision
 
-- Validation Python simple : aucune dépendance nouvelle, règles lisibles et contrôle ciblé ; couverture JSON Schema incomplète et maintenance manuelle des règles.
-- Validateur JSON Schema complet : contrat standard plus large ; dépendance supplémentaire à installer et à maintenir. Non retenu pour ce lot local sans installation.
-- Rapport Markdown : inspectable sans infrastructure ; navigation et présentation variables selon le lecteur. HTML statique non nécessaire à ce stade.
-- Décision utilisateur dans le dossier de rapport : la cible reste intacte ; un déplacement du rapport nécessite de conserver `run.json` et `feedback.json` ensemble.
+- Simple Python validation: no new dependency, readable rules and targeted checks; incomplete JSON Schema coverage and manual rule maintenance.
+- Complete JSON Schema validator: broader standard contract; an additional dependency to install and maintain. Not chosen for this local batch without installation.
+- Markdown report: inspectable without infrastructure; navigation and appearance depend on the reader. Static HTML is not needed at this stage.
+- User decision in the report directory: target remains intact; moving the report requires keeping `run.json` and `feedback.json` together.
 
-## Suite
+## Next
 
-- Envisager une validation JSON Schema complète lors du lot de qualité si une dépendance devient acceptable ; tester sur Windows et poursuivre le lot 3 START.
+- Consider full JSON Schema validation in a quality batch if a dependency becomes acceptable; test on Windows and continue batch 3 START.

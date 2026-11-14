@@ -1,59 +1,59 @@
-# 07 — Changements depuis la v0.2, erreurs corrigées et décisions ouvertes
+# 07 — Changes since v0.2, corrected errors and open decisions
 
-**Date : 14 novembre 2026.** Ce dossier ne remplace pas rétroactivement les documents v0.1/v0.2 : il les conserve et signale les choix d'implémentation qui ont changé.
+**Date: November 14, 2026.** This package does not retroactively replace v0.1/v0.2 documents: it preserves them and flags implementation choices that changed.
 
-## Ce qui a changé depuis la v0.2
+## What changed since v0.2
 
-| Sujet | v0.2 au 12/11 | Direction prototype du 14/11 |
+| Topic | v0.2 on November 12 | Prototype direction on November 14 |
 |---|---|---|
-| Type de livrable | référentiel essentiellement documentaire | dépôt documentaire + outil local minimal + rapports et prompts, sans nouveau modèle |
-| Parcours | START / RESCUE, domaines transversaux | START / RESCUE / IMPROVE supervisé, TOKEN EFFICIENCY accessible |
-| Agent | bibliographie, prompts, procédures | scripts locaux pour produire preuves + agent hôte existant pour interpréter |
-| Interface | non décidée | menu CLI et rapports Markdown/JSON ; HTML statique optionnel ; pas de SaaS |
-| Harness auto-améliorant | piste émergente | gestion de propositions basées sur incidents ; boucle récursive non activée |
-| Graphes/RAG | recherche avancée | interfaces prévues, intégrations au laboratoire seulement, recherche native d'abord |
-| Skills | catalogue de compétences externes, sélection | aucune création maison, aucune installation en bloc, fiches versionnées |
-| Tokens | domaine transversal, distinction coûts | commande dédiée avec données réellement disponibles et limites explicites |
-| Qualité | qualité des tests et validations | schémas, preuves, statut de confirmation, tests de sûreté et fixtures |
+| Deliverable | Mainly documentary reference | Documentation repository + minimal local tool + reports and prompts, without a new model |
+| Workflows | START / RESCUE, cross-cutting domains | START / RESCUE / supervised IMPROVE, accessible TOKEN EFFICIENCY |
+| Agent | Bibliography, prompts, procedures | Local scripts produce evidence + existing host agent interprets |
+| Interface | Undecided | CLI menu and Markdown/JSON reports; optional static HTML; no SaaS |
+| Self-improving harness | Emerging possibility | Incident-based proposal management; recursive loop not activated |
+| Graphs/RAG | Advanced research | Planned interfaces; laboratory-only integrations; native search first |
+| Skills | External skill catalog and selection | No custom creation, no bulk installation, versioned entries |
+| Tokens | Cross-cutting domain, cost distinctions | Dedicated command using actually available data and explicit limits |
+| Quality | Test quality and validation | Schemas, evidence, confirmation status, safety and fixture tests |
 
-## Corrections factuelles importantes
+## Important factual corrections
 
-1. **SWE-Skills-Bench :** prendre la **version 2 d'octobre 2026** comme référence courante pour les résultats 98/92/4/2. Les chiffres de la première version de mars ne sont pas interchangeables.
-2. **Pas de gain universel de skills :** la compétence officielle ou populaire peut être utile mais non validée expérimentalement ; l'étude de référence est contextuelle.
-3. **Tokens ≠ prix ≠ quotas :** une compression peut dégrader la réussite et augmenter le coût. Ne pas convertir un cache read en consommation normale ni inventer une facture d'abonnement.
-4. **Graphes/vectoriel :** la littérature ne permet pas de les recommander systématiquement ; une étude de onze harness de production trouve de la recherche de code déterministe sans récupération de code par embeddings dans cet échantillon.
-5. **Le papier de la capture « The End of Harness Engineering » :** existence d'un visuel/social post, mais source scientifique primaire non établie par la capture. Ne pas le citer comme une publication vérifiée ou preuve que l'humain est dispensable.
-6. **Google Harness² :** véritable dépôt + papier de recherche vérifiés ; les conditions du setup Codex impliquent des précautions de sandbox. Ne pas installer sur le dépôt réel par défaut.
-7. **Le cas « Patrimoine » de v0.1 :** exemple historique de RESCUE, pas fixture ni source de code disponible à réutiliser. Ne jamais déduire que le présent dépôt a accès au code réel de l'utilisateur.
-8. **Fichier AGENTS.md :** des recherches ont des résultats contradictoires ; conserver uniquement une courte orientation opérationnelle, pas une énorme politique obligatoire.
+1. **SWE-Skills-Bench:** use **version 2 from October 2026** as the current reference for the 98/92/4/2 results. Figures from the first March version are not interchangeable.
+2. **No universal skill gain:** an official or popular skill may be useful without experimental validation; the reference study is contextual.
+3. **Tokens ≠ prices ≠ quotas:** compression may reduce success and increase cost. Do not convert cache reads into ordinary consumption or invent a subscription bill.
+4. **Graphs/vectors:** literature does not support recommending them systematically; a study of eleven production harnesses finds deterministic code search without embedding-based code retrieval in that sample.
+5. **The screenshot's “The End of Harness Engineering” paper:** a visual/social post exists, but the screenshot does not establish a primary scientific source. Do not cite it as a verified publication or proof that humans are unnecessary.
+6. **Google Harness²:** real repository and research paper verified; Codex setup conditions require sandbox precautions. Do not install on the real repository by default.
+7. **The v0.1 “Patrimoine” case:** historical RESCUE example, not a fixture or available source code to reuse. Never infer that this repository can access the user's real code.
+8. **AGENTS.md:** research results conflict; retain only short operational guidance, not a huge mandatory policy.
 
-## Décisions qu'un humain devra confirmer avant publication
+## Decisions a human must confirm before publication
 
-- **Licence** du nouveau dépôt open source : MIT ou Apache 2.0, selon responsabilité, redistribution et contributions ; ne pas mélanger des codes externes sans vérifier.
-- **Nom public** du projet et slogan ; « Vibe Coding Reference » reste le nom de travail.
-- **Plates-formes promises** (macOS/Linux d'abord, Windows si tests disponibles).
-- **Éventuelle UI HTML** en plus du terminal ; le choix doit être guidé par la facilité réelle pour le novice.
-- **Politique de collecte des traces Codex/Claude** si une importation plus avancée est proposée : consentement, masquage, rétention, effacement.
-- **Régime des extensions tierces** : qui est autorisé à recommander/installer et comment isoler leurs permissions.
-- **Maintien du catalogue** : rythme de revue et responsables, pour éviter les recommandations périmées.
+- **License** for the new open-source repository: MIT or Apache 2.0, considering liability, redistribution and contributions; do not mix external code without checking.
+- **Public name** and slogan; “Vibe Coding Reference” remains the working name.
+- **Promised platforms** (macOS/Linux first, Windows if tests are available).
+- **Possible HTML UI** alongside the terminal, guided by actual ease for beginners.
+- **Codex/Claude trace collection policy** if advanced import is proposed: consent, redaction, retention and deletion.
+- **Third-party extension policy:** who may recommend/install and how to isolate permissions.
+- **Catalog maintenance:** review cadence and owners to avoid stale recommendations.
 
-## Hypothèses qui ne doivent pas devenir des faits dans Codex
+## Hypotheses that must not become facts in Codex
 
-- « Monolithe modulaire = architecture optimale pour tous les agents » — non prouvé.
-- « Ajouter un second agent relecteur augmente systématiquement la qualité » — dépend du contexte et du coût.
-- « Plus d'outils de navigation = moins de tokens » — dépend du succès et du cache.
-- « Une PR verte prouve la qualité métier » — non.
-- « Une détection de secret par regex est un incident confirmé » — non.
-- « Aucun import = code mort » — non.
+- “A modular monolith is optimal architecture for all agents” — unproven.
+- “Adding a second reviewing agent always improves quality” — depends on context and cost.
+- “More navigation tools means fewer tokens” — depends on success and cache.
+- “A green PR proves business quality” — no.
+- “Regex secret detection is a confirmed incident” — no.
+- “No imports means dead code” — no.
 
-## Condition de changement du périmètre
+## Condition for scope changes
 
-Si Codex découvre une option radicalement plus simple ou beaucoup plus puissante, il doit :
+If Codex finds a radically simpler or much more powerful option, it must:
 
-1. résumer le problème concret visé ;
-2. citer la preuve ou dire qu'il s'agit d'une hypothèse ;
-3. comparer coût de mise en place et maintenance avec la solution minimale ;
-4. expliquer implications de sécurité et compatibilité ;
-5. proposer une bascule réversible et la soumettre à validation humaine.
+1. summarize the concrete problem addressed;
+2. cite evidence or identify it as a hypothesis;
+3. compare setup and maintenance costs with the minimal solution;
+4. explain security and compatibility implications;
+5. propose a reversible change for human approval.
 
-L'innovation complexe est autorisée, mais jamais **cachée dans le backend simplement parce qu'elle est techniquement intéressante**.
+Complex innovation is allowed, but must never be **hidden in the backend merely because it is technically interesting**.

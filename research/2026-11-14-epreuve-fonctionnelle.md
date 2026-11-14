@@ -1,20 +1,20 @@
-# Épreuve fonctionnelle et préparation GitHub
+# Functional exercise and GitHub preparation
 
-- Date : 2026-11-14 ; statut : décidé, CI distante vérifiée sur le commit indiqué ci-dessous.
-- Question : le parcours local est-il reproductible et que reste-t-il à vérifier avant diffusion ?
-- Sources : [backlog lot 7](https://github.com/MaximeFARRE/vibe-coding-reference/blob/c8d94cb14c27270f430277034d4b280431001d3f/plans/03_BACKLOG_ET_LIVRAISON.md), [parcours](../tests/test_journey.py), [CI](../.github/workflows/ci.yml), [état d'avancement](../docs/IMPLEMENTATION_STATUS.md).
+- Date: 2026-11-14; status: decided; remote CI verified on the commit identified below.
+- Question: is the local workflow reproducible and what remains to check before distribution?
+- Sources: [batch 7 backlog](https://github.com/MaximeFARRE/vibe-coding-reference/blob/c8d94cb14c27270f430277034d4b280431001d3f/plans/03_BACKLOG_ET_LIVRAISON.md), [journey](../tests/test_journey.py), [CI](../.github/workflows/ci.yml), [implementation status](../docs/IMPLEMENTATION_STATUS.md).
 
-## Résultats
+## Findings
 
-- **Confirmé sur fixture** : le parcours START → deux RESCUE → IMPROVE → TOKENS → SOURCES fonctionne et préserve les fichiers et le statut Git du projet fictif. Le test bloque les sockets Python ; il ne constitue pas une preuve générale d'isolation réseau du système.
-- **Confirmé** : le plafond d'inventaire pouvait masquer une collecte tronquée ; il est désormais signalé `not_checked`, avec test de non-régression.
-- **Confirmé sur macOS/Python 3.12** : `pip install .`, la CLI et la ressource catalogue, puis `pip uninstall`, ont fonctionné dans un environnement virtuel temporaire. Une wheel distincte a également été construite et installée. Des dépendances de construction ont été téléchargées uniquement dans l'environnement temporaire.
-- **Confirmé localement** : les commandes d'exemple du README fonctionnent sur un projet artificiel ; les 4 combinaisons de CI sont syntaxiquement décrites et les modèles d'issues possèdent les champs attendus.
-- **Confirmé en CI** : [exécution 43602137084](https://github.com/MaximeFARRE/vibe-coding-reference/actions/runs/43602137084) réussie sur le commit `200c0763ded987241c7dbed3da1399f27c481f00` pour Ubuntu/Python 3.11–3.13 et macOS/Python 3.12.
-- **Non vérifié** : Windows, installation editable, ergonomie par un utilisateur extérieur ; la validation JSON Schema de VCR reste partielle.
+- **Confirmed on a fixture:** START → two RESCUE runs → IMPROVE → TOKENS → SOURCES works and preserves the fictional project's files and Git status. The test blocks Python sockets; it does not establish general system network isolation.
+- **Confirmed:** the inventory limit could hide truncated collection; it is now reported as `not_checked`, with a regression test.
+- **Confirmed on macOS/Python 3.12:** `pip install .`, the CLI and catalog resource, followed by `pip uninstall`, worked in a temporary virtual environment. A separate wheel was also built and installed. Build dependencies were downloaded only into the temporary environment.
+- **Confirmed locally:** README examples work on an artificial project; the four CI combinations are syntactically described and issue templates have the expected fields.
+- **Confirmed in CI:** [run 43602137084](https://github.com/MaximeFARRE/vibe-coding-reference/actions/runs/43602137084) succeeded on commit `200c0763ded987241c7dbed3da1399f27c481f00` for Ubuntu/Python 3.11–3.13 and macOS/Python 3.12.
+- **Not checked:** Windows, editable installation, usability by an outsider; VCR's JSON Schema validation remains partial.
 
-## Options et décision
+## Options and decision
 
-- Tests `unittest` et vérification syntaxique par bibliothèque standard : aucune dépendance de test ; moins d'analyse statique qu'un outillage dédié.
-- Ajouter des frameworks de lint et de tests : règles supplémentaires possibles ; installation et maintenance à justifier. Non retenu pour cette étape.
-- Décision : CI légère sur Python 3.11–3.13 sous Ubuntu et 3.12 sous macOS ; aucune garantie de sécurité exhaustive.
+- `unittest` and standard-library syntax checks: no test dependency; less static analysis than dedicated tools.
+- Add lint and test frameworks: potentially more rules; installation and maintenance need justification. Not selected for this batch.
+- Decision: lightweight CI on Python 3.11–3.13 on Ubuntu and 3.12 on macOS; no comprehensive security guarantee.

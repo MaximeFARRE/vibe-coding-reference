@@ -1,211 +1,211 @@
-# 05 — Catalogue priorisé des dépôts GitHub, outils, skills et expériences
+# 05 — Prioritized catalog of GitHub repositories, tools, skills and experiments
 
-**Revue des pages publiques : 14 novembre 2026.** Il s'agit d'un **registre d'options** et non d'une liste d'installations. Les versions évoluent, chaque installation exige une revue du dépôt actuel. `recommandé` veut dire « mérite d'être étudié dans ce contexte », **pas** « efficacité prouvée de la version courante ».
+**Public-page review: November 14, 2026.** This is an **options registry**, not an installation list. Versions change; every installation requires review of the current repository. `recommended` means “worth studying in this context”, **not** “current-version effectiveness proven”.
 
-## 1. Les quatre catégories d'adoption
+## 1. Four adoption categories
 
-- **A — Référence et documentation** : utile pour prendre des décisions ; aucun composant installé dans le projet utilisateur.
-- **B — Intégration optionnelle** : outil ciblé, activé uniquement si besoin, maintenance et compatibilité vérifiés.
-- **C — Laboratoire isolé** : recherche avancée, machine/container jetable, sans secrets ni accès aux dépôts réels.
-- **D — À surveiller seulement** : potentiel intéressant mais preuve/compatibilité insuffisante pour recommander.
+- **A — Reference and documentation:** useful for decisions; no component installed in the user's project.
+- **B — Optional integration:** targeted tool enabled only when needed, with maintenance and compatibility checked.
+- **C — Isolated laboratory:** advanced research on a disposable machine/container, without secrets or access to real repositories.
+- **D — Watch only:** interesting potential but insufficient evidence or compatibility to recommend.
 
-Les outils peuvent être puissants **derrière l'interface** si leur valeur est suffisante. Mais aucun outil de catégorie B/C ne doit apparaître dans l'assistant de démarrage comme exigence obligatoire.
+Tools may be powerful **behind the interface** if their value justifies it. No category B/C tool should appear as a mandatory requirement in the startup assistant.
 
-## 2. Architecture et étude des harness
+## 2. Architecture and harness research
 
 ### [G01] Google Research — Harness²
 
-**URL :** https://github.com/google-research/harness2  
-**Papier :** https://arxiv.org/abs/2610.14224  
-**Setup :** https://github.com/google-research/harness2/blob/main/docs/SETUP.md  
-**Catégorie : C** — recherche d'auto-amélioration des harness.
+**URL:** https://github.com/google-research/harness2<br>
+**Paper:** https://arxiv.org/abs/2610.14224<br>
+**Setup:** https://github.com/google-research/harness2/blob/main/docs/SETUP.md<br>
+**Category: C** — research on harness self-improvement.
 
-Ce système traite le harness comme un ensemble de composants éditables autour du modèle, avec deux niveaux d'amélioration récursive, comparaison des comportements d'exécution et persistance des leçons validées. À retenir : (1) séparer comportement de l'agent et règles/outils ; (2) chaque modification de harness devrait répondre à un échec observable ; (3) empêcher les modifications non vérifiées de se propager à d'autres tâches.
+The system treats the harness as editable components around the model, with two levels of recursive improvement, comparison of execution behavior and persistence of validated lessons. Takeaways: (1) separate agent behavior from rules/tools; (2) each harness change should address an observable failure; (3) prevent unverified changes from spreading to other tasks.
 
-**Plan d'étude pour Codex** : lire README + setup ; documenter composants, hypothèses, besoins d'API et de sandbox, capacité de reproduire une expérience sur fixtures ; **ne pas installer/exécuter automatiquement**. Le setup indique une configuration Codex pouvant fonctionner avec sandbox désactivé. Risques : exécution non isolée, coûts non bornés, édition de scripts/plugins, fuite de données, surajustement aux évaluations. P0.1 : simple fiche + propositions IMPROVE supervisées.
+**Study plan for Codex:** read README and setup; document components, assumptions, API and sandbox requirements and ability to reproduce an experiment on fixtures; **do not install or run automatically**. Setup describes a Codex configuration that may run without a sandbox. Risks: unisolated execution, unbounded costs, script/plugin editing, data leakage and evaluation overfitting. P0.1: simple entry plus supervised IMPROVE proposals.
 
 ### [G02] Walking Labs — Learn Harness Engineering
 
-**URL :** https://github.com/walkinglabs/learn-harness-engineering  
-**Catégorie : A** — cours de référence, 14 leçons et projets pratiques d'après son README actuel. Couvre AGENTS, vérification, reprise de sessions, loop engineering, graph engineering, analyse comparée de Claude Code/Codex/Pi/DeepSeek. Très proche de notre domaine.
+**URL:** https://github.com/walkinglabs/learn-harness-engineering<br>
+**Category: A** — reference course with 14 lessons and practical projects according to its README at review time. Covers AGENTS, verification, session resumption, loop engineering, graph engineering and comparative analysis of Claude Code/Codex/Pi/DeepSeek. Closely related to our domain.
 
-**Réutilisable comme idées** : état persistant minimal, boucle *planifier → agir → vérifier → transmettre*, description d'un « graph » comme routage explicite. **Ne pas recopier** ses templates, exercices ou skill `harness-creator` par défaut : licence, maintenance, qualité et conflit avec notre politique « pas de skills maison » à évaluer. En VCR nous aidons à choisir et **auditer**, pas à refaire le cours.
+**Reusable ideas:** minimal persistent state, *plan → act → verify → hand off* loop, description of a “graph” as explicit routing. **Do not copy** its templates, exercises or `harness-creator` skill by default: assess license, maintenance, quality and conflict with our “no custom skills” policy. VCR helps users choose and **audit**, not recreate the course.
 
 ### [G03] TrishamBP — Harness Engineering
 
-**URL :** https://github.com/TrishamBP/harness-engineering  
-**Catégorie : A/C** — diagrammes et implémentation Python stdlib d'un harness de référence (boucle, outils typés, permissions, logs, contexte, contrôles, coordination). Utile pour comprendre les interfaces d'un runtime complexe.
+**URL:** https://github.com/TrishamBP/harness-engineering<br>
+**Category: A/C** — diagrams and stdlib Python reference harness (loop, typed tools, permissions, logs, context, checks, coordination). Useful for understanding complex runtime interfaces.
 
-**Pour Codex** : lire son design, comparer nos obligations de sûreté ; ne pas prendre le code entier comme dépendance et ne pas développer un runtime alternatif dans P0.1. Son code est une illustration originale inspirée d'une étude, pas le code de production des agents analysés.
+**For Codex:** read its design and compare our safety obligations; do not take the entire codebase as a dependency or build an alternative runtime in P0.1. Its code is an original study-inspired illustration, not production code from the analyzed agents.
 
 ### [G04] Gloriaameng — Awesome Agent Harness
 
-**URL :** https://github.com/Gloriaameng/Awesome-Agent-Harness  
-**Catégorie : A** — annuaire et grille comparant plusieurs fonctions : boucle, outils, contexte, état, hooks, évaluation. Référence utile pour enrichir notre catalogue ; peut comporter des descriptions datées de produits et des informations non vérifiées.
+**URL:** https://github.com/Gloriaameng/Awesome-Agent-Harness<br>
+**Category: A** — directory and matrix comparing loop, tools, context, state, hooks and evaluation. Useful to expand our catalog; may contain dated product descriptions and unverified information.
 
-**Pour Codex** : extraire seulement les entrées pertinentes, croiser chaque affirmation avec la documentation première partie du projet. Ne jamais considérer son classement comme benchmark.
+**For Codex:** extract only relevant entries and cross-check each claim against first-party project documentation. Never treat its ranking as a benchmark.
 
 ### [G05] LangGraph
 
-**Repo :** https://github.com/langchain-ai/langgraph  
-**Persistance :** https://docs.langchain.com/oss/python/langgraph/persistence  
-**Catégorie : C/B futur** — moteur de graphes d'exécution avec état, checkpoints, interruption/approbation, reprise, routage, fan-out/fan-in. Intéressant si VCR orchestre plusieurs agents autonomes dans de longs audits distribués.
+**Repository:** https://github.com/langchain-ai/langgraph<br>
+**Persistence:** https://docs.langchain.com/oss/python/langgraph/persistence<br>
+**Category: C/future B** — stateful execution-graph engine with checkpoints, interruption/approval, resumption, routing and fan-out/fan-in. Interesting if VCR orchestrates multiple autonomous agents in long distributed audits.
 
-**Critère d'introduction** : apparaissent réellement des besoins de reprise après crash, de coordination de N agents et de points d'approbation au milieu d'exécutions. En P0.1, un simple workflow Python suffit, **pas de LangGraph**.
+**Introduction criterion:** actual need for crash recovery, N-agent coordination and mid-execution approval points. In P0.1, a simple Python workflow is enough: **no LangGraph**.
 
-## 3. Navigation, cartes et recherche de code
+## 3. Navigation, maps and code search
 
 ### [G06] Serena
 
-**URL :** https://github.com/oraios/serena  
-**Catégorie : B** — recherche structurée par symboles/références, intégration des agents via outils. Peut rendre les grosses bases plus navigables.
+**URL:** https://github.com/oraios/serena<br>
+**Category: B** — structured symbol/reference search and agent tool integration. May make large codebases easier to navigate.
 
-**À étudier** : langages réellement pris en charge, installation, démarrage LSP, sécurité du MCP, quotas de sortie et logs, commandes de recherche, limites sur JS/TS et Python. Alternative simple : `rg`, `git grep`, analyse des imports, sommaire des fichiers. Ne pas faire de Serena un composant obligatoire ou présumer que chaque agent l'utilise automatiquement.
+**Investigate:** actually supported languages, installation, LSP startup, MCP security, output quotas and logs, search commands, JS/TS and Python limitations. Simple alternatives: `rg`, `git grep`, import analysis and file overview. Do not make Serena mandatory or assume every agent uses it automatically.
 
 ### [G07] Aider RepoMap
 
-**Documentation :** https://aider.chat/docs/repomap.html  
-**Repo :** https://github.com/Aider-AI/aider  
-**Catégorie : A/B** — algorithme de classement de symboles et de présentation compacte. Utile pour apprendre le *budgeted context*. L'étude Agent Retrieval Bench trouve des performances relatives intéressantes sur le rendement de contexte à 8k tokens.
+**Documentation:** https://aider.chat/docs/repomap.html<br>
+**Repository:** https://github.com/Aider-AI/aider<br>
+**Category: A/B** — symbol-ranking and compact-presentation algorithm. Useful for learning budgeted context. Agent Retrieval Bench reports interesting relative context efficiency at 8k tokens.
 
-**À étudier** : réutilisation réelle du composant sans forker Aider entier ; licence, API stable, compatibilité. Si l'usage autonome est complexe, garder la méthode en documentation.
+**Investigate:** actual reuse without forking all of Aider; license, stable API and compatibility. If standalone use is complex, keep the method as documentation.
 
 ### [G08] DeusData — Codebase Memory MCP
 
-**URL :** https://github.com/DeusData/codebase-memory-mcp  
-**Catégorie : B/C** — code graph/index local, outils MCP, graphes de dépendance et de flot ; l'outil actuel contient aussi recherche sémantique/vectorielle et UI optionnelle. **C'est une candidature sérieuse à une couche avancée**, pas une dépendance de base.
+**URL:** https://github.com/DeusData/codebase-memory-mcp<br>
+**Category: B/C** — local code graph/index, MCP tools, dependency and flow graphs; the current tool also includes semantic/vector search and optional UI. **A serious advanced-layer candidate**, not a core dependency.
 
-**À étudier** : installation et empreinte, version/fonctions, stockage, indexation de secrets, mécanismes de mise à jour, réseau, accès fichiers, granularité des résultats, licence, système de révocation. Ses annonces de « 120× moins de tokens » sont des **claims fournisseur**, pas des gains indépendants vérifiés. Toute comparaison ne doit pas devenir une promesse VCR.
+**Investigate:** installation and footprint, version/features, storage, secret indexing, update mechanisms, network, file access, result granularity, license and revocation. Its “120× fewer tokens” claims are **vendor claims**, not independently verified gains. Comparisons must not become VCR promises.
 
 ### [G09] RepoAgent
 
-**URL :** https://github.com/OpenBMB/RepoAgent  
-**Catégorie : D** — génération/actualisation de documentation de code via AST/LLM et détection de changements. Utile pour la recherche, mais documentation exhaustive peut être très coûteuse et se périmer ; certaines intégrations requièrent un modèle/API et le périmètre de langues peut être limité. À **documenter**, pas à installer.
+**URL:** https://github.com/OpenBMB/RepoAgent<br>
+**Category: D** — AST/LLM-based code-documentation generation and updates with change detection. Useful for research, but exhaustive documentation can be costly and stale; some integrations require a model/API and language coverage may be limited. **Document**, do not install.
 
 ### [G10] Repomix
 
-**URL :** https://repomix.com/  
-**Catégorie : B** — export ponctuel du contexte pour revue, pas une mémoire vivante. Risque de gros exports et de secrets ; vérifier `.gitignore`/fichiers exclus avant de transmettre le résultat à un modèle.
+**URL:** https://repomix.com/<br>
+**Category: B** — one-off context export for review, not living memory. Large exports and secrets are risks; check `.gitignore` and excluded files before sending output to a model.
 
 ### [G11] Dependency Cruiser / ESLint Boundaries / Import Linter
 
-- **Dependency Cruiser :** https://github.com/sverweij/dependency-cruiser (B, JS/TS, règles et graphes d'imports).
-- **ESLint Plugin Boundaries :** https://github.com/javierbrea/eslint-plugin-boundaries (B, JS/TS, frontières contrôlées par lint).
-- **Import Linter :** https://import-linter.readthedocs.io/en/stable/ (B, Python, contrats de dépendance).
+- **Dependency Cruiser:** https://github.com/sverweij/dependency-cruiser (B, JS/TS, import rules and graphs).
+- **ESLint Plugin Boundaries:** https://github.com/javierbrea/eslint-plugin-boundaries (B, JS/TS, lint-enforced boundaries).
+- **Import Linter:** https://import-linter.readthedocs.io/en/stable/ (B, Python, dependency contracts).
 
-À sélectionner **un seul** mécanisme approprié lorsque le besoin de frontières est établi. Les imports indirects, chemins dynamiques et éléments métier requièrent un diagnostic complémentaire.
+Select **one** appropriate mechanism when boundary needs are established. Indirect imports, dynamic paths and business elements need further diagnosis.
 
-## 4. Skills et workflows d'ingénierie déjà publics
+## 4. Existing public engineering skills and workflows
 
 ### [G12] Matt Pocock — Skills for Real Engineers
 
-**URL :** https://github.com/mattpocock/skills  
-**Catégorie : B (sélection manuelle de skills individuels)**. Compétences de formalisation, architecture, audit, TDD, passation. Au moment de la revue, le dépôt décrit entre autres : `grill-with-docs`, `to-spec`, `improve-codebase-architecture`, `retro`, `diagnosing-bugs`, `code-review`, `to-tickets`.
+**URL:** https://github.com/mattpocock/skills<br>
+**Category: B (manual selection of individual skills)**. Scoping, architecture, audit, TDD and handoff skills. At review time the repository described `grill-with-docs`, `to-spec`, `improve-codebase-architecture`, `retro`, `diagnosing-bugs`, `code-review` and `to-tickets`, among others.
 
-**Avis :** particulièrement pertinent pour IMPROVE (`retro`) et préparation des spécifications ; vérifier **le nom et le contenu exact à la version installée**. Son existence et sa notoriété ne démontrent pas de gains comparatifs individuels. Ne pas installer tout son setup dans chaque repo.
+**Assessment:** particularly relevant to IMPROVE (`retro`) and specification preparation; verify **the exact name and content of the installed version**. Existence and popularity do not establish individual comparative gains. Do not install the whole setup in every repository.
 
 ### [G13] Jesse Vincent / obra — Superpowers
 
-**URL :** https://github.com/obra/superpowers  
-**Catégorie : B**. Workflows de debugging systématique, tests, vérification avant fin, planification. Peut imposer des étapes lourdes qui conviennent moins aux micro-tâches ; examiner `systematic-debugging` / `verification-before-completion` et les règles de déclenchement réelles.
+**URL:** https://github.com/obra/superpowers<br>
+**Category: B**. Systematic debugging, testing, completion verification and planning workflows. May impose heavy steps unsuited to micro-tasks; examine `systematic-debugging`, `verification-before-completion` and actual trigger rules.
 
 ### [G14] Vercel — Agent Skills
 
-**URL :** https://github.com/vercel-labs/agent-skills  
-**Catégorie : B**. Skills de bonnes pratiques React, Next.js et UX web ; utile pour START lorsqu'une stack correspond. Source officielle sur les pratiques du framework ; **pas de preuve indépendante de gain marginal du skill exact** dans notre corpus. Scanner scripts, version et déclencheurs avant usage.
+**URL:** https://github.com/vercel-labs/agent-skills<br>
+**Category: B**. React, Next.js and web UX best-practice skills; useful for START when the stack fits. An official source for framework practices; **no independent evidence of the exact skill's marginal benefit** in our corpus. Review scripts, version and triggers before use.
 
 ### [G15] GitHub — Spec Kit
 
-**URL :** https://github.com/github/spec-kit  
-**Catégorie : B/A**. Spécification → planification → implémentation → vérification. Source de bonnes pratiques à adapter pour START et définition des besoins ; n'introduire qu'un sous-ensemble proportionné. Ne pas faire un système de spécifications de 30 documents par défaut.
+**URL:** https://github.com/github/spec-kit<br>
+**Category: B/A**. Specification → planning → implementation → verification. Best practices to adapt for START and requirements; introduce only a proportional subset. Do not default to a 30-document specification system.
 
 ### [G16] Every — Compound Engineering Plugin
 
-**URL :** https://github.com/EveryInc/compound-engineering-plugin  
-**Catégorie : B/C**. Boucle brainstorm/plan/build/review/compound, plusieurs skills et parfois sous-agents ; version actuelle compatible avec Codex selon la documentation (à vérifier lors de l'installation). Très proche de notre IMPROVE ; attention à coûts de contexte, permissions, comportements automatiques et installation de toute la suite. **Étudier certains mécanismes, ne pas l'installer en bloc** pour P0.1.
+**URL:** https://github.com/EveryInc/compound-engineering-plugin<br>
+**Category: B/C**. Brainstorm/plan/build/review/compound loop, multiple skills and sometimes subagents; the version reviewed claims Codex compatibility (recheck at installation). Close to IMPROVE; watch context costs, permissions, automatic behavior and whole-suite installation. **Study selected mechanisms; do not install the whole suite** for P0.1.
 
 ### [G17] Peter Steinberger — Agent Scripts
 
-**URL :** https://github.com/steipete/agent-scripts  
-**Catégorie : A/B**. Instructions courtes, skills synchronisés par scripts, hooks et utilitaires. Utile pour gouvernance et format d'instructions ; de nombreuses décisions sont liées à l'environnement personnel de l'auteur. Ne pas copier ses chemins, modèles ni permissions.
+**URL:** https://github.com/steipete/agent-scripts<br>
+**Category: A/B**. Short instructions, script-synchronized skills, hooks and utilities. Useful for governance and instruction format; many decisions depend on the author's personal environment. Do not copy paths, models or permissions.
 
 ### [G18] Anthropic — Public Skills
 
-**URL :** https://github.com/anthropics/skills  
-**Catégorie : A/B**. Exemples officiels de skills et formats ; utiles comme source, pas tous adaptés ni garantis pour production. Nous conservons le principe de sélection et revue individuelles.
+**URL:** https://github.com/anthropics/skills<br>
+**Category: A/B**. Official examples of skills and formats; useful sources, not all suitable or guaranteed for production. Retain individual selection and review.
 
 ### [G19] khasky — Awesome Agent Skills
 
-**URL :** https://github.com/khasky/awesome-agent-skills  
-**Catégorie : D/B sur skill individuel**. Catalogue de skills d'audit, debugging, qualité ; instructions d'installation globales par lot très larges. **Ne pas utiliser l'installation de tous les skills** proposée dans le README ; sélectionner uniquement après revue du code, de la licence et de la valeur.
+**URL:** https://github.com/khasky/awesome-agent-skills<br>
+**Category: D/B for an individual skill**. Audit, debugging and quality skill catalog; very broad global bulk-install instructions. **Do not use the README's install-all-skills approach**; select only after reviewing code, license and value.
 
-### [G20] SWE-Skills-Bench (benchmark + corpus)
+### [G20] SWE-Skills-Bench (benchmark and corpus)
 
-**Code :** https://github.com/ControllableModel/SWE-Skills-Bench  
-**Papier révisé :** https://arxiv.org/html/2603.15401v2  
-**Catégorie : A (recherche)**. Référence pour différencier « connu » et « évalué ». Les quatre skills positifs du protocole ne constituent pas une shortlist universelle de production ; certaines tâches appartiennent à des écosystèmes non ciblés par VCR (Go/Java). Épingler le commit exact si l'on discute de la version testée.
+**Code:** https://github.com/ControllableModel/SWE-Skills-Bench<br>
+**Revised paper:** https://arxiv.org/html/2603.15401v2<br>
+**Category: A (research)**. Helps distinguish “known” from “evaluated”. The protocol's four positive skills are not a universal production shortlist; some tasks use ecosystems outside VCR's target (Go/Java). Pin the exact commit when discussing the tested version.
 
-## 5. Optimisation de tokens et coûts
+## 5. Token and cost optimization
 
 ### [G21] Microsoft — TokenEconomizer
 
-**URL :** https://github.com/microsoft/TokenEconomizer  
-**Publication :** https://www.microsoft.com/en-us/research/publication/tokeneconomizer-experience-driven-black-box-cost-control-for-coding-agents/  
-**Catégorie : B/C**. Plugin de contrôle de coûts sur agents, utilise micro-faits, filtrage outils et garde sur boucles d'échecs. Recherche intéressante, mais ses hooks agissent sur un runtime, ses fichiers de config et potentiellement des traces locales. La table du README donne **des plages précises de versions supportées** ; Codex peut changer rapidement. Ne jamais installer automatiquement et ne jamais promettre un pourcentage constant.
+**URL:** https://github.com/microsoft/TokenEconomizer<br>
+**Publication:** https://www.microsoft.com/en-us/research/publication/tokeneconomizer-experience-driven-black-box-cost-control-for-coding-agents/<br>
+**Category: B/C**. Agent cost-control plugin using micro-facts, tool filtering and failure-loop guards. Interesting research, but its hooks act on a runtime, configuration files and potentially local traces. The README table gives **specific supported version ranges**; Codex can change quickly. Never install automatically or promise a constant percentage.
 
-**Checklist avant usage** : version réelle de Codex/Claude ; dépendances ; hooks et commandes ; fichiers locaux touchés ; modèle/judge additionnel ; données enregistrées ; accès réseau ; instructions d'undo ; consentement. Tester d'abord dans un profil de Codex isolé et un dépôt jetable, pas les projets personnels.
+**Before use:** actual Codex/Claude version; dependencies; hooks and commands; local files affected; extra model/judge; recorded data; network access; undo instructions; consent. First test in an isolated Codex profile and disposable repository, not personal projects.
 
-## 6. Sécurité de la supply chain des skills
+## 6. Skill supply-chain security
 
-Étude USENIX Security 2026 : https://www.usenix.org/conference/usenixsecurity26/presentation/liu-yi  
-Spécification : https://agentskills.io/specification
+USENIX Security 2026 study: https://www.usenix.org/conference/usenixsecurity26/presentation/liu-yi<br>
+Specification: https://agentskills.io/specification
 
-**Fiche obligatoire avant de recommander un skill en installation :**
+**Required entry before recommending a skill for installation:**
 
 ```text
-ID et nom exact :
-Lien officiel et mainteneur :
-Tag/commit de revue :
-Licence et redistribution :
-Date du dernier commit/release :
-Domaine utile et modèle(s) ciblé(s) :
-Preuve de bénéfice (étude exacte / retour / aucune) :
-Contenu des SKILL.md et scripts :
-Actions dangereuses / réseau / permissions / secrets :
-Coût en contexte et dépendances :
-Chevauchement avec les skills déjà installés :
-Compatibilité Codex / Claude / versions :
-Installation minimale :
-Désinstallation et rollback :
-Statut : non vérifié / documenté / révisé / optionnel / déconseillé
+ID and exact name:
+Official link and maintainer:
+Reviewed tag/commit:
+License and redistribution:
+Date of last commit/release:
+Useful domain and target model(s):
+Evidence of benefit (specific study / experience / none):
+SKILL.md and script contents:
+Dangerous actions / network / permissions / secrets:
+Context cost and dependencies:
+Overlap with installed skills:
+Codex / Claude / version compatibility:
+Minimal installation:
+Uninstall and rollback:
+Status: unverified / documented / reviewed / optional / discouraged
 ```
 
-**Règle** : un dépôt très populaire reste une entrée **G**, pas **E**. La preuve « fonctionne » n'est pas la preuve « améliore significativement la réussite ».
+**Rule:** a very popular repository is still **G**, not **E**. Evidence that it works does not prove it significantly improves success.
 
-## 7. Programme de recherche appliquée — sans benchmarks de performance maison
+## 7. Applied research program — no homemade performance benchmarks
 
-**À mener par Codex en priorité sur des dépôts de démonstration** :
+**Priority work for Codex on demonstration repositories:**
 
-| Recherche | Question précise | Livrable documentaire | Intégration |
+| Research | Specific question | Documentary deliverable | Integration |
 |---|---|---|---|
-| Serena | Navigation par symboles TS/Python sans surcharge ? | fiche installation/risques/usage, capture de résultat sur fixture | B futur |
-| Codebase Memory MCP | Graph d'appels local pertinent pour un module complexe ? | fiche architecture/permissions/limites ; pas de claim tokens repris | B/C |
-| TokenEconomizer | Hooks compatibles avec la version locale ? Peut-on isoler la config ? | fiche version/rollback/risque | B/C |
-| Harness² | Quelles abstractions généralisables sans récursion autonome ? | fiche des huit composants, deux boucles et sécurité | C uniquement |
-| LangGraph | Quel problème concret de reprise/coordination justifie un graph ? | matrice de décision mono-agent vs graphe | C |
-| Skills Pocock / Vercel / Superpowers | Quels skills précis sans doublons, sur quelles stacks ? | fiche de sélection et provenance | B |
+| Serena | TS/Python symbol navigation without overload? | Installation/risk/usage entry, fixture result capture | Future B |
+| Codebase Memory MCP | Useful local call graph for a complex module? | Architecture/permissions/limitations entry; no token claims carried over | B/C |
+| TokenEconomizer | Hooks compatible with the local version? Can configuration be isolated? | Version/rollback/risk entry | B/C |
+| Harness² | Generalizable abstractions without autonomous recursion? | Eight components, two loops and security entry | C only |
+| LangGraph | What concrete recovery/coordination problem justifies a graph? | Single-agent versus graph decision matrix | C |
+| Pocock / Vercel / Superpowers skills | Which specific nonduplicative skills for which stacks? | Selection and provenance entry | B |
 
-La « preuve de fonctionnement » du prototype inclut des **tests de compatibilité/fonctionnels** sur fixtures. Il ne faut pas les appeler étude démontrant une économie de tokens ; ne pas publier de benchmark de performance comparatif, conformément à la décision utilisateur.
+Prototype “proof of operation” includes **compatibility/functional tests** on fixtures. Do not call these a study proving token savings or publish comparative performance benchmarks, in accordance with the user's decision.
 
-## 8. Sources complémentaires pertinentes, à laisser dans le catalogue historique
+## 8. Additional relevant sources retained in the historical catalog
 
-Serena, Aider RepoMap, Google Code Wiki, RepoAgent, Repomix, Feature-Sliced Design et son catalogue de skills, T3 stack, Astro, Django/HTMX, FastAPI, Ruby on Rails, RUFF/uv/pytest/Playwright, Gitleaks, OSV, Github Actions, Dependabot/Renovate, ESEM 2026, SWE-agent, METR, Anthropic context engineering. **Les liens et notes historiques sont conservés** dans `reference/BIBLIOGRAPHIE_HISTORIQUE_v0.2.md` ; ne pas recopier tout dans `AGENTS.md`.
+Serena, Aider RepoMap, Google Code Wiki, RepoAgent, Repomix, Feature-Sliced Design and its skill catalog, T3 stack, Astro, Django/HTMX, FastAPI, Ruby on Rails, RUFF/uv/pytest/Playwright, Gitleaks, OSV, GitHub Actions, Dependabot/Renovate, ESEM 2026, SWE-agent, METR and Anthropic context engineering. **Historical links and notes are preserved** in `reference/BIBLIOGRAPHIE_HISTORIQUE_v0.2.md`; do not copy everything into `AGENTS.md`.
 
-## 9. Ce qui n'est pas « prouvé » et ne doit pas être vendu comme tel
+## 9. What is not “proven” and must not be sold as such
 
-- « Google Harness² est meilleur que Codex de X % » sans protocole ; Harness² **utilise** des exécutants dont Codex, la comparaison dépend des bases.
-- « Avoir un graphe + RAG coûte moins de tokens » : pas de preuve universelle.
-- « Le meilleur modèle est X, le meilleur framework est Y » : il n'y a pas de palmarès stable pour nos profils de tâches.
-- « Les 24 000 étoiles d'un cours prouvent son efficacité » : adoption ≠ expérimentation.
-- « Moins de prompts = moins d'euros/quota » : les tokens cachés, reruns et échecs changent la facture.
-- « La boucle se réécrit seule, l'humain n'a plus de travail » : la définition des évaluations, permissions, risques et objectifs demeure critique.
+- “Google Harness² is X% better than Codex” without a protocol; Harness² **uses** executors including Codex, and comparisons depend on baselines.
+- “A graph + RAG costs fewer tokens”: no universal evidence.
+- “The best model is X, the best framework is Y”: no stable ranking for our task profiles.
+- “A course's 24,000 stars prove effectiveness”: adoption ≠ experimentation.
+- “Fewer prompts = fewer euros/quota”: cached tokens, reruns and failures change the bill.
+- “The loop rewrites itself, humans have no work”: defining evaluations, permissions, risks and goals remains critical.

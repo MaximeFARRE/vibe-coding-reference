@@ -15,6 +15,7 @@ Scope ideas, inspect projects and review improvements with evidence and human ov
 |---|---|---|
 | **START** | Turn an idea into a project brief | Criteria and stack options for human review |
 | **RESCUE** | Inspect a project passively | Evidence and limits; no target modification |
+| **CHECK** | Run a short, passive project checklist | Structured evidence and clear limits; no project commands |
 | **IMPROVE** | Review selected reports or notes | Supervised proposals; no changes applied |
 | **TOKENS** | Examine context or an explicitly supplied trace | Descriptive diagnosis; no inferred subscription quota or savings |
 | **SOURCES** | Browse references and tools | Local catalog; no automatic installation |
@@ -85,6 +86,20 @@ python3 -m vcr start --interactive --from "/path/to/brief/answers.json" --out "/
 ```
 
 Saved answers, including “to be determined”, are not requested again. To change them, start over without `--from`. The documents contain your answers in plain text: do not enter secrets or personal data, and review them before sharing. Stack options and criteria remain assumptions for the owner to validate; they do not replace a security or feasibility assessment.
+
+## Run a project health check
+
+```sh
+python3 -m vcr check --repo /path/to/project
+python3 -m vcr check --repo /path/to/project --json
+python3 -m vcr check --repo /path/to/project --full --format json --out /path/outside/project/check.json
+```
+
+`--repo` defaults to the current directory. Output goes to the terminal unless `--out` specifies a new file outside the project. The JSON and text describe the same results. `--full` identifies known scripts without running them; running project commands is not supported. Exit codes are 0 when no check has a confirmed failure, 1 when a potentially sensitive `.env` name is tracked by Git, and 2 on an error. Exit code 0 does not establish that the project is secure or working.
+
+The checks use local, deterministic rules, not an AI model or network service. They inspect a bounded, filtered inventory and limited Git metadata. They identify some Git, README, manifest, lockfile, CI, agent instruction, environment example and script configuration names; they do not evaluate their quality or effectiveness. Files ignored by Git, symbolic links and large files are excluded. No project scripts run, and `.env` contents and project commands are not copied. Missing or ambiguous evidence is `not_checked`; `skipped` means a discovered execution was not performed. `passed` applies only to the stated observation, not the project's overall health.
+
+Results include a reason and, where available, evidence, method, applicability and limitations. Internal checks validate produced fields and evidence before output, but do not implement full JSON Schema validation. Dependency vulnerabilities and backup restoration are not checked. See the [implementation status](docs/IMPLEMENTATION_STATUS.md) for the exact scope.
 
 ## Inspect a project with RESCUE
 
