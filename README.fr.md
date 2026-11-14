@@ -104,3 +104,54 @@ Décisions : `accepted`, `rejected`, `deferred`, `false_positive`, `obsolete`. L
 
 Les options répétables `--note` et `--log` importent des fichiers texte choisis volontairement. Le texte libre n'est pas interprété ni recopié. Pour signaler explicitement une observation, placer seule sur une ligne, par exemple, `VCR_OBSERVATION test-failure confirmed` ou `VCR_OBSERVATION agents-conflict suspected` ; les statuts sont des déclarations de l'utilisateur, non des vérifications automatiques. Règles reconnues : `tests-unknown`, `test-failure`, `architecture-doc`, `git-dirty`, `env-present`, `agents-conflict`, `navigation-difficulty`, `large-tool-output`, `convention-conflict`, `unused-plugin`. Une même note copiée ne compte qu'une fois. Ne pas importer d'historique privé sans choix explicite ; les fichiers sont limités à 1 Mio et les liens symboliques directs refusés.
 
+## Examiner le contexte avec TOKENS
+
+Sans fichier, le diagnostic affiche une checklist et des pistes sans prétendre mesurer la consommation :
+
+```sh
+python3 -m vcr tokens
+```
+
+Pour importer volontairement une trace et créer un rapport hors du projet :
+
+```sh
+python3 -m vcr tokens --from "/chemin/trace.json" --out "/chemin/nouveau-diagnostic" --project "/chemin/projet"
+```
+
+L'option `--out` est facultative ; sans elle, le résultat est affiché dans le terminal. Si un projet est concerné, `--project` protège son dossier contre les sorties. Sans cette option, choisir soi-même un dossier extérieur au projet. Les résultats peuvent contenir `tokens.json`, `report.md` et un prompt de revue. L'import accepte le [format VCR documenté](docs/TOKEN_TRACE_FORMAT.md) et, avec `--format openai-responses` ou `--format anthropic-messages`, l'objet `usage` d'une réponse API individuelle choisie. Les journaux natifs Codex et Claude Code ne sont pas reconnus automatiquement. Les mesures sont reprises, mais les noms de modèles, outils et sessions, les empreintes et les contenus bruts ne sont pas recopiés ; conserver la trace sélectionnée pour retrouver les références numériques.
+
+Les compteurs sont déclaratifs, pas vérifiés indépendamment. Les champs absents restent `unavailable` ; les coûts déclarés ne sont ni des économies calculées ni un quota d'abonnement. Aucune surveillance des historiques, aucun tarif figé et aucun accès réseau ne sont effectués.
+
+## Consulter le catalogue SOURCES
+
+```sh
+python3 -m vcr sources --topic tokens
+python3 -m vcr sources --topic navigation
+python3 -m vcr sources
+```
+
+Le filtre correspond à un thème exact ; un thème inconnu affiche la liste des thèmes disponibles. Les fiches séparent le niveau d'adoption A/B/C, l'état des preuves et celui des liens. Les liens officiels, plusieurs licences et les métadonnées d'activité GitHub ont été consultés le 14 novembre 2026 ; cela ne prouve ni efficacité ni sécurité, et les versions, compatibilités et retraits restent à vérifier avant usage. Le statut `unverified` ne constitue pas une recommandation. VCR lui-même n'ouvre pas les liens et n'installe rien.
+
+La [politique des sources](docs/SOURCE_POLICY.md) précise comment conserver les versions, preuves et limites. Pour un problème de sécurité, consulter la [politique de signalement](SECURITY.md) avant toute publication.
+
+## Ce qui est examiné
+
+Inventaire limité, filtres de dossiers, règles Git ignore lorsque Git fonctionne, statut et HEAD Git, manifestes courants, indices de scripts test/lint/build, noms de documentation d'architecture et fichiers `.env` non exclus. Les commandes et valeurs de manifestes ne sont pas recopiées. Les fichiers `.env` ne sont jamais lus ; leur présence n'établit pas qu'un secret existe. Les fichiers ignorés ne sont pas inspectés. Les dépendances sont comptées partiellement, sans analyse de vulnérabilités.
+
+Un constat `confirmed` correspond à un fait observé ; `suspected` demande vérification. Les contrôles `not_checked` n'ont pas été établis ; `not_applicable` signifie non applicable. L'absence d'alerte ne prouve ni sécurité ni bon fonctionnement. Le verdict reste inconclusif. L'analyse ne couvre ni le métier ni l'exécution. Les noms et chemins du dossier ciblé, le hash Git et les observations figurent dans les rapports : vérifiez-les avant partage. Ne copiez pas de données sensibles dans un agent sans les examiner.
+
+Les champs et énumérations produits sont vérifiés avant rendu ; une preuve sans localisation valide entraîne un avertissement et une confiance diminuée. Cette validation interne ne remplace pas un validateur JSON Schema complet. Un tri automatique par priorité et un rapport HTML ne sont pas fournis.
+
+L'inventaire exclut les liens symboliques et les fichiers de plus de 1 Mio ; il est limité à 10 000 fichiers. Un dépôt modifié simultanément peut changer pendant l'analyse : ne pas auditer une arborescence contrôlée activement par un tiers hostile. Les erreurs de lecture et les règles Git non disponibles sont indiquées. Les règles de fichiers ignorés ne sont pas évaluées hors Git ; plusieurs manifestes sont relevés, sans interprétation complète des monorepos.
+
+## Tests locaux
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -m unittest discover -s tests -v
+```
+
+Les tests créent des projets artificiels temporaires et ne nécessitent ni réseau ni données privées. `pytest` est proposé en dépendance de développement facultative, mais n'est pas nécessaire à cette commande. Voir [l'état d'avancement](docs/IMPLEMENTATION_STATUS.md) pour les cas couverts et les limites.
+
+## Licence
+
+Ce projet est distribué sous [licence MIT](LICENSE).
