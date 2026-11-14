@@ -98,3 +98,103 @@ https://github.com/oraios/serena
 
 **[S27] Aider — Repository Map.** **D · Recensé.** Carte concise des classes et symboles d'un dépôt.  
 https://aider.chat/docs/repomap.html
+
+**[S28] Codebase Memory MCP.** **D · Ouvert.** Graphe/index local ; gains annoncés à valider avant citation.  
+https://github.com/DeusData/codebase-memory-mcp
+
+**[S29] Google — Introducing Code Wiki: Accelerating your code understanding.** 13 nov. 2025. **B/C · Ouvert.** Documentation vivante reliée aux définitions de code.  
+https://developers.googleblog.com/introducing-code-wiki-accelerating-your-code-understanding/
+
+**[S30] OpenBMB — RepoAgent.** **D · Ouvert.** Génération et maintenance de documentation de dépôt.  
+https://github.com/OpenBMB/RepoAgent
+
+**[S31] GitHub Agentic Workflows — Keeping documentation up to date automatically.** **C · Ouvert.** Mise à jour de docs sous forme de PR contrôlée.  
+https://github.github.com/gh-aw/gallery/docs-automation/
+
+**[S32] Repomix.** **D · Recensé.** Export ciblé du code pour agents et audits.  
+https://repomix.com/
+
+### E — Architecture et contrôles de dépendances (S33–S39)
+
+**[S33] Feature-Sliced Design.** **C/D · Recensé.** Couches et découpages frontend ; éviter la surapplication.  
+https://feature-sliced.design/
+
+**[S34] Feature-Sliced Design — Agent Skills.** **C/D · Ouvert.** Règles d'import, croissance progressive des couches, skills FSD.  
+https://github.com/feature-sliced/skills
+
+**[S35] Create T3 App.** **D · Recensé.** Exemple de starter Next.js et sélection de technologies.  
+https://github.com/t3-oss/create-t3-app
+
+**[S36] Martin Fowler — Monolith First.** **B/D · Recensé.** Argument architectural favorable au monolithe comme point de départ dans certaines situations.  
+https://martinfowler.com/bliki/MonolithFirst.html
+
+**[S37] Dependency Cruiser.** **D · Recensé.** Cartographie et contraintes de dépendances JS/TS.  
+https://github.com/sverweij/dependency-cruiser
+
+**[S38] ESLint Plugin Boundaries.** **D · Recensé.** Règles de dépendances entre modules JS/TS.  
+https://github.com/javierbrea/eslint-plugin-boundaries
+
+**[S39] Import Linter.** **D · Recensé.** Contrats de dépendances Python.  
+https://import-linter.readthedocs.io/en/stable/
+
+### F — Standards et documentations techniques (S40–S45)
+
+**[S40] Agent Skills — Specification.** **C · Ouvert.** Convention du `SKILL.md` et de ses références/scripts.  
+https://agentskills.io/specification
+
+**[S41] AGENTS.md — Open format.** **C · Ouvert.** Instruction de dépôt destinée aux agents de code.  
+https://github.com/agentsmd/agents.md
+
+**[S42] OpenAI — Documentation sur AGENTS.md pour Codex.** **C · À préciser.** Le lien initial de nos notes n'était pas suffisamment fiable ; voir la source complémentaire [S46].  
+Lien antérieurement envisagé : https://learn.chatgpt.com/docs/agent-configuration/agents-md
+
+**[S43] Astro — Islands Architecture.** **C · Recensé.** Architecture frontend à îlots.  
+https://docs.astro.build/en/concepts/islands/
+
+**[S44] Django — site et documentation officielle.** **C · Recensé.** Conventions backend/full-stack Python.  
+https://www.djangoproject.com/
+
+**[S45] HTMX — site et documentation officielle.** **C · Recensé.** Interactions HTML côté serveur.  
+https://htmx.org/
+
+### G — Compléments officiels identifiés pendant la consolidation (S46–S47)
+
+**[S46] OpenAI — Codex Prompting Guide (section AGENTS.md).** **C · Ouvert.** Ordre de découverte des instructions dans les répertoires.  
+https://developers.openai.com/cookbook/examples/gpt-5/codex_prompting_guide
+
+**[S47] Anthropic — Public repository for Agent Skills.** **C/D · Ouvert.** Exemples de skills et conventions officielles ; les ressources du dépôt restent à examiner une par une.  
+https://github.com/anthropics/skills
+
+### H — Guides officiels à compléter dans le prochain cycle
+
+Next.js, SvelteKit, React, Vite, FastAPI, Streamlit, Ruby on Rails, GitHub Actions, ESLint, Biome, Ruff, uv, Vitest, pytest, Playwright, Gitleaks et OSV-Scanner. Ils sont mentionnés comme outils/stacks dans notre réflexion ; une revue comparative des documentations officielles reste à mener. **Aucune conclusion sur un avantage propre aux agents ne doit être inférée de leur simple présence dans cette liste.**
+
+---
+
+
+## Compléments N01–N31
+
+## 17 bis. Sources nouvelles vérifiées ou identifiées pour la v0.2 (N01–N31)
+
+**Mode de lecture :** `A-prépublication` = étude expérimentale déposée avant validation éventuelle par les pairs ; `A-conférence` = article dans des actes de conférence/atelier ; `B` = retour technique industriel ; `C` = documentation éditeur ; `D` = dépôt et pratiques publiques. L'état **« source consultée »** signifie que l'abstract, la page d'actes ou la documentation liée a été accessible lors de cette consolidation, **pas** que nous avons reproduit les résultats ni audité le code de l'étude. La présence d'un article dans Google Scholar/arXiv n'établit pas sa robustesse.
+
+### Navigation et architecture
+
+**[N01] Qin, B. & Xie, Y. — Agent Retrieval Bench: Evaluating Repository Context Retrieval for Coding Agents.** 27 juillet 2026. **A-prépublication, source consultée.** 427 exemples, 25 dépôts ; comparaison lexicale, embeddings, RepoMap et récupérations d'agents. Ne pas confondre métrique de retrieval et réussite d'un correctif.  
+https://arxiv.org/abs/2607.24882
+
+**[N02] Coppola, A., Esposito, M., Kazman, R. & Lenarduzzi, V. — On Coding Agent Issue Localization Accuracy: An Exploratory Study.** ESEM, 5 octobre 2026. **A-conférence, source consultée.** Étude de granularité package/classe/méthode ; 2 441 commits dans dix projets Java.  
+https://drops.dagstuhl.de/entities/document/10.4230/LIPIcs.ESEM.2026.59
+
+**[N10] Zhang, S. et al. — SWE-Explore: Benchmarking How Coding Agents Explore Repositories.** Juin 2026. **A-prépublication, source consultée.** 848 problèmes, 203 projets, dix langages ; évaluation d'exploration sous budget de lignes.  
+https://arxiv.org/abs/2606.07297
+
+**[N11] Chen, W., Yang, Y., Cao, Y. & Lin, Y. — CodeGrep: An RL-Trained Retrieval Agent for LLM Coding Agents.** REALM 2026, ACL Anthology, octobre 2026. **A-atelier, source consultée.** Code retrieval spécialisé, résultats −15 % de tours et −19 % de tokens sur instances résolues de SWE-bench Verified.  
+https://aclanthology.org/2026.realm-1.80/
+
+**[N23] Aider — Repository Map.** Documentation technique de l'outil ; **C/D, référence de documentation**. Emploi d'une carte des symboles pondérés sous budget de tokens.  
+https://aider.chat/docs/repomap.html
+
+### Instructions, besoins et skills
+
+**[N03] Gloaguen, T. et al. — Evaluating AGENTS.md: Are Repository-Level Context Files Helpful for Coding Agents?** 12 février 2026. **A-prépublication, source consultée.** Résultats défavorables à l'injection indiscriminée de contexte ; ne prouve pas que toute consigne minimale est inutile.  
