@@ -1398,3 +1398,103 @@ https://repomix.com/
 **[S33] Feature-Sliced Design.** **C/D · Recensé.** Couches et découpages frontend ; éviter la surapplication.  
 https://feature-sliced.design/
 
+**[S34] Feature-Sliced Design — Agent Skills.** **C/D · Ouvert.** Règles d'import, croissance progressive des couches, skills FSD.  
+https://github.com/feature-sliced/skills
+
+**[S35] Create T3 App.** **D · Recensé.** Exemple de starter Next.js et sélection de technologies.  
+https://github.com/t3-oss/create-t3-app
+
+**[S36] Martin Fowler — Monolith First.** **B/D · Recensé.** Argument architectural favorable au monolithe comme point de départ dans certaines situations.  
+https://martinfowler.com/bliki/MonolithFirst.html
+
+**[S37] Dependency Cruiser.** **D · Recensé.** Cartographie et contraintes de dépendances JS/TS.  
+https://github.com/sverweij/dependency-cruiser
+
+**[S38] ESLint Plugin Boundaries.** **D · Recensé.** Règles de dépendances entre modules JS/TS.  
+https://github.com/javierbrea/eslint-plugin-boundaries
+
+**[S39] Import Linter.** **D · Recensé.** Contrats de dépendances Python.  
+https://import-linter.readthedocs.io/en/stable/
+
+### F — Standards et documentations techniques (S40–S45)
+
+**[S40] Agent Skills — Specification.** **C · Ouvert.** Convention du `SKILL.md` et de ses références/scripts.  
+https://agentskills.io/specification
+
+**[S41] AGENTS.md — Open format.** **C · Ouvert.** Instruction de dépôt destinée aux agents de code.  
+https://github.com/agentsmd/agents.md
+
+**[S42] OpenAI — Documentation sur AGENTS.md pour Codex.** **C · À préciser.** Le lien initial de nos notes n'était pas suffisamment fiable ; voir la source complémentaire [S46].  
+Lien antérieurement envisagé : https://learn.chatgpt.com/docs/agent-configuration/agents-md
+
+**[S43] Astro — Islands Architecture.** **C · Recensé.** Architecture frontend à îlots.  
+https://docs.astro.build/en/concepts/islands/
+
+**[S44] Django — site et documentation officielle.** **C · Recensé.** Conventions backend/full-stack Python.  
+https://www.djangoproject.com/
+
+**[S45] HTMX — site et documentation officielle.** **C · Recensé.** Interactions HTML côté serveur.  
+https://htmx.org/
+
+### G — Compléments officiels identifiés pendant la consolidation (S46–S47)
+
+**[S46] OpenAI — Codex Prompting Guide (section AGENTS.md).** **C · Ouvert.** Ordre de découverte des instructions dans les répertoires.  
+https://developers.openai.com/cookbook/examples/gpt-5/codex_prompting_guide
+
+**[S47] Anthropic — Public repository for Agent Skills.** **C/D · Ouvert.** Exemples de skills et conventions officielles ; les ressources du dépôt restent à examiner une par une.  
+https://github.com/anthropics/skills
+
+### H — Guides officiels à compléter dans le prochain cycle
+
+Next.js, SvelteKit, React, Vite, FastAPI, Streamlit, Ruby on Rails, GitHub Actions, ESLint, Biome, Ruff, uv, Vitest, pytest, Playwright, Gitleaks et OSV-Scanner. Ils sont mentionnés comme outils/stacks dans notre réflexion ; une revue comparative des documentations officielles reste à mener. **Aucune conclusion sur un avantage propre aux agents ne doit être inférée de leur simple présence dans cette liste.**
+
+---
+
+# Partie IX bis — Audit de cohérence v0.1 → v0.2 et nouvelles décisions
+
+## 17.1 Ce qui est conservé intégralement sur le fond
+
+Les décisions historiques D01–D20 de la v0.1 restent en vigueur : **référentiel GitHub**, parcours START/RESCUE, audits non destructifs, verdicts conditionnels, absence de réécriture par défaut, simplicité, protection des données, choix techniques sans dogme, pas de benchmarks personnels, installation minimale d'outils, skills sélectionnés et non généralisés. Les **47 sources S01–S47** restent dans la bibliographie historique. Leur maintien **ne signifie pas** que chaque article a été relu intégralement à cette date.
+
+## 17.2 Corrections et nuances documentées
+
+| ID | Formulation / lacune antérieure | Correction retenue | Source / nature |
+|---|---|---|---|
+| C01 | SWE-Skills-Bench décrit par les résultats initiaux de mars (49 skills, +1,2 point) | **v2 du 27 octobre 2026 : 98 skills, 92 sans effet statistiquement significatif, moyenne +0,3 point** | [N05], **révision de publication** |
+| C02 | « Skill officiel/connu = efficace » implicite dans certains classements d'experts | trois dimensions distinctes : origine, reconnaissance, efficacité expérimentale | [N04], [N05], [N17] |
+| C03 | Les gains d'un outil de recherche seraient des gains automatiques en tokens ou coût | localisation utile ≠ économie facturée ; indiquer le protocole et les tâches résolues | [N01], [N11], [N14] |
+| C04 | Réduire les tokens bruts réduirait toujours la facture | bras expérimental −38 % tokens d'outils mais +6,8 % coût facturé | [N14], **résultat contraire** |
+| C05 | Le cache serait simplement une réduction de facturation sans contrepartie | distinguer cache read/write, dégradation de préfixe après compaction et prix variant selon modèle | [N28] |
+| C06 | Possibilité d'assimiler réduction API à quota Codex/Claude Code | variables différentes ; aucune conversion chiffrée sans méthode officielle du fournisseur | **décision de rigueur** |
+| C07 | Évaluer la qualité des tests par leur présence et leur exécution | examiner assertions, critères métier, usage réel, zones non couvertes | [N07], [N08] |
+| C08 | Un prompt « respecter les pratiques du code existant » serait intrinsèquement sûr | l'existant peut propager ses vulnérabilités | [N09] |
+| C09 | `AGENTS.md` devrait s'allonger avec les projets | conserver un noyau court, consulter les docs à la demande ; effets empiriques mitigés | [N03], [N20], [N19] |
+| C10 | Multiplier les agents améliore forcément la vérification à coût acceptable | peut apporter une meilleure qualité sur des tâches longues mais avec surcoût massif | [N18] |
+| C11 | Les petits fichiers et le nombre de couches seraient des indicateurs universels de bon code | l'architecture se juge selon cohésion, frontières et maintien des invariants | **hypothèse non prouvée universellement** |
+| C12 | La v0.1 décrivait surtout le besoin technique | ajouter **formulation métier et critères d'acceptation** pour profils non-développeurs | [N06] |
+| C13 | Ressources publiques de skills copiées sans stratégie de maintenance | conserver provenance, commit/version et contrôles de sécurité ; éviter les copies abandonnées | [N17], [N31] |
+| C14 | Un plugin d'optimisation constituerait un « skill » | TokenEconomizer est un **plugin/harness externe** avec hooks, pas un simple fichier SKILL.md | [N27] |
+| C15 | Des chiffres de comparaison de modèles seraient persistants | dater les modèles/harness, ne pas prédire des quotas et revoir après changement de version | [N20], [N21], [N28] |
+| C16 | Le statut « ouvert » d'une référence vaudrait vérification de toutes ses assertions | distinguer résumé lu, méthode examinée, protocole et absence de validation indépendante | **règle éditoriale** |
+
+**Portée du mot « bug »** : ce document enregistre des **erreurs de cadrage, de métriques ou de citation et des problèmes techniques identifiés dans nos discussions**. Il ne prétend pas avoir découvert ou corrigé un nouveau bug dans un dépôt applicatif ; aucun code d'application n'a été inspecté pour cette v0.2.
+
+## 17.3 Nouveau registre de décisions D21–D38
+
+| ID | Sujet | Statut | Décision |
+|---|---|---|---|
+| D21 | Spécification accessible | **RETENU** | objectifs utilisateurs, invariants et critères d'acceptation avant le code |
+| D22 | Vérification réelle | **RETENU** | technique + métier + usage, proportionnées au risque |
+| D23 | Skills existants | **RETENU** | pas de création de skills maison ; référencer sources réelles et versionnées |
+| D24 | Hiérarchie des preuves sur skills | **RETENU** | origine/popularité/efficacité mesurée strictement séparées |
+| D25 | Installation massive de skills | **ÉCARTÉ** | seulement nécessaires à tâche et stack, permissions vérifiées |
+| D26 | Études avancées | **RETENU** | garder en recherche sans imposition à un non-développeur |
+| D27 | TOKEN EFFICIENCY | **RETENU** | cinquième domaine transversal lié à START/RESCUE |
+| D28 | Métrique principale théorique | **RETENU** | coût **par tâche correcte**, pas tokens supprimés seuls |
+| D29 | Cache API vs quota | **RETENU** | distinguer, aucun taux de conversion fictif |
+| D30 | Navigation de dépôt | **RETENU** | recherche native et code pertinent avant RAG/MCP spécialisés |
+| D31 | Handoffs | **RETENU CONDITIONNEL** | états courts pour travaux longs ou changement de session |
+| D32 | Compression de tout le contexte | **ÉCARTÉ PAR DÉFAUT** | résultats contradictoires ; outils avancés facultatifs |
+| D33 | TokenEconomizer | **À ÉTUDIER / OPTION AVANCÉE** | plugin existant à compatibilité et sécurité vérifier |
+| D34 | Tests ciblés puis globaux | **RETENU** | séquencement proportionné au risque, sans exclure la suite complète |
+| D35 | Architecture recommandée | **HYPOTHÈSE MAINTENUE** | monolithe modulaire/feature-first conditionnel, non démontré optimal |
