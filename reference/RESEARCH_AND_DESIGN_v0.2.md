@@ -998,3 +998,103 @@ Les sources [N07], [N08], [N06] et [N18] traitent des **dimensions différentes*
 - **Tokens comptés / prix** : entrée cachée, sortie et écriture de cache peuvent suivre des tarifs différents.
 - **Versions changeantes** : un skill ou plugin peut évoluer après l'étude et devenir inefficace, dangereux ou incompatible.
 - **Étude de laboratoire / usage produit** : un protocole sur GitHub public ne se transporte pas directement à une application locale avec données sensibles.
+- **Auteur reconnu / preuve** : l'expérience d'un expert est utile pour sélectionner des candidats, pas une validation scientifique.
+- **Comparaison des machines et outils** : modèle, agent, shell, permissions et dépendances peuvent modifier fortement les résultats.
+
+## 12.7 Matrice de confiance pour les décisions du référentiel
+
+| Proposition | Sources principales | Niveau de décision | Degré de certitude documentaire |
+|---|---|---|---|
+| Conditions métier et critères d'acceptation | [N06], [N18] | **RETENU** | forte valeur pratique ; quantification externe non générale |
+| `AGENTS.md` court et docs à la demande | [N03], [N20], [N19] | **RETENU** | convergence prudente, résultats empiriques variables |
+| Navigation ciblée/native, puis repo maps si utile | [N01], [N10], [N11] | **RETENU** | bon support sur localisation, gains par produit non quantifiés |
+| Monolithe modulaire/feature-first | [N02], [N19], [S36] | **HYPOTHÈSE** | pas de preuve comparative universelle |
+| Quality gates et preuve d'usage | [N07], [N08], [N18] | **RETENU** | sources convergentes sur les limites du test superficiel |
+| Skills existants, installation sélective | [N04], [N05], [N17] | **RETENU** | bonnes preuves que « plus » n'est pas toujours « mieux » |
+| Réduction d'exploration et de boucles inutiles | [N11], [N12], [N13] | **RETENU** | études compatibles avec principe, gains variables |
+| Installer TokenEconomizer dans START | [N12], [N27] | **ÉCARTÉ PAR DÉFAUT** | effet publié, compatibilité/risques spécifiques |
+| Compression de tout le contexte | [N14], [N15], [N16] | **ÉCARTÉ PAR DÉFAUT** | publications contradictoires et effets de cache |
+| RAG / graphe de code systématique | [N01], [S26-S28] | **AVANCÉ** | bénéfice net non établi pour tout dépôt |
+| Rebuild systématique quand l'IA peine | [S36], analyses RESCUE | **ÉCARTÉ** | coût de migration et risques non justifiés |
+
+---
+
+
+# Partie VIII — Décisions, pistes et priorités
+
+## 13. Registre consolidé des décisions
+
+| ID | Sujet | Statut | Décision / raison |
+|---|---|---|---|
+| D01 | Type de produit | **RETENU** | référentiel GitHub, pas une app |
+| D02 | Piliers | **RETENU** | START + RESCUE, contexte/architecture/qualité transverses |
+| D03 | Usage RESCUE | **RETENU** | audit lecture seule avant toute réparation |
+| D04 | Verdicts RESCUE | **RETENU** | KEEP / REFACTOR / PARTIAL REBUILD / REBUILD |
+| D05 | Rebuild | **RETENU** | possible mais exceptionnel et argumenté |
+| D06 | Supprimer des fonctions | **RETENU** | jamais sans validation du besoin métier |
+| D07 | Choix d'architecture | **RETENU** | contextualisé, sans dogme |
+| D08 | Monolithe modulaire/feature-first | **HYPOTHÈSE** | candidat de départ, pas vérité scientifique |
+| D09 | Documentation IA | **RETENU** | quatre niveaux, chargement progressif |
+| D10 | Maintenance des docs | **RETENU** | événements et révision ciblée, contrôle de dérive |
+| D11 | Skills | **RETENU** | catalogue large, installation sélective |
+| D12 | Quality gates | **RETENU** | tests, lint, sécurité, frontières vérifiables |
+| D13 | Seuils de lignes | **ÉCARTÉ** | pas de critère universel automatique |
+| D14 | Benchmarks propres | **ÉCARTÉ** | s'appuyer sur les études existantes |
+| D15 | Sources primaires | **RETENU** | industrie + science + documentation, avec limites |
+| D16 | Nouvelle CLI | **REPORTÉ** | non nécessaire au référentiel initial |
+| D17 | SaaS / application de guidance | **ÉCARTÉ maintenant** | bibliothèque avant produit |
+| D18 | Propre framework/agent | **ÉCARTÉ** | privilégier les outils existants |
+| D19 | Tous les outils au premier commit | **ÉCARTÉ** | installation minimale adaptée |
+| D20 | Réécriture par défaut | **ÉCARTÉ** | vérifier le coût et la valeur de l'existant |
+
+## 14. Questions de recherche non résolues
+
+1. Quelles études comparent véritablement les architectures sous des agents de code récents ?
+2. Quelles preuves quantifient la valeur des frontières de modules pour localiser et corriger les bugs ?
+3. Quels effets documentés de repo maps, recherche symbolique et index persistants sur la réussite des agents ?
+4. Comment détecter automatiquement une dérive de documentation sans créer de bruit ou de faux positifs ?
+5. Quelles études sérieuses abordent les critères *rebuild vs refactor* et l'économie de la dette technique ?
+6. Quels contrôles sont effectivement indispensables selon le profil de projet ?
+7. Comment les comportements de lecture `AGENTS.md` et des skills diffèrent-ils entre agents et versions ?
+8. Quels comparatifs officiels/indépendants permettent de recommander des stacks sans surinterpréter ?
+9. Quel niveau de standardisation des starter packs reste acceptable sans sacrifier le minimalisme ?
+10. Comment maintenir la bibliographie, les liens, les versions et les avertissements de sécurité à jour ?
+
+## 15. Priorité des recherches suivantes
+
+1. **Architecture pour agents** : modularité, barrières automatiques, compréhension du code.
+2. **Contexte et documentation** : navigation, indexation, recouvrement docs/code, versionnement.
+3. **RESCUE / dette technique** : diagnostic, migration, refactoring ou reconstruction.
+4. **Quality gates** : tests, sécurité, vérification des agents, limitations de l'auto-review.
+5. **Stack et infrastructure** : recommandations conditionnelles, systèmes et coûts d'exploitation.
+
+À chaque étape : partir des sources primaires, noter les résultats contradictoires et séparer les faits des décisions de conception.
+
+## 16. Arborescence conceptuelle, NON implémentée
+
+```text
+vibe-coding-reference/
+├── README.md
+├── RESEARCH_AND_DESIGN_REFERENCE.md
+├── research/
+│   ├── evidence-reviews/
+│   ├── source-index/
+│   ├── industry-publications/
+│   └── scientific-papers/
+├── start/
+│   ├── choosing-stack/
+│   ├── choosing-infrastructure/
+│   ├── project-initialization/
+│   └── starter-packs/
+├── rescue/
+│   ├── audit/
+│   ├── architecture-assessment/
+│   ├── rebuild-vs-refactor/
+│   └── recovery-process/
+├── architecture/
+│   ├── patterns/
+│   ├── stack-guides/
+│   └── architecture-controls/
+├── agent-context/
+│   ├── documentation/
+│   ├── code-navigation/
