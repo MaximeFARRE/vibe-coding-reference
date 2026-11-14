@@ -32,7 +32,8 @@
         "start",
         "rescue",
         "improve",
-        "tokens"
+        "tokens",
+        "check"
       ]
     },
     "target": {
@@ -105,6 +106,52 @@
           "duration_ms": {
             "type": "integer",
             "minimum": 0
+          },
+          "evidence": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "kind",
+                "summary"
+              ],
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "file",
+                    "command",
+                    "log",
+                    "configuration"
+                  ]
+                },
+                "summary": {
+                  "type": "string"
+                },
+                "path": {
+                  "type": "string"
+                },
+                "command": {
+                  "type": "string"
+                },
+                "exit_code": {
+                  "type": "integer"
+                },
+                "redacted": {
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "source_method": {
+            "type": "string"
+          },
+          "applicability_reason": {
+            "type": "string"
+          },
+          "limitation": {
+            "type": "string"
           }
         },
         "additionalProperties": false

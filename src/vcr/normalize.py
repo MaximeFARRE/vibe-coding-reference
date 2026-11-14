@@ -2,6 +2,8 @@
 from copy import deepcopy
 from pathlib import Path
 
+from .models import CheckResult, Evidence
+
 STATUSES = {'confirmed', 'suspected', 'not_checked', 'not_applicable'}
 CONFIDENCES = {'high', 'medium', 'low', 'unknown'}
 ORIGINS = {'static_check', 'command', 'agent_review', 'user_provided'}
@@ -15,7 +17,7 @@ def normalize(run, repo):
     """Retourne une copie ; erreurs de contrat fatales et preuves partielles signalées."""
     run = deepcopy(run)
     repo = Path(repo).resolve(strict=True)
-    if run.schema_version != '0.1' or run.workflow not in {'start', 'rescue', 'improve', 'tokens'}:
+    if run.schema_version != '0.1' or run.workflow not in {'start', 'rescue', 'improve', 'tokens', 'check'}:
         raise ValueError('Version ou workflow de rapport invalide.')
     if not isinstance(run.run_id, str) or not run.run_id or not isinstance(run.created_at, str) or not run.created_at or not isinstance(run.target, dict):
         raise ValueError('Identité, date ou cible du rapport invalide.')
@@ -28,8 +30,44 @@ def normalize(run, repo):
         raise ValueError('Profil invalide.')
     if not isinstance(run.limitations, list) or any(not isinstance(x, str) for x in run.limitations):
         raise ValueError('Limites du rapport invalides.')
-    if any(not isinstance(c.id, str) or not c.id or c.status not in CHECKS or not isinstance(c.reason, str) for c in run.checks):
-        raise ValueError('Identifiant ou statut de vérification invalide.')
+    if not isinstance(run.checks, list):
+        raise ValueError('Liste de vérifications invalide.')
+    ids = set()
+    for c in run.checks:
+        if (not isinstance(c, CheckResult) or not isinstance(c.id, str) or not c.id
+                or not isinstance(c.status, str) or c.status not in CHECKS or not isinstance(c.reason, str)):
+            raise ValueError('Identifiant ou statut de vérification invalide.')
+        if c.id in ids:
+            raise ValueError('Identifiant de vérification en double.')
+        ids.add(c.id)
+        if any(v is not None and (not isinstance(v, str) or not v) for v in
+               (c.source_method, c.applicability_reason, c.limitation)):
+            raise ValueError('Informations de vérification invalides.')
+        if c.evidence is not None:
+            if not isinstance(c.evidence, list):
+                raise ValueError('Liste de preuves de vérification invalide.')
+            for e in c.evidence:
+                if (not isinstance(e, Evidence) or not isinstance(e.kind, str) or e.kind not in {'file', 'command', 'log', 'configuration'}
+                        or not isinstance(e.summary, str) or not e.summary
+                        or e.path is not None and not isinstance(e.path, str)
+                        or e.command is not None and not isinstance(e.command, str)
+                        or e.exit_code is not None and type(e.exit_code) is not int
+                        or e.redacted is not None and type(e.redacted) is not bool
+                        or e.line_start is not None or e.line_end is not None):
+                    raise ValueError('Preuve de vérification invalide.')
+                if e.path:
+                    path = Path(e.path)
+                    try:
+                        valid = (not path.is_absolute() and '..' not in path.parts
+                                 and all(not repo.joinpath(*path.parts[:i]).is_symlink() for i in range(1, len(path.parts) + 1))
+                                 and (repo / path).resolve(strict=True).is_relative_to(repo)
+                                 and (repo / path).is_file())
+                    except (OSError, ValueError):
+                        valid = False
+                    if not valid:
+                        raise ValueError('Chemin de preuve de vérification invalide.')
+        if run.workflow == 'check' and c.status in {'passed', 'failed'} and not c.evidence:
+            raise ValueError('Preuve de vérification concluante manquante.')
     unique = set()
     dedup = set()
     accepted = []

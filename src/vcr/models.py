@@ -41,6 +41,10 @@ class CheckResult:
     id: str
     status: str
     reason: str
+    evidence: list[Evidence] | None = None
+    source_method: str | None = None
+    applicability_reason: str | None = None
+    limitation: str | None = None
 
 
 @dataclass
