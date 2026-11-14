@@ -1,5 +1,7 @@
 # Vibe Coding Reference — dossier de lancement Codex
 
+> **Document historique de cadrage.** Le prototype existe désormais : pour le découvrir et l’essayer, consulter le [README actuel](README.md). Pour l’avancement et les limites vérifiées, voir [IMPLEMENTATION_STATUS.md](docs/IMPLEMENTATION_STATUS.md). Les instructions de création ci-dessous décrivent le lancement initial du projet.
+
 **Version :** brief prototype P0.1 · **Date de consolidation :** 14 novembre 2026  
 **Nature :** spécification et plan d'implémentation, **pas** un logiciel déjà développé.
 

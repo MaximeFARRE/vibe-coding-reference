@@ -1,26 +1,86 @@
-# Vibe Coding Reference — prototype local
+# Vibe Coding Reference
 
-START aide à cadrer une idée et propose des options techniques conditionnelles. RESCUE inspecte passivement un dossier et produit un rapport en français, un fichier JSON et un prompt de revue. IMPROVE propose des pistes à partir de sources choisies ; TOKENS fournit un diagnostic descriptif ou analyse une trace volontaire ; SOURCES consulte un catalogue local. Les outils ne lancent pas de test du projet et ne contactent aucun service. RESCUE et IMPROVE imposent une sortie extérieure au projet ; TOKENS peut appliquer cette protection avec `--project`. Python 3.11 ou supérieur est requis.
+**A local-first toolkit for people building with coding agents.**
+Scope ideas, inspect projects and review improvements with evidence and human oversight.
 
-> **Prototype en cours de développement.** L'analyse est partielle et ne remplace ni les tests du projet ni une revue de sécurité.
+[![Functional checks](https://github.com/MaximeFARRE/vibe-coding-reference/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/MaximeFARRE/vibe-coding-reference/actions/workflows/ci.yml) [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-3776AB?logo=python&logoColor=white)](pyproject.toml) [![License: MIT](https://img.shields.io/badge/license-MIT-2ea44f)](LICENSE) [![Status: prototype](https://img.shields.io/badge/status-prototype-DB8B0B)](docs/IMPLEMENTATION_STATUS.md)
 
-**English:** VCR is a local-first prototype for project scoping, passive repository inspection, supervised improvements, token-context diagnostics and a local source catalog. Its workflows produce French reports locally without an API.
+[Quick start](#quick-start) · [Guide en français](#guide-en-français) · [Contributing](CONTRIBUTING.md) · [Research](research/README.md) · [Security](SECURITY.md)
 
-Les recherches et décisions sont conservées dans les [notes destinées aux agents](research/README.md), avec leurs sources et limites.
+> **Prototype.** Reports are partial and require human review. VCR does not guarantee a project is safe or bug-free. It runs locally, uses no API key, and does not create another agent or model.
 
-## Démarrage sans installation
+## What can I do with VCR?
 
-Dans ce dossier, sur macOS ou Linux :
+| Workflow | Purpose | Output / boundary |
+|---|---|---|
+| **START** | Turn an idea into a project brief | Criteria and stack options for human review |
+| **RESCUE** | Inspect a project passively | Evidence and limits; no target modification |
+| **IMPROVE** | Review selected reports or notes | Supervised proposals; no changes applied |
+| **TOKENS** | Examine context or an explicitly supplied trace | Descriptive diagnosis; no inferred subscription quota or savings |
+| **SOURCES** | Browse references and tools | Local catalog; no automatic installation |
+
+```mermaid
+flowchart LR
+    A[Your idea or project] --> B[START · RESCUE]
+    B --> C[Local reports and evidence]
+    C --> D[IMPROVE · human review]
+    E[TOKENS · SOURCES] --> D
+    classDef source fill:#e8f3ff,stroke:#3572a5,color:#12283e
+    classDef review fill:#e8f7ee,stroke:#2b7a4b,color:#153a23
+    class A,B,E source
+    class C,D review
+```
+
+## Quick start
+
+On macOS or Linux, with Git and Python 3.11+:
 
 ```sh
+git clone https://github.com/MaximeFARRE/vibe-coding-reference.git
+cd vibe-coding-reference
 export PYTHONPATH="$PWD/src"
 python3 -m vcr --help
 python3 -m vcr
-python3 -m vcr start --interactive --out "/chemin/vers/nouveau-cadrage"
-python3 -m vcr rescue --repo "/chemin/du/projet" --out "/chemin/vers/nouveau-rapport"
 ```
 
-Sous Windows PowerShell, remplacer la première ligne par `$env:PYTHONPATH = "$PWD/src"` et utiliser `python` si nécessaire ; Windows n'a pas encore été vérifié. Aucun téléchargement n'est nécessaire pour l'utilisation avec `PYTHONPATH`.
+Try RESCUE and IMPROVE on a [fictional project](#essayer-sur-un-projet-fictif). Reports and the interactive interface are in French. Windows and editable installation have not been verified. VCR does not contact a service during use; cloning requires a network connection. Native Codex and Claude Code session logs are not currently supported by TOKENS. See the [French guide](#guide-en-français) for commands, privacy considerations and limitations.
+
+## Guide en français
+
+VCR aide à cadrer et examiner un projet quand on développe avec des agents existants comme Codex ou Claude Code. Ce prototype Python fonctionne localement, sans clé API et sans créer de nouvel agent ou modèle. Ses rapports sont en français.
+
+> **Prototype :** les résultats sont partiels et demandent une validation humaine. RESCUE ne garantit pas qu'un projet est sûr ou exempt de bugs ; il ne remplace ni ses tests ni une revue de sécurité.
+
+| Parcours | Pour quoi faire ? | Résultat ou limite principale |
+|---|---|---|
+| **START** | Transformer une idée en cadrage | Brief, critères et pistes de stack à valider |
+| **RESCUE** | Inspecter passivement un projet | Rapport avec preuves et limites, sans modifier la cible |
+| **IMPROVE** | Examiner des rapports ou notes choisis | Pistes supervisées, sans appliquer de changement |
+| **TOKENS** | Examiner le contexte ou une trace fournie volontairement | Diagnostic descriptif, sans calcul de quota ou d'économies |
+| **SOURCES** | Consulter des ressources par thème | Catalogue local, sans installation automatique |
+
+**English:** VCR is a local-first prototype for project scoping, passive repository inspection, supervised improvements, token-context diagnostics and a local source catalog. It produces French reports without an API key.
+
+Les [notes de recherche destinées aux agents](research/README.md) conservent les observations, sources, décisions et limites du projet.
+
+## Démarrage sans installation
+
+Il faut **Python 3.11 ou supérieur** et Git pour le clonage. Sur macOS ou Linux, dans un terminal :
+
+```sh
+git clone https://github.com/MaximeFARRE/vibe-coding-reference.git
+cd vibe-coding-reference
+python3 --version
+export PYTHONPATH="$PWD/src"
+python3 -m vcr --help
+python3 -m vcr
+```
+
+Le menu permet de découvrir les commandes. VCR ne contacte aucun service pendant son utilisation ; le clonage, lui, nécessite une connexion. Aucun paquet n'est nécessaire pour cette utilisation avec `PYTHONPATH`.
+
+Sous Windows PowerShell, remplacer l'export par `$env:PYTHONPATH = "$PWD/src"` et utiliser `python` si nécessaire ; **Windows n'a pas été vérifié**.
+
+Pour un premier essai sans projet personnel, suivre l'exemple fictif ci-dessous. Pour une idée personnelle, utiliser `python3 -m vcr start --interactive --out "/chemin/vers/nouveau-cadrage"` ; pour un projet existant, utiliser `python3 -m vcr rescue --repo "/chemin/du/projet" --out "/chemin/vers/nouveau-rapport"`. Les dossiers de sortie doivent être nouveaux ; pour RESCUE et IMPROVE, ils doivent aussi être extérieurs au projet.
 
 ### Essayer sur un projet fictif
 
