@@ -1,10 +1,10 @@
 # Vibe Coding Reference — prototype local
 
-START aide à cadrer une idée et propose des options techniques conditionnelles. RESCUE inspecte passivement un dossier et produit un rapport en français, un fichier JSON et un prompt de revue. IMPROVE propose des pistes à partir de sources choisies. Aucun ne lance de test du projet, ne contacte de service ou ne modifie le projet analysé. Python 3.11 ou supérieur est requis. TOKENS et SOURCES ne sont pas encore disponibles.
+START aide à cadrer une idée et propose des options techniques conditionnelles. RESCUE inspecte passivement un dossier et produit un rapport en français, un fichier JSON et un prompt de revue. IMPROVE propose des pistes à partir de sources choisies ; TOKENS fournit un diagnostic descriptif ou analyse une trace volontaire. Les outils ne lancent pas de test du projet et ne contactent aucun service. RESCUE et IMPROVE imposent une sortie extérieure au projet ; TOKENS peut appliquer cette protection avec `--project`. Python 3.11 ou supérieur est requis. SOURCES n'est pas encore disponible.
 
 > **Prototype en cours de développement.** L'analyse est partielle et ne remplace ni les tests du projet ni une revue de sécurité.
 
-**English:** VCR is a local-first prototype for project scoping, passive repository inspection and supervised improvement proposals. START, RESCUE and IMPROVE generate French documents locally without an API. Other workflows are planned.
+**English:** VCR is a local-first prototype for project scoping, passive repository inspection, supervised improvements and token-context diagnostics. Its workflows produce French reports locally without an API. The sources catalog is planned.
 
 Les recherches et décisions sont conservées dans les [notes destinées aux agents](research/README.md), avec leurs sources et limites.
 
@@ -66,6 +66,24 @@ python3 -m vcr improve --project "/chemin/projet" --registry "/chemin/nouvel-imp
 Décisions : `accepted`, `rejected`, `deferred`, `false_positive`, `obsolete`. La décision modifie seulement le registre sélectionné ; pour actualiser le Markdown et les propositions, relancer `improve` avec ce registre et un nouveau dossier. Lorsqu'un rapport est réimporté, son feedback actuel peut retirer du registre une observation rejetée ; les rapports non réimportés ne sont pas revérifiés automatiquement. Les chemins des sources figurent dans les sorties : les examiner avant partage.
 
 Les options répétables `--note` et `--log` importent des fichiers texte choisis volontairement. Le texte libre n'est pas interprété ni recopié. Pour signaler explicitement une observation, placer seule sur une ligne, par exemple, `VCR_OBSERVATION test-failure confirmed` ou `VCR_OBSERVATION agents-conflict suspected` ; les statuts sont des déclarations de l'utilisateur, non des vérifications automatiques. Règles reconnues : `tests-unknown`, `test-failure`, `architecture-doc`, `git-dirty`, `env-present`, `agents-conflict`, `navigation-difficulty`, `large-tool-output`, `convention-conflict`, `unused-plugin`. Une même note copiée ne compte qu'une fois. Ne pas importer d'historique privé sans choix explicite ; les fichiers sont limités à 1 Mio et les liens symboliques directs refusés.
+
+## Examiner le contexte avec TOKENS
+
+Sans fichier, le diagnostic affiche une checklist et des pistes sans prétendre mesurer la consommation :
+
+```sh
+python3 -m vcr tokens
+```
+
+Pour importer volontairement une trace et créer un rapport hors du projet :
+
+```sh
+python3 -m vcr tokens --from "/chemin/trace.json" --out "/chemin/nouveau-diagnostic" --project "/chemin/projet"
+```
+
+L'option `--out` est facultative ; sans elle, le résultat est affiché dans le terminal. Si un projet est concerné, `--project` protège son dossier contre les sorties. Sans cette option, choisir soi-même un dossier extérieur au projet. Les résultats peuvent contenir `tokens.json`, `report.md` et un prompt de revue. L'import accepte uniquement le [format VCR documenté](docs/TOKEN_TRACE_FORMAT.md) : aucun format natif Codex ou autre n'est reconnu automatiquement. Les mesures sont reprises, mais les noms de modèles, outils et sessions, les empreintes et les contenus bruts ne sont pas recopiés ; conserver la trace sélectionnée pour retrouver les références numériques.
+
+Les compteurs sont déclaratifs, pas vérifiés indépendamment. Les champs absents restent `unavailable` ; les coûts déclarés ne sont ni des économies calculées ni un quota d'abonnement. Aucune surveillance des historiques, aucun tarif figé et aucun accès réseau ne sont effectués.
 
 ## Ce qui est examiné
 
