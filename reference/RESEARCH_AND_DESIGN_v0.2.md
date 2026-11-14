@@ -598,3 +598,103 @@ Les seuils de 400 lignes/fichier et 80 lignes/fonction, évoqués au cours de la
 
 ## 10. Skills et agents
 
+### Bibliothèque fonctionnelle envisagée
+
+- START : `choose-stack`, `initialize-project`, `implement-feature`, `fix-bug`, `review-code`, `deploy`.
+- RESCUE : `audit-existing-project`, `audit-architecture`, `audit-dependencies`, `audit-security`, `audit-tests`, `audit-maintainability`, `audit-performance`, `simplify-project`, `recovery-plan`, `safe-refactoring`, `evaluate-rebuild`.
+- CONTEXTE : `map-codebase`, `find-relevant-code`, `update-documentation`, `audit-documentation`.
+
+**Ces noms décrivent des capacités recherchées, pas des skills déjà créés.** Réutiliser d'abord les skills existants après audit de qualité, licence et compatibilité. Le format [Agent Skills](https://agentskills.io/specification) est une base d'interopérabilité, non la preuve que tous les agents interprètent un skill exactement de la même manière [S40].
+
+### Pratiques retenues
+
+- Des descriptions très courtes et précises pour déclencher les skills [S02, S17].
+- Chargement des références détaillées seulement à la demande.
+- Pas de double installation du même skill ou de douze compétences quasi identiques.
+- Scripts reproductibles pour opérations déterministes.
+- Vérifier les effets et droits des scripts tiers avant installation.
+- Révision périodique des skills anciens, particulièrement après un changement de modèle [S02, S05].
+- Pour tâches longues/risquées : contrat de résultat et revue indépendante, sans imposer par défaut un dispositif multi-agents coûteux [S05, S07].
+
+---
+
+## 10.1 Politique v0.2 — sélectionner des skills EXISTANTS
+
+**Décision utilisateur explicite :** le projet ne vise **pas** à inventer une nouvelle collection de skills. Il sélectionne et documente des skills déjà publiés, idéalement **officiels, reconnus, maintenus et bénéficiant d'une preuve expérimentale**. On peut écrire une courte **fiche de sélection** ou une configuration pour guider leur utilisation, mais pas présenter cette fiche comme un nouveau skill original.
+
+Trois attributs doivent rester distincts :
+
+1. **Officiel / crédible** : maintenu par l'éditeur d'une technologie ou une personne reconnue.
+2. **Populaire / utilisé** : téléchargements, étoiles, exemples publics ; la popularité ne prouve ni l'efficacité ni la sécurité.
+3. **Mesuré** : gain marginal identifié par une étude contrôlée sur certains agent–modèle–tâches ; l'effet ne se transfère pas nécessairement.
+
+### Résultats scientifiques révisés — attention aux versions
+
+**SkillsBench [N04]** : 86 tâches dans 11 domaines, 7 configurations agent/modèle et 7 308 trajectoires d'après l'abstrait consulté. Gain moyen de **+16,2 points de réussite** avec skills sélectionnés, mais **+4,5 points** pour le domaine *software engineering* ; 16 tâches sur 84 voient un delta négatif. Les skills générés par le modèle n'aident pas en moyenne. Ce benchmark multi-domaines ne mesure pas un catalogue général de skills de programmation.
+
+**SWE-Skills-Bench [N05], version 2 datée du 27 octobre 2026** : **98 skills**, **3 920 évaluations appariées** sur quatre configurations et dix exigences par skill ; **92/98 n'ont pas d'effet statistiquement significatif**, **4 ont un effet positif** global, **2 négatif** global. Taux de réussite moyen **76,6 % sans skill contre 76,9 % avec skill** (**+0,3 point**, non +1,2 point). Les chiffres **49 skills / 39 sans amélioration / +1,2 %** appartiennent à **la version 1 de mars 2026** et ne doivent plus être présentés comme les résultats actuels de cet article.
+
+Les résultats significatifs (effet **en points de pourcentage du taux de réussite** dans le protocole) :
+
+| Skill étudié | Delta global | Interprétation et restriction |
+|---|---:|---|
+| `viper-configuration` | +17,69 pts | aide à employer correctement `spf13/viper` en Go ; pas pertinent hors projet Go/Viper |
+| `go-testify-patterns` | +4,88 pts | tests Go, bénéfice modéré selon le benchmark |
+| `junit5-testing` | +3,90 pts | tests Java JUnit 5, effet dépendant du contexte |
+| `fastapi-patterns` | +3,23 pts | FastAPI ; dispersion des résultats selon configuration |
+| `asyncio-patterns` | −16,96 pts | *négatif*, templates pouvant contredire la tâche |
+| `grafana-dashboards` | −2,96 pts | *négatif* dans le protocole, pas interdiction générale |
+
+L'étude rapporte aussi, pour `vitest-unit-testing`, **+41,34 points avec Codex/GPT-5.4-mini**, mais **pas** de gain global significatif. Ce cas illustre qu'un skill peut corriger une omission d'environnement dans une configuration et être inutile ailleurs. **Ne pas transformer un résultat de protocole en label permanent « prouvé pour toutes versions de Codex ».**
+
+### Méthode de sélection sans benchmark maison
+
+Pour chaque skill candidat, rédiger une **fiche documentaire** :
+
+| Champ | Question à résoudre |
+|---|---|
+| Identité | auteur, dépôt officiel, chemin exact du `SKILL.md`, licence, version/commit revu |
+| Portée | outil, langage, tâches déclenchantes, prérequis |
+| Reconnaissance | auteur mainteneur, usage connu, activité du dépôt (avec date) |
+| Preuves | étude indépendante, retour industriel, cas public, ou aucune donnée comparative |
+| Compatibilité | Codex/Claude Code/autres, versions testées, mécanisme d'invocation |
+| Surface de risque | scripts, hooks, commandes shell, réseau, lecture de secrets, packages installés |
+| Coût de contexte | description chargée, ressources lues à la demande, conflits avec autres skills |
+| Maintenance | dernière vérification, risques d'obsolescence et changements de version |
+| Verdict | **référencer / recommander conditionnellement / étude seulement / exclure** |
+
+**Seuil d'inclusion au catalogue** : source et utilité identifiable ; **seuil de recommandation directe** : adéquation à la stack, prérequis maîtrisés, absence de risque disproportionné et preuve ou retour technique cohérent. Si un skill est controversé ou sans preuve, il peut être **catalogué** sans être **activé**.
+
+## 10.2 Candidats concrets déjà publics
+
+| Source / skill existant | À quoi il sert | Nature de la preuve | Position v0.2 |
+|---|---|---|---|
+| [Vercel Agent Skills](https://github.com/vercel-labs/agent-skills) — `vercel-react-best-practices` [N24] | conventions et optimisation React/Next.js | officiellement maintenu, règles techniques ; pas de preuve indépendante de gain marginal retrouvée | **recommandable conditionnellement** sur React/Next.js |
+| Vercel — `web-design-guidelines` [S20] | qualité de conception UI | source éditeur et règles, efficacité non isolée | à référencer pour les tâches UI |
+| [Matt Pocock — Skills](https://github.com/mattpocock/skills) [N25] — `to-spec`, `grill-with-docs`, `improve-codebase-architecture`, `handoff` | clarification des besoins, docs métier, architecture, passation | pratiques mainteneur reconnu, pas test indépendant positif établi | catalogue / installation sélective ; certains workflows sont exigeants |
+| [obra/Superpowers](https://github.com/obra/superpowers) [N26] — `systematic-debugging`, `verification-before-completion`, `test-driven-development` | diagnostic de cause, preuve avant conclusion, discipline de test | méthodes explicites et adoption open source ; effet causal de ce skill non démontré ici | référencer les skills ciblés, **ne pas activer tout le framework** |
+| [anthropics/skills](https://github.com/anthropics/skills) [S47] | skills officiels d'usage de documents et workflows | provenance officielle, fiabilité dépend de chaque skill | annuaire officiel, au cas par cas |
+| [Peter Steinberger — agent-scripts](https://github.com/steipete/agent-scripts) [S17] | scripts, instructions légères, automatisation d'environnement | pratique d'expert, pas une étude | référence de minimalisme, évaluer scripts individuellement |
+| [Every — compound-engineering-plugin](https://github.com/EveryInc/compound-engineering-plugin) [S24] | workflow planifier/coder/revoir/capitaliser | témoignage et code publics ; orchestration plus lourde | étude avancée, pas base START |
+| [GitHub Spec Kit](https://github.com/github/spec-kit) [S21] | spécification structurée | outil existant, pas gain universel documenté | option pour gros besoins, pas défaut |
+| Skills expérimentaux Golden de [N05] | configurations Go/Java/FastAPI ciblées | expérience appariée positive dans protocole identifié | recommander **uniquement** si la version exacte et la tâche concordent |
+
+**Point de vigilance de version :** dans les dépôts vivants, les noms et contenus peuvent évoluer. Ex. le dépôt `mattpocock/skills` documente désormais des compétences `grilling` et des règles d'invocation **user-invoked** vs **model-invoked** ; un ancien prompt qui suppose `/grill-me` automatiquement déclenché serait erroné. Les fiches doivent citer un chemin et une date de revue, non seulement un nom de dépôt [N25].
+
+## 10.3 Sécurité de la chaîne de distribution des skills
+
+La recherche USENIX Security 2026 [N17] étudie **98 380 skills** collectés auprès de registres et identifie **157 skills malveillants confirmés**. Cela établit un risque tangible, pas un taux de danger applicable à toutes les sources.
+
+**Checklist de provenance (simple mais obligatoire avant installation) :**
+
+1. Ouvrir le dépôt **original**, pas un miroir anonyme ; vérifier auteur et licence.
+2. Lire le `SKILL.md`, les scripts, hooks, installations et commandes déclenchées.
+3. Repérer accès au réseau, secrets, shell, chemins personnels, écriture de fichiers et commandes à privilèges.
+4. Vérifier que la version est compatible et que le skill ne remplace pas la demande métier par ses templates.
+5. Ne pas accorder par défaut les permissions « tout autoriser » sans comprendre les conséquences.
+6. Conserver un **pointeur versionné** vers l'origine ; revoir les modifications importantes et correctifs de sécurité.
+7. Ne pas copier un skill dans le dépôt utilisateur sans savoir comment il recevra les mises à jour.
+
+*How Agent Skills Evolve* [N31] analyse **84 200 skills / 750 898 commits** en novembre 2026 et souligne les difficultés de maintenance, duplication et changements liés à la sécurité. Cela justifie de **préférer des liens vers la source et une installation maîtrisée**, plutôt que de figer à jamais des copies. L'étude n'établit pas qu'une source officielle soit invulnérable.
+
+## 10.4 Gouvernance des recommandations de skills
