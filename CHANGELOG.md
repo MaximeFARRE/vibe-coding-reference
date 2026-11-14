@@ -2,7 +2,7 @@
 
 Les versions publiées décrivent les changements visibles et leurs limites. Le projet est au stade de prototype ; ses interfaces peuvent évoluer.
 
-## À publier — 0.1.0 préversion
+## 0.1.0-rc.1 — préversion
 
 - START : cadrage interactif, critères et pistes de stack à valider.
 - RESCUE : inspection passive et rapports avec preuves et limites.

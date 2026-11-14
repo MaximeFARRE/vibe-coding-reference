@@ -2,7 +2,7 @@
 
 Ne publiez pas de vulnérabilité exploitable, secret ou donnée personnelle dans une issue publique.
 
-Si l'onglet **Security → Advisories** du dépôt propose **Report a vulnerability**, utilisez ce canal privé. La disponibilité de cette fonctionnalité dépend des réglages du dépôt et n'est pas garantie par ce fichier. Sinon, ouvrez une issue demandant uniquement un moyen de contact privé, sans détail technique ; le modèle « Demande de contact sécurité » est prévu pour cela.
+Utilisez le bouton **Report a vulnerability** dans l’onglet **Security → Advisories** du dépôt pour envoyer un signalement privé. Ce canal a été activé le 14 novembre 2026 ; vérifiez sa disponibilité avant envoi. Sinon, ouvrez une issue demandant uniquement un moyen de contact privé, sans détail technique ; le modèle « Demande de contact sécurité » est prévu pour cela.
 
 Une fois un canal privé établi, indiquez la version concernée, un scénario minimal avec données fictives, l'impact et les limites de votre vérification. Aucun délai de réponse ni canal externe n'est garanti par cette politique.
 
