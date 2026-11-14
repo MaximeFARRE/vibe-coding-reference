@@ -198,3 +198,14 @@ Statut : non vérifié / documenté / révisé / optionnel / déconseillé
 La « preuve de fonctionnement » du prototype inclut des **tests de compatibilité/fonctionnels** sur fixtures. Il ne faut pas les appeler étude démontrant une économie de tokens ; ne pas publier de benchmark de performance comparatif, conformément à la décision utilisateur.
 
 ## 8. Sources complémentaires pertinentes, à laisser dans le catalogue historique
+
+Serena, Aider RepoMap, Google Code Wiki, RepoAgent, Repomix, Feature-Sliced Design et son catalogue de skills, T3 stack, Astro, Django/HTMX, FastAPI, Ruby on Rails, RUFF/uv/pytest/Playwright, Gitleaks, OSV, Github Actions, Dependabot/Renovate, ESEM 2026, SWE-agent, METR, Anthropic context engineering. **Les liens et notes historiques sont conservés** dans `reference/BIBLIOGRAPHIE_HISTORIQUE_v0.2.md` ; ne pas recopier tout dans `AGENTS.md`.
+
+## 9. Ce qui n'est pas « prouvé » et ne doit pas être vendu comme tel
+
+- « Google Harness² est meilleur que Codex de X % » sans protocole ; Harness² **utilise** des exécutants dont Codex, la comparaison dépend des bases.
+- « Avoir un graphe + RAG coûte moins de tokens » : pas de preuve universelle.
+- « Le meilleur modèle est X, le meilleur framework est Y » : il n'y a pas de palmarès stable pour nos profils de tâches.
+- « Les 24 000 étoiles d'un cours prouvent son efficacité » : adoption ≠ expérimentation.
+- « Moins de prompts = moins d'euros/quota » : les tokens cachés, reruns et échecs changent la facture.
+- « La boucle se réécrit seule, l'humain n'a plus de travail » : la définition des évaluations, permissions, risques et objectifs demeure critique.
