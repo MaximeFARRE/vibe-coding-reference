@@ -1598,3 +1598,76 @@ https://arxiv.org/abs/2604.22750
 
 **[N14] Weinberger, S. & Hozez, A. — Token Reduction Is Not Cost Reduction.** 13 juillet 2026. **A-prépublication, source consultée.** 2 848 runs appariés analysés ; compression de sorties d'outils sans économie correspondante dans certains bras.  
 https://arxiv.org/abs/2607.12161
+
+**[N15] Chen, L. & Shi, J. — An Empirical Cost Attribution of Context-Compression Gateways in Multi-Turn Coding Agents.** Prépublication 2026. **A-prépublication, source consultée.** Décompose filtrage d'outils, compression et résumé.  
+https://arxiv.org/abs/2609.22114
+
+**[N16] Nguyen, T., Cho, E., Chen, B. & Dettmers, T. — CliffCompaction: Cost-Efficient Compaction for Long-Horizon Coding Agents.** 22 septembre 2026. **A-prépublication, source consultée.** Compression conservatrice, gains jusqu'à 50 % sur certains protocoles ; système avancé.  
+https://arxiv.org/abs/2609.26779
+
+**[N27] Microsoft — TokenEconomizer, dépôt et documentation plugin.** **D/C, dépôt consulté.** Conditions de fonctionnement, hooks, versions d'agents compatibles, limites et commands d'annulation. Son existence ne remplace pas la revue de sécurité avant installation.  
+https://github.com/microsoft/TokenEconomizer
+
+**[N28] OpenAI — Prompt caching (API documentation).** **C, source officielle consultée le 12/11/2026.** Explique préfixes, cache read/write, TTL, prix et impact des modifications d'outils, modèle et compaction ; **valeurs sujettes à changement**.  
+https://developers.openai.com/api/docs/guides/prompt-caching
+
+### Retours industriels et méthodes
+
+**[N18] Anthropic — Harness design for long-running application development.** 24 mars 2026. **B, retour détaillé consulté.** Planificateur/générateur/évaluateur, contrôle d'usage réel, budgets élevés et simplification de harness à mesure que les modèles progressent.  
+https://www.anthropic.com/research/harness-design-long-running-apps
+
+**[N19] OpenAI — Harness Engineering: Leveraging Codex in an Agent-First World.** Ryan Lopopolo, 11 février 2026. **B, retour industriel consulté.** Frontières imposées, connaissance versionnée dans le repo, nettoyage et feedback ; pas de conclusion universelle sur le framework.  
+https://openai.com/index/harness-engineering/
+
+**[N20] OpenAI — Rethinking skills and prompts for GPT-6 Astra.** Eric Provencher, 11 septembre 2026. **B/C, source consultée.** Descriptions courtes, chargement progressif, mise à jour des instructions historiques, non-imposition de lectures globales.  
+https://developers.openai.com/blog/rethinking-skills-and-prompts-for-gpt-6-astra
+
+**[N21] OpenAI — Maintaining Software with the GPT-6 Family.** Octobre 2026. **B, source consultée.** Nettoyage avec garanties, modèle/effort/coût sur tâche spécifique et importance des exceptions métier.  
+https://developers.openai.com/blog/maintaining-software-with-the-gpt-6-family
+
+**[N22] METR — We are Changing our Developer Productivity Experiment Design.** 24 février 2026. **A/B, source consultée.** Explique biais de sélection et prudence face à l'estimation récente de gains de productivité ; garder distinct de l'étude historique de juillet 2025 [S11].  
+https://metr.org/blog/2026-02-24-uplift-update/
+
+**[N29] Anthropic — Effective context engineering for AI agents.** 2025. **B, déjà présent en [S04], rappel conceptuel.** Gestion du contexte comme ressource finie et outils/références nécessaires à la demande.  
+https://www.anthropic.com/research/effective-context-engineering-for-ai-agents
+
+### Politique de fraîcheur
+
+- Mettre en avant la version et le jour de la source lorsqu'une étude reçoit une mise à jour.
+- Les sources [S01]–[S47] constituent l'**historique** et n'ont pas été intégralement reverifiées ici ; une fiche dédiée est nécessaire avant toute recommandation strictement dépendante de leur contenu actuel.
+- Tous les chiffres précédés d'un signe « + » ou « − » renvoient au protocole cité, **jamais** à une promesse générale.
+- Les fiches publiques doivent inclure un champ `last_checked` et, si nécessaire, `recheck_required`.
+
+---
+
+
+# Partie X — Gouvernance du document
+
+## 18. Règles de maintenance de la référence
+
+- Toute nouvelle décision est ajoutée au registre (ID, date, motif, sources, statut).
+- Les changements importants de modèle IA déclenchent une revue des instructions et skills concernés.
+- Un lien cassé ou un changement majeur de produit conduit à un statut « à revérifier ».
+- Les fiches de source doivent noter les limites, pas seulement une citation favorable.
+- Les idées abandonnées restent visibles avec la raison de leur abandon.
+- Ne jamais transformer silencieusement une hypothèse en conclusion.
+- Garder ce document synthétique et renvoyer vers les futures fiches détaillées pour éviter d'en faire un manuel impossible à maintenir.
+
+## 19. Proposition de première étape documentaire
+
+1. Conserver ce document comme **source de vérité du cadrage**.
+2. Créer, plus tard, une fiche de revue pour chacun des grands travaux [S01], [S02], [S04], [S05], [S09], [S11], [S12] et [S29].
+3. Extraire les recommandations documentées et leurs limites vers `research/evidence-reviews/`.
+4. Établir ensuite les guides START et RESCUE à partir de cette base, sans leur attribuer de bénéfices quantitatifs non démontrés.
+5. Ne sélectionner des configurations prêtes à copier qu'après vérification de leur compatibilité et de leur provenance.
+
+## 20. Journal de version
+
+| Date | Version | Changement |
+|---|---|---|
+| 2026-11-12 | 0.1 | Consolidation initiale des échanges, décisions, hypothèses, architecture conceptuelle et catalogue de 47 sources. |
+| 2026-11-12 | 0.2 | Recherches 2026 (architecture, contexte, tests, skills), TOKEN EFFICIENCY, critères métier, playbooks, corrections bibliographiques, limites de preuve et registre des recommandations. |
+
+---
+
+**Résumé de doctrine v0.2 :** une référence open source pour **bien commencer (START)**, **récupérer un projet fragile (RESCUE)** et **réduire les coûts inutiles d’agents (TOKEN EFFICIENCY)**, à base de preuves publiées, de skills existants, de vérification métier et de simplicité graduée. Ne jamais confondre nombre de tokens, facture API, quota, qualité ou succès. Le dépôt lui-même reste documentaire : aucune implémentation n’a été lancée.
