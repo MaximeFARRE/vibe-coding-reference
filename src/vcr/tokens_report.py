@@ -20,7 +20,7 @@ def render(data):
     if not data['trace_supplied']:
         lines += ['', '**Aucune trace fournie :** diagnostic descriptif, sans mesure de consommation ni surveillance implicite.']
     else:
-        lines += ['', f"**Trace sélectionnée :** {data['record_count']} enregistrements. Chaque compteur représente une requête selon le format VCR ; une somme cumulée ne correspond pas nécessairement à un contexte unique."]
+        lines += ['', f"**Trace sélectionnée :** format {data['source_format']}, {data['record_count']} enregistrements. Chaque compteur représente une réponse choisie selon le format indiqué ; une somme cumulée ne correspond pas nécessairement à un contexte unique."]
     lines += ['', '## Checklist — questions à examiner', '- [ ] Les recherches et lectures sont-elles ciblées sur le besoin ?', '- [ ] Les sorties d’outils gardent-elles les preuves et erreurs utiles ?', '- [ ] La session mélange-t-elle des sujets ou des boucles d’échec ?', '- [ ] Les outils activés et les paliers de tests sont-ils adaptés au travail ?']
     lines += ['', '## Trois recommandations immédiates'] + [f'{i}. {x}' for i, x in enumerate(IMMEDIATE, 1)]
     lines += ['', '## Mesures disponibles']

@@ -28,16 +28,19 @@ def cost_measure(records):
     return {'status': 'measured' if costs[0]['kind'] == 'actual' else 'estimated', 'value': str(total), 'currency': costs[0]['currency'], 'reason': 'Montants déclarés par l’import, non vérifiés sur une facture ; aucun tarif externe appliqué.', 'references': [{'record': i, 'date': c['date']} for i, c in enumerate(costs, 1)][:10]}
 
 
-def analyse(records=None):
+def analyse(records=None, input_is_derived=False, source_format='vcr'):
     supplied = records is not None
     records = records or []
     metrics = {field: measure(records, field) for field in METRICS}
+    if input_is_derived and metrics['input_tokens']['status'] == 'measured':
+        metrics['input_tokens']['status'] = 'estimated'
+        metrics['input_tokens']['reason'] = 'Somme calculée des trois compteurs d’entrée déclarés par la réponse Anthropic ; données non vérifiées indépendamment.'
     input_total, output_total, cache = (metrics[x] for x in ('input_tokens', 'output_tokens', 'cache_read_tokens'))
-    if input_total['status'] == output_total['status'] == 'measured':
+    if input_total['status'] in {'measured', 'estimated'} and output_total['status'] == 'measured':
         total = {'status': 'estimated', 'value': input_total['value'] + output_total['value'], 'reason': 'Addition des compteurs déclarés ; valeur calculée, pas quantité de contexte unique.'}
     else:
         total = unavailable('Entrées ou sorties incomplètes : somme totale non calculable.')
-    if input_total['status'] == cache['status'] == 'measured' and all(r['cache_read_tokens'] <= r['input_tokens'] for r in records):
+    if input_total['status'] in {'measured', 'estimated'} and cache['status'] == 'measured' and all(r['cache_read_tokens'] <= r['input_tokens'] for r in records):
         uncached = {'status': 'estimated', 'value': input_total['value'] - cache['value'], 'reason': 'Différence calculée avec cache_read inclus dans input ; peut inclure les écritures de cache.'}
     else:
         uncached = unavailable('Entrées ou cache lu incomplets : différence non calculable.')
@@ -70,4 +73,4 @@ def analyse(records=None):
         'long_command_count': len(long_commands) if any('command_chars' in r for r in records) else None,
         'command_coverage': sum('command_chars' in r for r in records),
     }
-    return {'trace_supplied': supplied, 'record_count': len(records) if supplied else None, 'metrics': metrics, 'signals': signals}
+    return {'trace_supplied': supplied, 'source_format': source_format if supplied else None, 'record_count': len(records) if supplied else None, 'metrics': metrics, 'signals': signals}

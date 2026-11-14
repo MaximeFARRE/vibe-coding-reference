@@ -10,6 +10,7 @@ from .rescue import audit, write_reports
 from .start import write_start
 from .start_questions import ask, load_answers
 from .tokens_analysis import analyse
+from .tokens_native import FORMATS, read_response
 from .tokens_report import render as render_tokens, write_report as write_tokens_report
 from .tokens_trace import load_trace
 
@@ -36,7 +37,8 @@ def main(argv=None):
     improve_feedback.add_argument("--proposal", required=True, help="Identifiant de la proposition")
     improve_feedback.add_argument("--decision", required=True, choices=sorted(STATUSES - {'pending'}))
     tokens = sub.add_parser("tokens", help="Diagnostiquer le contexte, avec ou sans trace volontaire")
-    tokens.add_argument("--from", dest="trace", help="Trace locale au format vcr-token-trace-v1")
+    tokens.add_argument("--from", dest="trace", help="Trace locale ou réponse API volontairement fournie")
+    tokens.add_argument("--format", dest="trace_format", choices=FORMATS, default='vcr', help="Format explicite de l'entrée (vcr par défaut)")
     tokens.add_argument("--out", help="Nouveau dossier de rapport (facultatif)")
     tokens.add_argument("--project", help="Projet à protéger : la sortie doit être extérieure à ce dossier")
     sources = sub.add_parser("sources", help="Consulter le catalogue local des sources et outils")
@@ -71,6 +73,7 @@ def main(argv=None):
             elif choice == '4':
                 args.command = 'tokens'
                 args.trace = input("Trace VCR facultative (vide pour diagnostic descriptif) : ").strip() or None
+                args.trace_format = 'vcr'
                 args.out = input("Nouveau dossier de rapport facultatif (vide pour afficher) : ").strip() or None
                 args.project = None
                 if args.out:
@@ -92,8 +95,16 @@ def main(argv=None):
             return 2
     if args.command == 'tokens':
         try:
-            records = load_trace(args.trace) if args.trace else None
-            data = analyse(records)
+            if not args.trace and args.trace_format != 'vcr':
+                raise ValueError('Une réponse API est nécessaire pour le format choisi.')
+            derived = False
+            if not args.trace:
+                records = None
+            elif args.trace_format == 'vcr':
+                records = load_trace(args.trace)
+            else:
+                records, derived = read_response(args.trace, args.trace_format)
+            data = analyse(records, derived, args.trace_format)
             if args.out:
                 output = write_tokens_report(data, args.out, args.project)
                 print(f"Rapport TOKEN EFFICIENCY créé : {output}")
