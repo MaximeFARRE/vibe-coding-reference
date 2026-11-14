@@ -32,7 +32,7 @@ def render(run):
                 label = e.path + (f':{e.line_start}' if e.line_start else '')
                 # Un lien local reste relatif au dépôt cible ; il ne transmet rien au réseau.
                 url = (run.target['path'].rstrip('/') + '/' + e.path)
-                location = f' [{label}]({quote(url, safe="/:")})'
+                location = f' `{label}`' if e.redacted else f' [{label}]({quote(url, safe="/:")})'
                 if e.line_start:
                     location += f' (ligne {e.line_start}' + (f' à {e.line_end}' if e.line_end else '') + ')'
             if e.command:
