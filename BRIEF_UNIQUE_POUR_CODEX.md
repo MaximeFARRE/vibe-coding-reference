@@ -1298,3 +1298,103 @@ Ce système traite le harness comme un ensemble de composants éditables autour 
 
 **Documentation :** https://aider.chat/docs/repomap.html  
 **Repo :** https://github.com/Aider-AI/aider  
+**Catégorie : A/B** — algorithme de classement de symboles et de présentation compacte. Utile pour apprendre le *budgeted context*. L'étude Agent Retrieval Bench trouve des performances relatives intéressantes sur le rendement de contexte à 8k tokens.
+
+**À étudier** : réutilisation réelle du composant sans forker Aider entier ; licence, API stable, compatibilité. Si l'usage autonome est complexe, garder la méthode en documentation.
+
+### [G08] DeusData — Codebase Memory MCP
+
+**URL :** https://github.com/DeusData/codebase-memory-mcp  
+**Catégorie : B/C** — code graph/index local, outils MCP, graphes de dépendance et de flot ; l'outil actuel contient aussi recherche sémantique/vectorielle et UI optionnelle. **C'est une candidature sérieuse à une couche avancée**, pas une dépendance de base.
+
+**À étudier** : installation et empreinte, version/fonctions, stockage, indexation de secrets, mécanismes de mise à jour, réseau, accès fichiers, granularité des résultats, licence, système de révocation. Ses annonces de « 120× moins de tokens » sont des **claims fournisseur**, pas des gains indépendants vérifiés. Toute comparaison ne doit pas devenir une promesse VCR.
+
+### [G09] RepoAgent
+
+**URL :** https://github.com/OpenBMB/RepoAgent  
+**Catégorie : D** — génération/actualisation de documentation de code via AST/LLM et détection de changements. Utile pour la recherche, mais documentation exhaustive peut être très coûteuse et se périmer ; certaines intégrations requièrent un modèle/API et le périmètre de langues peut être limité. À **documenter**, pas à installer.
+
+### [G10] Repomix
+
+**URL :** https://repomix.com/  
+**Catégorie : B** — export ponctuel du contexte pour revue, pas une mémoire vivante. Risque de gros exports et de secrets ; vérifier `.gitignore`/fichiers exclus avant de transmettre le résultat à un modèle.
+
+### [G11] Dependency Cruiser / ESLint Boundaries / Import Linter
+
+- **Dependency Cruiser :** https://github.com/sverweij/dependency-cruiser (B, JS/TS, règles et graphes d'imports).
+- **ESLint Plugin Boundaries :** https://github.com/javierbrea/eslint-plugin-boundaries (B, JS/TS, frontières contrôlées par lint).
+- **Import Linter :** https://import-linter.readthedocs.io/en/stable/ (B, Python, contrats de dépendance).
+
+À sélectionner **un seul** mécanisme approprié lorsque le besoin de frontières est établi. Les imports indirects, chemins dynamiques et éléments métier requièrent un diagnostic complémentaire.
+
+## 4. Skills et workflows d'ingénierie déjà publics
+
+### [G12] Matt Pocock — Skills for Real Engineers
+
+**URL :** https://github.com/mattpocock/skills  
+**Catégorie : B (sélection manuelle de skills individuels)**. Compétences de formalisation, architecture, audit, TDD, passation. Au moment de la revue, le dépôt décrit entre autres : `grill-with-docs`, `to-spec`, `improve-codebase-architecture`, `retro`, `diagnosing-bugs`, `code-review`, `to-tickets`.
+
+**Avis :** particulièrement pertinent pour IMPROVE (`retro`) et préparation des spécifications ; vérifier **le nom et le contenu exact à la version installée**. Son existence et sa notoriété ne démontrent pas de gains comparatifs individuels. Ne pas installer tout son setup dans chaque repo.
+
+### [G13] Jesse Vincent / obra — Superpowers
+
+**URL :** https://github.com/obra/superpowers  
+**Catégorie : B**. Workflows de debugging systématique, tests, vérification avant fin, planification. Peut imposer des étapes lourdes qui conviennent moins aux micro-tâches ; examiner `systematic-debugging` / `verification-before-completion` et les règles de déclenchement réelles.
+
+### [G14] Vercel — Agent Skills
+
+**URL :** https://github.com/vercel-labs/agent-skills  
+**Catégorie : B**. Skills de bonnes pratiques React, Next.js et UX web ; utile pour START lorsqu'une stack correspond. Source officielle sur les pratiques du framework ; **pas de preuve indépendante de gain marginal du skill exact** dans notre corpus. Scanner scripts, version et déclencheurs avant usage.
+
+### [G15] GitHub — Spec Kit
+
+**URL :** https://github.com/github/spec-kit  
+**Catégorie : B/A**. Spécification → planification → implémentation → vérification. Source de bonnes pratiques à adapter pour START et définition des besoins ; n'introduire qu'un sous-ensemble proportionné. Ne pas faire un système de spécifications de 30 documents par défaut.
+
+### [G16] Every — Compound Engineering Plugin
+
+**URL :** https://github.com/EveryInc/compound-engineering-plugin  
+**Catégorie : B/C**. Boucle brainstorm/plan/build/review/compound, plusieurs skills et parfois sous-agents ; version actuelle compatible avec Codex selon la documentation (à vérifier lors de l'installation). Très proche de notre IMPROVE ; attention à coûts de contexte, permissions, comportements automatiques et installation de toute la suite. **Étudier certains mécanismes, ne pas l'installer en bloc** pour P0.1.
+
+### [G17] Peter Steinberger — Agent Scripts
+
+**URL :** https://github.com/steipete/agent-scripts  
+**Catégorie : A/B**. Instructions courtes, skills synchronisés par scripts, hooks et utilitaires. Utile pour gouvernance et format d'instructions ; de nombreuses décisions sont liées à l'environnement personnel de l'auteur. Ne pas copier ses chemins, modèles ni permissions.
+
+### [G18] Anthropic — Public Skills
+
+**URL :** https://github.com/anthropics/skills  
+**Catégorie : A/B**. Exemples officiels de skills et formats ; utiles comme source, pas tous adaptés ni garantis pour production. Nous conservons le principe de sélection et revue individuelles.
+
+### [G19] khasky — Awesome Agent Skills
+
+**URL :** https://github.com/khasky/awesome-agent-skills  
+**Catégorie : D/B sur skill individuel**. Catalogue de skills d'audit, debugging, qualité ; instructions d'installation globales par lot très larges. **Ne pas utiliser l'installation de tous les skills** proposée dans le README ; sélectionner uniquement après revue du code, de la licence et de la valeur.
+
+### [G20] SWE-Skills-Bench (benchmark + corpus)
+
+**Code :** https://github.com/ControllableModel/SWE-Skills-Bench  
+**Papier révisé :** https://arxiv.org/html/2603.15401v2  
+**Catégorie : A (recherche)**. Référence pour différencier « connu » et « évalué ». Les quatre skills positifs du protocole ne constituent pas une shortlist universelle de production ; certaines tâches appartiennent à des écosystèmes non ciblés par VCR (Go/Java). Épingler le commit exact si l'on discute de la version testée.
+
+## 5. Optimisation de tokens et coûts
+
+### [G21] Microsoft — TokenEconomizer
+
+**URL :** https://github.com/microsoft/TokenEconomizer  
+**Publication :** https://www.microsoft.com/en-us/research/publication/tokeneconomizer-experience-driven-black-box-cost-control-for-coding-agents/  
+**Catégorie : B/C**. Plugin de contrôle de coûts sur agents, utilise micro-faits, filtrage outils et garde sur boucles d'échecs. Recherche intéressante, mais ses hooks agissent sur un runtime, ses fichiers de config et potentiellement des traces locales. La table du README donne **des plages précises de versions supportées** ; Codex peut changer rapidement. Ne jamais installer automatiquement et ne jamais promettre un pourcentage constant.
+
+**Checklist avant usage** : version réelle de Codex/Claude ; dépendances ; hooks et commandes ; fichiers locaux touchés ; modèle/judge additionnel ; données enregistrées ; accès réseau ; instructions d'undo ; consentement. Tester d'abord dans un profil de Codex isolé et un dépôt jetable, pas les projets personnels.
+
+## 6. Sécurité de la supply chain des skills
+
+Étude USENIX Security 2026 : https://www.usenix.org/conference/usenixsecurity26/presentation/liu-yi  
+Spécification : https://agentskills.io/specification
+
+**Fiche obligatoire avant de recommander un skill en installation :**
+
+```text
+ID et nom exact :
+Lien officiel et mainteneur :
+Tag/commit de revue :
