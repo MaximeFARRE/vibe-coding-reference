@@ -1798,3 +1798,40 @@ L'innovation complexe est autorisée, mais jamais **cachée dans le backend simp
             "type": "string",
             "enum": [
               "passed",
+              "failed",
+              "skipped",
+              "not_checked",
+              "not_applicable"
+            ]
+          },
+          "reason": {
+            "type": "string"
+          },
+          "tool_version": {
+            "type": "string"
+          },
+          "duration_ms": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "limitations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "$ref": "finding.schema.json"
+      }
+    }
+  },
+  "additionalProperties": false
+}
+
+```
