@@ -498,3 +498,103 @@ La structure `features/<domaine>/` peut rassembler pages/queries/actions/service
 | Règle métier changée | revue humaine/agent de la décision documentée |
 | Pull request | contrôle de dérive docs-code, proposition révisable |
 | Échéance périodique | contrôle de cohérence, non réécriture intégrale |
+
+Indexation des symboles et imports : **outil déterministe** de préférence. Explication du sens des changements : **IA ciblée** si nécessaire. Les modifications proposées par agent devraient passer par une PR relisible, à l'image de [S31].
+
+### 8.3 Outils de contexte à suivre
+
+- **Serena** [S26] : navigation à base de symboles et références.
+- **Aider Repository Map** [S27] : carte compacte et sélection d'éléments importants.
+- **Codebase Memory MCP** [S28] : graphe/index local persistant ; claims de performance à ne pas reprendre sans étude indépendante.
+- **Google Code Wiki** [S29] : référence de documentation structurée mise à jour avec les dépôts.
+- **RepoAgent** [S30] : génération/mise à jour de documentation, fonctionnement et portée à approfondir.
+- **GitHub Agentic Workflows Docs Updater** [S31] : proposition de PR documentaire.
+- **Repomix** [S32] : export compact ponctuel, différent d'un système de connaissance vivant.
+
+### 8.4 Question de recherche ouverte
+
+Quelles publications établissent, à périmètre comparable, l'effet des **cartes de code**, de la **recherche symbolique**, du **chargement progressif** et des **instructions de dépôt** sur la réussite d'un agent ? [S04, S09] sont des points d'entrée ; elles ne règlent pas toutes les comparaisons.
+
+---
+
+## 8.5 Revue approfondie — récupération de contexte et navigation
+
+Les références [N01], [N10] et [N11] établissent qu'une part importante du travail de l'agent consiste à **localiser le code**, et pas seulement à écrire un correctif.
+
+- **Agent Retrieval Bench** [N01] : 427 exemples, 25 dépôts, 345 positifs + 50 cas sans cible + 32 contrôles négatifs. Dans les trajectoires journalisées, les agents manquent *tous* les fichiers de référence pour **27 à 35 % des exemples**. C'est un taux propre à ce jeu de données ; ce n'est pas la part de temps perdu en production. Il n'existe **pas de méthode dominante** : les embeddings et RepoMap gagnent sur des métriques différentes, RepoMap sur le rendement sous 8 000 tokens.
+- **SWE-Explore** [N10] : forte capacité de certains systèmes à localiser un fichier, précision encore plus difficile au niveau ligne et sous budget contraint.
+- **CodeGrep**, publié à l'atelier REALM d'EMNLP 2026 [N11] : sur SWE-bench Verified, un récupérateur spécialisé ramène les tours de résolution de **15 %** et les tokens de **19 %** sur les instances résolues ; taux de résolution de **25,8 % à 27,0 %**, différence qui ne justifie pas à elle seule une revendication générale de performance. Le système entraîne un retriever RL 14B ; le recommander comme outil léger serait trompeur.
+
+### Décision de navigation, niveau A
+
+1. Partir de la demande fonctionnelle et des chemins d'entrée connus (route/page, CLI, tâche planifiée, API, test).
+2. Utiliser l'index/recherche fournis par le dépôt et l'agent (`rg`, recherche de symboles, références d'IDE/LSP, historique Git) avant d'ouvrir des fichiers entiers.
+3. Lire les **portions pertinentes**, puis les fichiers adjacents quand le flux l'exige ; ne pas masquer les portions nécessaires à une modification sûre.
+4. Exécuter d'abord les tests **ciblés** si les dépendances sont connues, puis les contrôles plus larges en fin de changement selon le risque.
+5. Mettre à jour une **carte de fonctionnalités courte** seulement lorsque les changements la rendent incorrecte.
+
+Il ne s'agit pas de prescrire toujours moins de lecture : une modification de sécurité, de migrations ou de flux financiers exige parfois une exploration large. Le bon critère est la **pertinence du contexte**.
+
+### Sélection d'outils existants
+
+| Outil | Avantage plausible | Coût d'adoption / limite | Niveau |
+|---|---|---|---|
+| `rg` / Git / IDE/LSP natifs | instantané, contrôlable, généralement déjà disponibles | indices symboliques variables suivant l'environnement | A |
+| Aider RepoMap [S27] | carte compacte des symboles ; exemple de réduction de contexte | intégration à l'agent courant à examiner, pas universelle | B |
+| Serena [S26] | recherche par symboles et références, navigation LSP | serveur/installation/configuration ; vérifier langues et protocole | B/C |
+| Repomix [S32] | export de sous-ensemble reproductible | peut saturer le contexte si export total | B |
+| Graphes de code/MCP spécialisés [S28] | mémoire de dépendances persistante | synchronisation, confidentialité, qualité de l'index non garanties | C |
+| RAG/embeddings custom | recherche sémantique | coût d'index, maintenance, fausses localisations | C |
+
+**Principe** : une carte générée automatiquement est une *aide de navigation*, pas une vérité sur le sens métier du code. La source de vérité du comportement reste le code et les critères métier ; la documentation mémorise les intentions et les exceptions.
+
+## 8.6 Controverse : `AGENTS.md` peut aider ou gêner
+
+- [N03] *Evaluating AGENTS.md* (février 2026) observe, dans son protocole, une **baisse moyenne de réussite** et **plus de 20 % de coût d'inférence supplémentaire** avec des fichiers de contexte par rapport à leur absence. Les fichiers encouragent une exploration plus large et l'exécution d'instructions pas toujours utiles.
+- [S01]/[N19] OpenAI rapporte qu'une documentation locale utile et des invariants mécanisés soutiennent une équipe agentique, mais il s'agit d'un **retour de production** et non d'une comparaison isolant la taille de `AGENTS.md`.
+- [S02]/[N20] OpenAI recommande en septembre 2026 de **raccourcir les descriptions de skills**, **ne pas lire toutes les docs avant chaque changement** et réviser les instructions après changement de modèle.
+
+**Conclusion retenue** : garder un `AGENTS.md` succinct contenant uniquement les commandes utiles, les contraintes spécifiques et les chemins vers les documents pertinents ; le reste est disponible *à la demande*. L'effet causal exact dépend du type de fichier, de l'agent, du modèle et des tâches. Aucun quota fixe de mots/tokens n'est établi.
+
+### La mémoire entre sessions n'est pas la reprise intégrale de l'historique
+
+Un nouveau fil cohérent peut éviter la répétition de résultats d'outils et de décisions périmées, mais peut aussi faire perdre une contrainte importante. Le moyen le plus simple est un **handoff minimal** : tâche, état Git, fichiers concernés, contraintes métier, tests effectués et restant, prochaine action. Pour des tâches longues, Anthropic [N18] a décrit le rôle de tels artefacts, tout en expliquant que la nécessité des resets de contexte change lorsque les modèles progressent. La remise à zéro systématique est **une pratique contextuelle, pas une règle**.
+
+---
+
+
+# Partie VI — Outillage et Quality Gates
+
+## 9. Politique générale
+
+**RETENU :** une règle importante doit autant que possible être contrôlée par un outil reproductible. Une consigne vague dans `AGENTS.md` ne suffit pas lorsqu'un linter ou un test peut vérifier le comportement.
+
+### 9.1 Catalogue initial d'outils (non prescriptif)
+
+| Besoin | JavaScript / TypeScript | Python / transversal |
+|---|---|---|
+| Paquets / verrouillage | npm ou pnpm | uv |
+| Format et lint | Biome ou ESLint/Prettier | Ruff |
+| Typage | TypeScript strict | Pyright |
+| Tests | Vitest | pytest |
+| Tests navigateur | Playwright si parcours critiques | Playwright si application web |
+| Code inutilisé | Knip | Vulture / Deptry selon besoin |
+| Audit dépendances | npm audit / OSV-Scanner | pip-audit / OSV-Scanner |
+| Secrets | Gitleaks | Gitleaks |
+| Contrats modules | Dependency Cruiser / Boundaries | Import Linter |
+| CI | GitHub Actions | GitHub Actions |
+| Dépendances à jour | Dependabot / Renovate | Dependabot / Renovate |
+
+### 9.2 Politique des contrôles
+
+- Format, lint, typage, tests et build : peuvent être bloquants lorsqu'ils sont applicables et stables.
+- Sécurité : bloquer en cas de secret exposé ou risque grave confirmé ; examiner les exceptions.
+- Complexité cognitive, duplication et gros fichiers : **signalement contextualisé**, pas suppression mécanique.
+- Contrôle du schéma et sauvegarde : renforcés pour applications manipulant des données précieuses.
+- End-to-end : commencer par les parcours à risque réel ; éviter de multiplier les tests fragiles pour une page statique.
+- Contrôles d'architecture : uniquement pour des frontières choisies et documentées.
+
+Les seuils de 400 lignes/fichier et 80 lignes/fonction, évoqués au cours de la recherche, sont **des exemples pédagogiques, non des normes validées**. Aucun seuil fixe n'est adopté.
+
+## 10. Skills et agents
+
