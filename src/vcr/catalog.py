@@ -53,6 +53,8 @@ def normalize_catalog(data):
             raise ValueError('Type ou niveau du catalogue invalide.')
         item['official_url'] = item.get('official_url') if valid_url(item.get('official_url')) else None
         item['scientific_url'] = item.get('scientific_url') if valid_url(item.get('scientific_url')) else None
+        item['link_status'] = 'verified' if item.get('link_status') == 'verified' and item['official_url'] and valid_date(item.get('link_checked_at')) else 'unverified'
+        item['scientific_link_status'] = 'verified' if item.get('scientific_link_status') == 'verified' and item['scientific_url'] and valid_date(item.get('link_checked_at')) else 'unverified'
         maintenance = item.get('maintenance_status')
         item['maintenance_status'] = maintenance if isinstance(maintenance, str) and maintenance in {'verified', 'unverified'} else 'unverified'
         if item['maintenance_status'] == 'verified' and (not valid_date(item.get('maintenance_verified_at')) or not valid_url(item.get('maintenance_source'))):
@@ -92,7 +94,10 @@ def render(catalog, topic=None):
         for label, key in [('Problème traité', 'problem'), ('Incompatibilités / limites', 'incompatibilities'), ('Coûts cachés', 'hidden_costs'), ('Permissions', 'permissions'), ('Licence', 'license')]:
             lines.append(f"- **{label} :** {item[key]}")
         lines.append('- **Source officielle :** ' + (item['official_url'] or 'non renseignée ou URL invalide.'))
+        lines.append(f"- **Accès au lien officiel :** {item['link_status']}" + (f" le {item['link_checked_at']} (ouverture seule, sans audit)." if item['link_status'] == 'verified' else '.'))
         lines.append('- **Source scientifique éventuelle :** ' + (item['scientific_url'] or 'non identifiée dans cette fiche ; recherche non exhaustive.'))
+        if item['scientific_url']:
+            lines.append(f"- **Accès au lien scientifique :** {item['scientific_link_status']}" + (f" le {item['link_checked_at']}." if item['scientific_link_status'] == 'verified' else '.'))
         lines += [f"- **Vérifications avant usage :** {item['verification']}", f"- **Retrait / retour arrière :** {item['rollback']}"]
     lines += ['', 'Les liens ne sont pas ouverts par VCR. Vérifier licence, version, permissions et retrait avant tout essai ; demander l’accord nécessaire avant installation ou exécution.']
     return '\n'.join(lines) + '\n'
