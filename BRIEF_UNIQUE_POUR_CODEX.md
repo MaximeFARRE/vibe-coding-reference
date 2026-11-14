@@ -1198,3 +1198,103 @@ URL setup : https://github.com/google-research/harness2/blob/main/docs/SETUP.md
 
 **[R34] Meta-Harness: End-to-End Optimization of Model Harnesses** (publication retrouvée comme travaux liés, mais pas assimilée sans preuve au visuel social).  
 Référence contextuelle : https://ishwarj.com/papers/meta-harness/read/  
+**Statut :** source de vulgarisation vérifiée, étude originale à retrouver/lire avant citation quantitative.  
+**Avertissement :** l'image circulant avec le titre « The End of Harness Engineering » et un modèle « 4B editor » n'a **pas de lien primaire identifiable dans la capture**. Ne pas la présenter comme un article de recherche validé ou comme une preuve de disparition de l'ingénierie humaine. Garder `UNVERIFIED_SOCIAL_CLAIM`.
+
+**[R35] TrishamBP — Harness Engineering, reference harness** (G, schéma pédagogique).  
+URL : https://github.com/TrishamBP/harness-engineering  
+**Description :** implémentation Python stdlib démonstrative (boucle, outils typés, permissions, journaux, compactage, vérification, coordination) et diagrammes, inspirée d'une étude de code ; ce code n'est ni le code des agents industriels ni une preuve de supériorité.  
+**Transposition :** bon exemple pour l'architecture d'interfaces, pas de raison de réécrire une boucle LLM dans P0.1.
+
+## 8. Contradictions et ce que VCR DOIT écrire
+
+| Question | Constat contradictoire | Décision défendable |
+|---|---|---|
+| `AGENTS.md` utile ? | pratiques industrielles favorables ; évaluations neutres/négatives sur certaines tâches | garder un **index court** avec commandes, invariants, docs liées ; éviter sur-prescription |
+| Skills = gain ? | benchmark général favorable ; SWE-Skills-Bench v2 très peu de gains significatifs | sélectionner skills **individuels** ; jamais copier un pack énorme par défaut |
+| Compression = économie ? | réductions de tokens observables ; parfois coût API + échecs en hausse | préserver preuves et cache, mesurer/attribuer coût réel si disponible |
+| Vectoriel = indispensable ? | certains gains de rappel ; pas dominant partout ; absent des 11 harness étudiés | native/symbolique d'abord ; vectoriel optionnel |
+| Multi-agent supérieur ? | bénéfices sur certaines tâches ; coûts et défaillances de coordination | un agent principal par défaut ; délégation seulement quand utile |
+| Réécrire l'architecture d'un projet ? | mode changeant ; risques de régressions et données | KEEP/REFACTOR souvent préférable ; REBUILD seulement argumenté |
+| Auto-améliorer les règles ? | faisabilité de recherche ; risques de surajustement et dérive | **propositions humaines** d'abord, expérience récursive isolée plus tard |
+
+## 9. Règles d'entretien des connaissances
+
+Chaque fiche doit inclure `id`, `title`, `url`, `authors/owner`, `date`, `last_checked`, `source_type`, `evidence_scope`, `limitations`, `relevance`, `recommendation_tier`, `license_if_repo`, `review_required`. Une source non lue entièrement peut être `catalogued`, non `verified`. Les études arXiv doivent porter leur **version**. Les projets GitHub évoluent vite : les instructions d'installation et noms de skills sont à revalider au moment de l'usage.
+
+**Cette recherche est datée du 14 novembre 2026.** Une actualisation des sources externes sera nécessaire avant de publier officiellement le référentiel.
+
+
+
+---
+
+# SECTION — PROJETS GITHUB ET SKILLS
+
+# 05 — Catalogue priorisé des dépôts GitHub, outils, skills et expériences
+
+**Revue des pages publiques : 14 novembre 2026.** Il s'agit d'un **registre d'options** et non d'une liste d'installations. Les versions évoluent, chaque installation exige une revue du dépôt actuel. `recommandé` veut dire « mérite d'être étudié dans ce contexte », **pas** « efficacité prouvée de la version courante ».
+
+## 1. Les quatre catégories d'adoption
+
+- **A — Référence et documentation** : utile pour prendre des décisions ; aucun composant installé dans le projet utilisateur.
+- **B — Intégration optionnelle** : outil ciblé, activé uniquement si besoin, maintenance et compatibilité vérifiés.
+- **C — Laboratoire isolé** : recherche avancée, machine/container jetable, sans secrets ni accès aux dépôts réels.
+- **D — À surveiller seulement** : potentiel intéressant mais preuve/compatibilité insuffisante pour recommander.
+
+Les outils peuvent être puissants **derrière l'interface** si leur valeur est suffisante. Mais aucun outil de catégorie B/C ne doit apparaître dans l'assistant de démarrage comme exigence obligatoire.
+
+## 2. Architecture et étude des harness
+
+### [G01] Google Research — Harness²
+
+**URL :** https://github.com/google-research/harness2  
+**Papier :** https://arxiv.org/abs/2610.14224  
+**Setup :** https://github.com/google-research/harness2/blob/main/docs/SETUP.md  
+**Catégorie : C** — recherche d'auto-amélioration des harness.
+
+Ce système traite le harness comme un ensemble de composants éditables autour du modèle, avec deux niveaux d'amélioration récursive, comparaison des comportements d'exécution et persistance des leçons validées. À retenir : (1) séparer comportement de l'agent et règles/outils ; (2) chaque modification de harness devrait répondre à un échec observable ; (3) empêcher les modifications non vérifiées de se propager à d'autres tâches.
+
+**Plan d'étude pour Codex** : lire README + setup ; documenter composants, hypothèses, besoins d'API et de sandbox, capacité de reproduire une expérience sur fixtures ; **ne pas installer/exécuter automatiquement**. Le setup indique une configuration Codex pouvant fonctionner avec sandbox désactivé. Risques : exécution non isolée, coûts non bornés, édition de scripts/plugins, fuite de données, surajustement aux évaluations. P0.1 : simple fiche + propositions IMPROVE supervisées.
+
+### [G02] Walking Labs — Learn Harness Engineering
+
+**URL :** https://github.com/walkinglabs/learn-harness-engineering  
+**Catégorie : A** — cours de référence, 14 leçons et projets pratiques d'après son README actuel. Couvre AGENTS, vérification, reprise de sessions, loop engineering, graph engineering, analyse comparée de Claude Code/Codex/Pi/DeepSeek. Très proche de notre domaine.
+
+**Réutilisable comme idées** : état persistant minimal, boucle *planifier → agir → vérifier → transmettre*, description d'un « graph » comme routage explicite. **Ne pas recopier** ses templates, exercices ou skill `harness-creator` par défaut : licence, maintenance, qualité et conflit avec notre politique « pas de skills maison » à évaluer. En VCR nous aidons à choisir et **auditer**, pas à refaire le cours.
+
+### [G03] TrishamBP — Harness Engineering
+
+**URL :** https://github.com/TrishamBP/harness-engineering  
+**Catégorie : A/C** — diagrammes et implémentation Python stdlib d'un harness de référence (boucle, outils typés, permissions, logs, contexte, contrôles, coordination). Utile pour comprendre les interfaces d'un runtime complexe.
+
+**Pour Codex** : lire son design, comparer nos obligations de sûreté ; ne pas prendre le code entier comme dépendance et ne pas développer un runtime alternatif dans P0.1. Son code est une illustration originale inspirée d'une étude, pas le code de production des agents analysés.
+
+### [G04] Gloriaameng — Awesome Agent Harness
+
+**URL :** https://github.com/Gloriaameng/Awesome-Agent-Harness  
+**Catégorie : A** — annuaire et grille comparant plusieurs fonctions : boucle, outils, contexte, état, hooks, évaluation. Référence utile pour enrichir notre catalogue ; peut comporter des descriptions datées de produits et des informations non vérifiées.
+
+**Pour Codex** : extraire seulement les entrées pertinentes, croiser chaque affirmation avec la documentation première partie du projet. Ne jamais considérer son classement comme benchmark.
+
+### [G05] LangGraph
+
+**Repo :** https://github.com/langchain-ai/langgraph  
+**Persistance :** https://docs.langchain.com/oss/python/langgraph/persistence  
+**Catégorie : C/B futur** — moteur de graphes d'exécution avec état, checkpoints, interruption/approbation, reprise, routage, fan-out/fan-in. Intéressant si VCR orchestre plusieurs agents autonomes dans de longs audits distribués.
+
+**Critère d'introduction** : apparaissent réellement des besoins de reprise après crash, de coordination de N agents et de points d'approbation au milieu d'exécutions. En P0.1, un simple workflow Python suffit, **pas de LangGraph**.
+
+## 3. Navigation, cartes et recherche de code
+
+### [G06] Serena
+
+**URL :** https://github.com/oraios/serena  
+**Catégorie : B** — recherche structurée par symboles/références, intégration des agents via outils. Peut rendre les grosses bases plus navigables.
+
+**À étudier** : langages réellement pris en charge, installation, démarrage LSP, sécurité du MCP, quotas de sortie et logs, commandes de recherche, limites sur JS/TS et Python. Alternative simple : `rg`, `git grep`, analyse des imports, sommaire des fichiers. Ne pas faire de Serena un composant obligatoire ou présumer que chaque agent l'utilise automatiquement.
+
+### [G07] Aider RepoMap
+
+**Documentation :** https://aider.chat/docs/repomap.html  
+**Repo :** https://github.com/Aider-AI/aider  
