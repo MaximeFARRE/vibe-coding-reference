@@ -1,0 +1,19 @@
+{
+  "id": "EXAMPLE-001",
+  "title": "Aucun test des routes API critiques repéré",
+  "category": "testing",
+  "severity": "P2",
+  "status": "suspected",
+  "confidence": "medium",
+  "origin": "agent_review",
+  "summary": "Plusieurs routes modifient des données, mais les tests repérés portent essentiellement sur des fonctions métier. La couverture exhaustive n'a pas été vérifiée.",
+  "impact": "Une régression d'autorisation ou de validation HTTP pourrait passer inaperçue.",
+  "evidence": [{"kind": "file", "summary": "Route POST repérée (exemple fictif, non issu d'un dépôt réel)", "path": "app/api/example/route.ts", "line_start": 12, "line_end": 24, "redacted": false}],
+  "recommendations": ["Créer un test de route ciblé couvrant l'accès non autorisé et la validation d'entrée avant refactorisation"],
+  "alternatives": ["Tester d'abord la couche service si le harnais HTTP est trop coûteux"],
+  "risks_of_fix": ["Changer implicitement une règle métier lors de la création du test"],
+  "invariants_to_preserve": ["Comportement métier et codes de réponse HTTP attendus"],
+  "verification_plan": ["Confirmer les routes et tests existants", "Exécuter les tests sans utiliser de vraies données", "Vérifier le cas de refus"],
+  "limitations": ["Ce constat est un exemple de format uniquement"],
+  "references": []
+}
