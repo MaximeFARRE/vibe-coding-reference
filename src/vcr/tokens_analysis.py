@@ -61,8 +61,11 @@ def analyse(records=None):
         'tools': [{'occurrences': len(v), 'record_refs': v[:10]} for v in tool_groups[:10]],
         'tools_coverage': sum('tool' in r for r in records),
         'repeated_searches': [{'occurrences': len(v), 'record_refs': v[:10]} for v in repeated[:10]],
+        'search_coverage': sum('session_id' in r and 'search_fingerprint' in r for r in records),
         'multi_topic_sessions': len(topics) if any('session_id' in r and 'topic_count' in r for r in records) else None,
+        'topic_coverage': sum('session_id' in r and 'topic_count' in r for r in records),
         'long_command_records': long_commands[:10],
-        'long_command_count': len(long_commands),
+        'long_command_count': len(long_commands) if any('command_chars' in r for r in records) else None,
+        'command_coverage': sum('command_chars' in r for r in records),
     }
     return {'trace_supplied': supplied, 'record_count': len(records) if supplied else None, 'metrics': metrics, 'signals': signals}
