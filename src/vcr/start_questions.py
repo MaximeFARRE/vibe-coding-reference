@@ -3,7 +3,7 @@ import json
 from pathlib import Path
 
 QUESTIONS = (
-    ('goal', 'Que doit permettre de faire le projet, et quelle est l’action principale ?', None),
+    ('goal', 'Que doit permettre de faire le projet ?', None),
     ('action', 'Quelle action concrète la personne effectue-t-elle ? (ex. cliquer sur Ajouter)', None),
     ('outcome', 'Quel résultat visible doit-elle obtenir ?', None),
     ('kind', 'Type : 1 site vitrine, 2 application web, 3 gestion administrative, 4 calcul Python, 5 outil local, 6 interface très interactive, 0 à préciser', {'1': 'site', '2': 'fullstack', '3': 'crud', '4': 'python', '5': 'local', '6': 'interactive', '0': 'unknown'}),
