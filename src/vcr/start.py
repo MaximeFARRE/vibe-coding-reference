@@ -27,7 +27,8 @@ def quoted(text):
 def write_start(answers, out):
     out = Path(out)
     options, warnings = suggest(answers)
-    unknown = [key for key in answers if not answers[key] or answers[key] == 'unknown']
+    names = {'goal': 'objectif', 'kind': 'type', 'audience': 'utilisateurs', 'access': 'accès', 'data': 'données', 'sensitive': 'sensibilité', 'persistence': 'conservation', 'seo': 'référencement', 'interaction': 'interactivité', 'python': 'contrainte Python', 'constraints': 'contraintes'}
+    unknown = [names[key] for key in answers if not answers[key] or answers[key] == 'unknown']
     brief = ['# Besoin métier', '', '## Objectif et parcours déclaré', quoted(value(answers, 'goal')), '', '## Utilisateurs', quoted(value(answers, 'audience')), '', '## Informations manipulées', quoted(value(answers, 'data')), '', '## Périmètre et contraintes']
     for label, key in [('Type de produit', 'kind'), ('Accès', 'access'), ('Données sensibles', 'sensitive'), ('Conservation', 'persistence'), ('Référencement', 'seo'), ('Interactivité', 'interaction'), ('Python imposé', 'python')]:
         brief.append(f'- {label} : {value(answers, key)}')

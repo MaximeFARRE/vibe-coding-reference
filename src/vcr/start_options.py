@@ -12,6 +12,7 @@ def suggest(a):
         warnings.append('La contrainte Python et le site vitrine peuvent concerner des parties distinctes : confirmer avant de séparer frontend et calcul.')
     if a['persistence'] == 'yes':
         storage = ('Fichier local ou SQLite selon concurrence et sauvegardes.' if access == 'local' else
+                   'À déterminer : mode d’accès et besoins de conservation à clarifier.' if access == 'unknown' else
                    'Base adaptée aux accès concurrents et sauvegardée ; choix à confirmer avec les besoins.')
     elif a['persistence'] == 'no':
         storage = 'Aucune base requise par défaut ; confirmer qu’aucune conservation n’est nécessaire.'
