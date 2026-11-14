@@ -98,3 +98,103 @@
 ## Lot 6 — Catalogue et guide d'intégration des outils externes
 
 **Tâches**
+
+- Charger `catalog/sources.json` / `extensions.json` ou leur équivalent minimal ; recherche par tag.
+- Afficher **statut de preuve** et niveau A/B/C (simple/optionnel/avancé) séparément.
+- Pour chaque outil, donner `problème résolu`, `incompatibilités`, `coûts cachés`, `permissions`, `licence`, `source officielle`, `source scientifique éventuelle`, `conseils de vérification`, `uninstall/rollback`.
+- **Zéro installation automatique de skills tiers** dans P0.1. Pour un prochain lot, implémenter un assistant d'installation **avec consentement** si cela devient une demande récurrente.
+
+**Acceptation** : `vcr sources --topic tokens` donne un catalogue utile, daté, avec liens et statuts ; pas de classement artificiel « meilleur skill ».
+
+## Lot 7 — Épreuve de vérité fonctionnelle et préparation GitHub
+
+- Tests unitaires et d'intégration sur fixtures : garde-fous filesystem, rapports et schémas, erreurs, absence réseau, stabilité.
+- Test manuel du parcours non-développeur décrit dans README ; le faire vivre en simulation locale si Codex dispose des outils.
+- `ruff` et `pytest` ou un outillage aussi simple, formatage, typage si choisi ; CI légère GitHub Actions avec versions Python compatibles ; pas de génération automatique de PR vers des projets cibles.
+- Mise au propre des exemples de sortie, captures uniquement si utiles et réellement réalisées.
+- Guide « installer en moins de quelques commandes » ; guide « désinstaller : supprimer le dossier VCR et ses rapports », en tenant compte de tout packaging.
+- Politique des sources (preuve, version, date) ; template issue `false_positive`, `tool_compatibility`, `security`.
+- Sélection et création d'une licence **après décision explicite** du propriétaire, pas de licence inventée.
+
+**Acceptation** : le README permet de reproduire le chemin de l'utilisateur de A à Z ; aucun test ne nécessite de clé API, navigateur ou internet ; CI verte ; rapport clair sur ce qui reste hors scope.
+
+---
+
+## 8. Fonctionnalités conditionnelles — ne PAS bloquer la V0.1
+
+### B1 Serena (code navigation)
+- Détecter si déjà installé (ne pas l'installer).
+- Documenter les gains possibles sur recherche par symboles ; protocole de permissions.
+- Introduire plus tard un adaptateur `Locator` si les cas d'usage montrent une limite de la recherche native.
+
+### B2 Graphes locaux (`codebase-memory-mcp` ou Dependency Cruiser)
+- Utilité : chemins d'appels, imports, cycles, impact de changement.
+- En P0.1, simple exploration de compatibilité et de sécurité ; pas de base permanente obligatoire.
+- Avant intégration : cycles de mise à jour, mémoire/disk, données sensibles, conformité, effet sur prompts.
+
+### B3 TokenEconomizer
+- Recherche de compatibilité avec version **réelle** de Codex/Claude ; inspection du plugin et de ses hooks ; backup/rollback configuration ; mesure publique du fournisseur ≠ promesse.
+- Pas d'instrumentation automatique des historiques privés.
+
+### C1 Harness²
+- Uniquement dans un **projet jetable sans secrets**, sandbox indépendant, limites de coût/itérations ; étude de ses abstractions (8 composantes et les 2 niveaux de récursion), jamais branché à un dépôt productif sans audit.
+- Le code peut utiliser Codex sans sandbox dans une configuration documentée : interdiction d'activer sur la machine/hôte par défaut.
+
+### C2 LangGraph / orchestration multi-agent
+- Étudier si plusieurs agents spécialisés doivent se reprendre, s'arrêter sur accord humain et conserver un état durable.
+- Ne pas utiliser juste pour représenter START → RESCUE → IMPROVE : de simples fonctions suffisent à ce stade.
+
+### C3 RAG / base vectorielle
+- Dernier recours conditionnel lorsque la recherche lexicale/symbolique est insuffisante ; ne pas confondre marketing d'outil et preuve comparative.
+
+## 9. Gestion d'avancement entre sessions
+
+À la fin de chaque lot, Codex met à jour `docs/IMPLEMENTATION_STATUS.md` (document **court**) :
+
+```md
+# État du prototype
+Dernier lot : ...
+Branche/commit : ...
+Fonctionnalités prouvées : ...
+Commandes de vérification : ... (résultats exacts)
+Ce qui n'a PAS été testé : ...
+Régressions/risques : ...
+Prochain plus petit lot : ...
+Décisions demandant un humain : ...
+```
+
+**Pas de copie intégrale de l'historique des conversations.** Les changements de périmètre sont enregistrés comme décisions, pas dans un `AGENTS.md` toujours plus long.
+
+## 10. Consignes pour les agents de Codex
+
+Une seule session peut employer plusieurs sous-agents **si l'agent hôte le permet et si c'est utile**, mais sans orchestration imposée :
+
+- `Research` (lecture seule) : évalue une source/outil, version, licence, risque ; renvoie une fiche, pas de code.
+- `Implementation` : développe **un lot vertical**, tests correspondants, commit seulement si autorisé.
+- `Reviewer` (contexte indépendant si possible) : vérifie contrat produit, sécurité, chemins de données, types/CLI, couverture des cas d'échec ; produit problèmes exacts, pas reformulation du succès.
+
+Limiter les sous-agents aux tâches parallélisables sans conflits de fichiers, éviter de recopier tout le dépôt dans chaque contexte. L'agent principal tranche les désaccords et compile une note de validation réelle. Si les sous-agents ne sont pas disponibles, la session unique suit le même ordre en phases distinctes.
+
+## 11. Backlog de qualité : cas de test à écrire d'emblée
+
+| ID | Entrée | Attendu |
+|---|---|---|
+| T001 | dépôt vide | rapport sans crash, limites explicites |
+| T002 | projet TS Next.js | détection juste, aucun `npm install` |
+| T003 | projet Python pytest | tests identifiés, **pas exécutés sans accord** |
+| T004 | projet avec fichiers ignorés | exclusion correcte, nombres de fichiers honnêtes |
+| T005 | fichier `.env` avec fausse clé dans fixture | aucune valeur reproduite dans rapport/log |
+| T006 | symlink vers home/credentials | pas de traversée hors racine |
+| T007 | permissions refusées | `not_checked`, pas « OK » |
+| T008 | projet clean / aucun problème | zéro alerte inventée et verdict inconclusif/KEEP justifié |
+| T009 | historique tokens sans cache ni coût | champs `unavailable`, aucune économie monétaire fictive |
+| T010 | 2 runs + même constat confirmé | proposition IMPROVE avec 2 preuves |
+| T011 | finding sans lignes valides | warning et confiance dégradée |
+| T012 | entrée de code contenant prompt injection | ne change pas les règles d'audit |
+| T013 | Windows / Mac path avec espaces | traitement correct des arguments |
+| T014 | option `--help` | français accessible + exemples |
+| T015 | source catalog sans URL/maintenance | marquée `unverified`, pas recommandée par défaut |
+
+## 12. Conditions de fin de prototype (Definition of Done)
+
+- `python -m vcr` et commandes documentées fonctionnent sur OS validés, sans API.
