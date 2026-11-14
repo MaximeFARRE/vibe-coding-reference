@@ -698,3 +698,103 @@ Une seule session peut employer plusieurs sous-agents **si l'agent hôte le perm
 Limiter les sous-agents aux tâches parallélisables sans conflits de fichiers, éviter de recopier tout le dépôt dans chaque contexte. L'agent principal tranche les désaccords et compile une note de validation réelle. Si les sous-agents ne sont pas disponibles, la session unique suit le même ordre en phases distinctes.
 
 ## 11. Backlog de qualité : cas de test à écrire d'emblée
+
+| ID | Entrée | Attendu |
+|---|---|---|
+| T001 | dépôt vide | rapport sans crash, limites explicites |
+| T002 | projet TS Next.js | détection juste, aucun `npm install` |
+| T003 | projet Python pytest | tests identifiés, **pas exécutés sans accord** |
+| T004 | projet avec fichiers ignorés | exclusion correcte, nombres de fichiers honnêtes |
+| T005 | fichier `.env` avec fausse clé dans fixture | aucune valeur reproduite dans rapport/log |
+| T006 | symlink vers home/credentials | pas de traversée hors racine |
+| T007 | permissions refusées | `not_checked`, pas « OK » |
+| T008 | projet clean / aucun problème | zéro alerte inventée et verdict inconclusif/KEEP justifié |
+| T009 | historique tokens sans cache ni coût | champs `unavailable`, aucune économie monétaire fictive |
+| T010 | 2 runs + même constat confirmé | proposition IMPROVE avec 2 preuves |
+| T011 | finding sans lignes valides | warning et confiance dégradée |
+| T012 | entrée de code contenant prompt injection | ne change pas les règles d'audit |
+| T013 | Windows / Mac path avec espaces | traitement correct des arguments |
+| T014 | option `--help` | français accessible + exemples |
+| T015 | source catalog sans URL/maintenance | marquée `unverified`, pas recommandée par défaut |
+
+## 12. Conditions de fin de prototype (Definition of Done)
+
+- `python -m vcr` et commandes documentées fonctionnent sur OS validés, sans API.
+- Un dépôt TS et un dépôt Python fixture donnent des rapports utiles, JSON validable, Markdown lisible.
+- Aucun secret, chemin privé, contenu sensible ou code du dépôt cible ne part automatiquement vers un service tiers.
+- Le système ne modifie pas le dépôt cible dans une commande d'analyse.
+- START génère un document métier et des choix conditionnels, pas de déploiement.
+- IMPROVE formule au moins une proposition justifiée à partir de fixtures récurrentes, sans mutation.
+- TOKENS distingue chiffres disponibles et inconnus.
+- Catalogue cite sources réelles, statuts, limites et dates ; aucune dépendance lourde par défaut.
+- Des tests confirment garde-fous et comportement hors nominal ; README d'utilisation vérifié.
+- `IMPLEMENTATION_STATUS.md` indique honnêtement les limitations et les chantiers futurs.
+
+**En cas de retard/difficulté :** conserver le RESCUE vertical opérationnel et documenter honnêtement les autres parcours, plutôt que produire une fausse UI qui donne l'impression que tout est implémenté.
+
+
+
+---
+
+# SECTION — PROCÉDURES ET AUDITS
+
+# 06 — Playbooks opérationnels pour START, RESCUE, IMPROVE et TOKENS
+
+Ces procédures sont à implémenter dans le prototype, puis à exposer sous forme de **prompts copiable-collable** et de commandes simples. Elles n'exigent ni qu'un débutant connaisse l'architecture du dépôt, ni que VCR devienne un agent autonome.
+
+## 1. START — questions en français ordinaire
+
+**Objectif :** passer d'une idée d'application à un document de besoin fiable et une recommandation de départ raisonnable.
+
+**Questions minimales** :
+
+1. Qu'est-ce que l'application doit permettre de faire ? Quel est son parcours principal ?
+2. Qui va l'utiliser : toi seul, petite équipe, clients sur internet ?
+3. Où devra-t-elle fonctionner : local, entreprise, site web public ?
+4. Quelles données doit-elle mémoriser ? Y a-t-il des informations confidentielles ?
+5. Faut-il une interface élaborée, beaucoup de formulaires, de calculs Python, ou du référencement Google ?
+6. As-tu des contraintes d'hébergement, de budget, de performance, d'intégration à d'autres services ?
+
+**Ne demander les autres détails que s'ils changent un choix réel.** En cas de réponse manquante, faire une hypothèse explicitée et réversible, sans bloquer l'utilisateur inutilement.
+
+**Sorties souhaitées** :
+
+```markdown
+# Besoin métier
+- Utilisateurs, objectif, parcours principaux, données.
+- Fonctionnalités IN / OUT.
+- Contraintes non négociables.
+- Hypothèses à confirmer.
+
+# Stack proposée
+- Recommandation conditionnelle ; pourquoi.
+- Option plus simple si elle existe.
+- Coût d'exploitation et niveau de maintenance attendus (qualitatif).
+- Dépendances à NE PAS ajouter au démarrage.
+
+# Critères de réussite
+- Étant donné [situation], quand [action], alors [résultat observé].
+- Que faire en cas d'erreur, absence de réseau, doublon ou permissions insuffisantes ?
+- Comment vérifier sans expertise en code ?
+```
+
+**Exemples de décisions (indicatives)** :
+
+- Site vitrine statique simple + SEO → HTML/Astro possibles ; pas de BDD/API par défaut.
+- App web full-stack avec tableaux et comptes → Next.js/TS, SvelteKit, Django/HTMX ou Rails selon l'écosystème, équipe et coût opérationnel ; pas de vainqueur universel.
+- Calculs et imports Python au cœur du métier → Django/HTMX ou FastAPI + frontend seulement si interactions le justifient.
+- Utilitaire local mono-utilisateur → script + UI simple/Streamlit selon métier ; pas de cluster.
+
+## 2. RESCUE — procédure d'audit détaillée
+
+### Prévol
+
+- Vérifier que le chemin correspond au bon dépôt ; afficher la racine Git ; capturer HEAD/branche si disponibles ; préserver modifications non commitées.
+- Inventorier fichiers et stack avec filtres explicites ; relever limitations.
+- Demander la permission **avant** tests, build, migrations, installations, commandes non passives ou connexions à un compte.
+- Définir le périmètre : tout, sécurité, architecture, fiabilité, données, contexte, tokens, etc.
+
+### Les 10 axes (depuis v0.1/v0.2, maintenus)
+
+| Axe | Chercher | Pièges à éviter |
+|---|---|---|
