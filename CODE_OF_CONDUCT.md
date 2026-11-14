@@ -1,5 +1,5 @@
-# Code de conduite
+# Code of conduct
 
-Nous souhaitons que chacun puisse participer dans un cadre respectueux et accueillant. Soyez courtois, critiquez les idées et les changements plutôt que les personnes, et accueillez les questions et les expériences différentes. Le harcèlement, les propos discriminatoires, les menaces et la publication de données privées ne sont pas acceptables.
+We want everyone to participate in a respectful and welcoming environment. Be courteous, critique ideas and changes rather than people, and welcome questions and different experiences. Harassment, discriminatory language, threats and publication of private data are unacceptable.
 
-Les mainteneurs peuvent masquer ou retirer les contenus problématiques, fermer une discussion ou limiter la participation selon la situation. Pour signaler un problème de conduite sans exposer de données sensibles publiquement, ouvrez une issue demandant un moyen de contact privé, sans détail personnel ; aucun délai de réponse n'est garanti. Pour une vulnérabilité, suivez plutôt [SECURITY.md](SECURITY.md).
+Maintainers may hide or remove problematic content, close a discussion or limit participation depending on the situation. To report a conduct issue without exposing sensitive data publicly, open an issue requesting a private contact method without personal details; response times are not guaranteed. For a vulnerability, follow [SECURITY.md](SECURITY.md) instead.

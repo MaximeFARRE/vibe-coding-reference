@@ -1,9 +1,9 @@
-# Signaler un problème de sécurité
+# Reporting a security issue
 
-Ne publiez pas de vulnérabilité exploitable, secret ou donnée personnelle dans une issue publique.
+Do not publish an exploitable vulnerability, secret or personal data in a public issue.
 
-Utilisez le bouton **Report a vulnerability** dans l’onglet **Security → Advisories** du dépôt pour envoyer un signalement privé. Ce canal a été activé le 14 novembre 2026 ; vérifiez sa disponibilité avant envoi. Sinon, ouvrez une issue demandant uniquement un moyen de contact privé, sans détail technique ; le modèle « Demande de contact sécurité » est prévu pour cela.
+Use **Report a vulnerability** under the repository's **Security → Advisories** tab to submit a private report. This channel was enabled on November 14, 2026; check that it is available before submitting. Otherwise, open an issue requesting only a private contact method, without technical details; the security contact issue template is available for this purpose.
 
-Une fois un canal privé établi, indiquez la version concernée, un scénario minimal avec données fictives, l'impact et les limites de votre vérification. Aucun délai de réponse ni canal externe n'est garanti par cette politique.
+Once a private channel is established, provide the affected version, a minimal scenario using fictional data, the impact and the limits of your verification. This policy guarantees neither a response time nor an external contact channel.
 
-Documentation GitHub : [signaler une vulnérabilité en privé](https://docs.github.com/en/code-security/how-tos/report-and-fix-vulnerabilities/report-privately).
+GitHub documentation: [privately reporting a vulnerability](https://docs.github.com/en/code-security/how-tos/report-and-fix-vulnerabilities/report-privately).
