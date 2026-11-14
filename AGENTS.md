@@ -1,8 +1,7 @@
 # Instructions de travail pour les agents dans Vibe Coding Reference
 
 - Ce dépôt vise un **outil local-first** simple pour START, RESCUE, IMPROVE et TOKEN EFFICIENCY ; Codex/Claude restent les agents existants, ne pas construire de nouvel agent/LLM.
-- Commencer par `README_START_HERE.md`, puis les seuls documents utiles au lot en cours. La référence longue `reference/RESEARCH_AND_DESIGN_v0.2.md` est **consultative**, pas à relire intégralement par défaut.
-- Lire `plans/03_BACKLOG_ET_LIVRAISON.md` pour les lots, leurs critères de réussite et tests fonctionnels.
+- Commencer par `README.md` et `docs/IMPLEMENTATION_STATUS.md`, puis lire uniquement les documents utiles au travail en cours. La référence longue `reference/RESEARCH_AND_DESIGN_v0.2.md` est **consultative**, pas à relire intégralement par défaut.
 - Pour une recherche, consulter l'index `research/README.md` et les seules notes pertinentes ; consigner les nouveaux résultats, options, avantages, inconvénients, sources et incertitudes dans une note datée, puis actualiser l'index.
 - Les audits de dépôts tiers sont non destructifs. La consultation réseau de sources publiques utiles au projet est autorisée ; ne transmettre aucun secret ni contenu privé et conserver VCR hors ligne par défaut.
 - Aucune installation, exécution de scripts de la cible, migration, suppression, commit, push ou déploiement sans autorisation.
