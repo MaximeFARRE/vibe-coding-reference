@@ -34,6 +34,9 @@ class TraceValidationTests(unittest.TestCase):
         self.file.write_text('{"format":"vcr-token-trace-v1","records":[{"input_tokens":NaN}]}')
         with self.assertRaises(ValueError):
             load_trace(self.file)
+        self.file.write_text('{"format":"vcr-token-trace-v1","records":[{"input_tokens":1,"input_tokens":2}]}')
+        with self.assertRaises(ValueError):
+            load_trace(self.file)
 
     def test_mixed_currency_or_missing_cost_is_unavailable(self):
         def cost(currency, kind='actual'):
