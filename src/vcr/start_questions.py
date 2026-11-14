@@ -4,6 +4,8 @@ from pathlib import Path
 
 QUESTIONS = (
     ('goal', 'Que doit permettre de faire le projet, et quelle est l’action principale ?', None),
+    ('action', 'Quelle action concrète la personne effectue-t-elle ? (ex. cliquer sur Ajouter)', None),
+    ('outcome', 'Quel résultat visible doit-elle obtenir ?', None),
     ('kind', 'Type : 1 site vitrine, 2 application web, 3 gestion administrative, 4 calcul Python, 5 outil local, 6 interface très interactive, 0 à préciser', {'1': 'site', '2': 'fullstack', '3': 'crud', '4': 'python', '5': 'local', '6': 'interactive', '0': 'unknown'}),
     ('audience', 'Qui utilisera le projet ? (ex. moi seul, équipe, clients)', None),
     ('access', 'Accès : 1 local, 2 équipe privée, 3 public sur internet, 0 à préciser', {'1': 'local', '2': 'private', '3': 'public', '0': 'unknown'}),
@@ -34,7 +36,9 @@ def load_answers(path):
     return dict(answers)
 
 
-def ask(existing=None, input_fn=input, print_fn=print):
+def ask(existing=None, input_fn=None, print_fn=print):
+    if input_fn is None:
+        input_fn = input
     answers = dict(existing or {})
     print_fn('START — répondez sans copier de secrets ni de données personnelles. Entrée vide : à préciser.')
     for key, prompt, choices in QUESTIONS:
