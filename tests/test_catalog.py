@@ -26,6 +26,7 @@ class CatalogTests(unittest.TestCase):
         self.assertIn('https://github.com/microsoft/TokenEconomizer', result.stdout)
         self.assertIn('Niveau de complexité :** B', result.stdout)
         self.assertIn('Statut de preuve :** unverified', result.stdout)
+        self.assertIn('Accès au lien officiel :** verified', result.stdout)
         self.assertIn('licence', result.stdout.lower())
         self.assertNotIn('meilleur skill', result.stdout.lower())
 
@@ -34,6 +35,7 @@ class CatalogTests(unittest.TestCase):
         item = normalize_catalog(data)['entries'][0]
         self.assertEqual(item['evidence_status'], 'unverified')
         self.assertEqual(item['maintenance_status'], 'unverified')
+        self.assertEqual(item['link_status'], 'unverified')
         self.assertIsNone(item['official_url'])
         self.assertFalse(item['recommended_by_default'])
         output = render(normalize_catalog(data), 'tokens')
@@ -48,6 +50,7 @@ class CatalogTests(unittest.TestCase):
                 self.assertIn(item['level'], ('A', 'B', 'C'))
                 self.assertEqual(item['evidence_status'], 'unverified')
                 self.assertEqual(item['maintenance_status'], 'unverified')
+                self.assertEqual(item['link_status'], 'verified')
                 self.assertFalse(item['recommended_by_default'])
                 self.assertTrue(valid_url(item['official_url']))
 
