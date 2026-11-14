@@ -2,10 +2,11 @@
 
 Published versions describe user-visible changes and their limitations. The project is a prototype; its interfaces may change.
 
-## Unreleased
+## 0.1.0 — 2026-11-14
 
 - Add `vcr check`, a passive local project health checklist with text and JSON output and explicit evidence and limits.
 - Discover selected project commands with `--full` without executing them; no AI, network access or installation is required.
+- Translate project and research documentation into English; the French guide and three historical references remain in French.
 - Reuse RESCUE's bounded inventory and validate check results before output. Backup restoration and dependency vulnerabilities are not checked; START and RESCUE correction integration remain future work.
 
 ## 0.1.0-rc.1 — preview

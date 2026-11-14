@@ -10,6 +10,7 @@ VCR aide à cadrer et examiner un projet quand on développe avec des agents exi
 |---|---|---|
 | **START** | Transformer une idée en cadrage | Brief, critères et pistes de stack à valider |
 | **RESCUE** | Inspecter passivement un projet | Rapport avec preuves et limites, sans modifier la cible |
+| **CHECK** | Contrôler rapidement un projet | Vérifications passives et limites explicites |
 | **IMPROVE** | Examiner des rapports ou notes choisis | Pistes supervisées, sans appliquer de changement |
 | **TOKENS** | Examiner le contexte ou une trace fournie volontairement | Diagnostic descriptif, sans calcul de quota ou d'économies |
 | **SOURCES** | Consulter des ressources par thème | Catalogue local, sans installation automatique |
@@ -70,6 +71,22 @@ python3 -m vcr start --interactive --from "/chemin/vers/nouveau-cadrage/answers.
 ```
 
 Les réponses déjà enregistrées, y compris « à préciser », ne sont pas redemandées. Pour les changer, recommencer sans `--from`. Les documents contiennent vos réponses en clair : ne saisissez pas de secret ni de donnée personnelle et vérifiez-les avant partage. Les choix de stack et les critères restent des hypothèses à confirmer avec le propriétaire ; ils ne remplacent pas une analyse de sécurité ou de faisabilité.
+
+## Contrôle rapide d'un projet
+
+```sh
+python3 -m vcr check --repo /chemin/projet
+python3 -m vcr check --repo /chemin/projet --json
+python3 -m vcr check --repo /chemin/projet --full --format json --out /chemin/externe/check.json
+```
+
+Sans `--repo`, le dossier courant est utilisé. La sortie est affichée par défaut ; `--out` crée un nouveau fichier hors du projet, sans écrasement. `--full` signale les scripts reconnus sans les exécuter ; l'exécution des commandes du projet n'est pas proposée. Codes de sortie : 0 sans échec confirmé, 1 si un nom de fichier `.env` sensible est suivi par Git, 2 en cas d'erreur de commande ou de cible. Un code 0 ne garantit ni sécurité ni bon fonctionnement.
+
+`passed` confirme uniquement l'assertion décrite, généralement une présence ; `failed` indique une assertion mise en défaut ; `skipped` une exécution volontairement omise ; `not_checked` une vérification inconclusive ou non effectuée ; `not_applicable` une vérification hors périmètre. Les fichiers ignorés, liens symboliques et fichiers volumineux sont exclus de l'inventaire. Aucun contenu `.env`, script de projet ou réseau n'est utilisé. Le périmètre est partiel : consultez [l'état d'implémentation](docs/IMPLEMENTATION_STATUS.md) avant d'interpréter les résultats.
+
+Chaque résultat JSON peut aussi contenir `evidence` (ce qui a été observé), `source_method` (comment), `applicability_reason` et `limitation`. En texte, les preuves et limites disponibles apparaissent sous le contrôle concerné. La présence d'un exemple `.env` ou d'un fichier de configuration de typage est désormais signalée ; ni les valeurs de configuration ni l'exécution du typage ne sont vérifiées. Un manifeste Node et son lockfile doivent se trouver dans le même dossier pour être associés.
+
+Les vérifications de `check` sont des règles automatiques locales : aucun modèle d'IA ni service externe n'est utilisé. Les raisons de sélection sont affichées sous chaque contrôle. VCR vérifie la structure des résultats avant affichage ; cette vérification interne ne remplace pas une validation complète par un outil JSON Schema. Les contrôles de restauration et de vulnérabilités, non réalisables par ces règles passives, ne figurent pas parmi les contrôles exécutés.
 
 ## Analyser un projet avec RESCUE
 
