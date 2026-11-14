@@ -2,6 +2,7 @@ import argparse
 import sys
 from pathlib import Path
 
+from .catalog import load_catalog, render as render_catalog
 from .feedback import DECISIONS, record_feedback
 from .improve import prepare, write_improve
 from .improve_registry import STATUSES, update_status
@@ -38,13 +39,15 @@ def main(argv=None):
     tokens.add_argument("--from", dest="trace", help="Trace locale au format vcr-token-trace-v1")
     tokens.add_argument("--out", help="Nouveau dossier de rapport (facultatif)")
     tokens.add_argument("--project", help="Projet à protéger : la sortie doit être extérieure à ce dossier")
+    sources = sub.add_parser("sources", help="Consulter le catalogue local des sources et outils")
+    sources.add_argument("--topic", help="Thème exact, par exemple tokens ou navigation")
     feedback = sub.add_parser("feedback", help="Enregistrer une décision dans le dossier du rapport")
     feedback.add_argument("--report", required=True, help="Dossier contenant run.json")
     feedback.add_argument("--finding", required=True, help="Identifiant du constat")
     feedback.add_argument("--decision", required=True, choices=sorted(DECISIONS))
     args = parser.parse_args(argv)
     if args.command is None:
-        print("Vibe Coding Reference — outil local\n[1] START — cadrer un projet\n[2] RESCUE — analyser un projet\n[3] IMPROVE — examiner des observations\n[4] TOKENS — examiner le contexte\n[0] Quitter\nSOURCES : pas encore disponible.")
+        print("Vibe Coding Reference — outil local\n[1] START — cadrer un projet\n[2] RESCUE — analyser un projet\n[3] IMPROVE — examiner des observations\n[4] TOKENS — examiner le contexte\n[5] SOURCES — explorer le catalogue\n[0] Quitter")
         if not sys.stdin.isatty():
             return 0
         try:
@@ -72,11 +75,21 @@ def main(argv=None):
                 args.project = None
                 if args.out:
                     args.project = input("Dossier du projet à protéger facultatif : ").strip() or None
+            elif choice == '5':
+                args.command = 'sources'
+                args.topic = input("Thème facultatif (ex. tokens, navigation) : ").strip() or None
             else:
                 return 0
         except (EOFError, KeyboardInterrupt):
             print("\nAnnulé.")
             return 0
+    if args.command == 'sources':
+        try:
+            print(render_catalog(load_catalog(), args.topic), end='')
+            return 0
+        except (OSError, ValueError) as exc:
+            print(f"Erreur : {exc}", file=sys.stderr)
+            return 2
     if args.command == 'tokens':
         try:
             records = load_trace(args.trace) if args.trace else None
