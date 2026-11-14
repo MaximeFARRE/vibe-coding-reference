@@ -6,6 +6,8 @@ RESCUE inspecte passivement un dossier et produit un rapport en français, un fi
 
 **English:** VCR is a local-first prototype for passive repository inspection. Its RESCUE workflow generates JSON and French Markdown reports without running project scripts or using an API. Other workflows are planned, not yet implemented.
 
+Les recherches et décisions sont conservées dans les [notes destinées aux agents](research/README.md), avec leurs sources et limites.
+
 ## Démarrage sans installation
 
 Dans ce dossier, sur macOS ou Linux :
