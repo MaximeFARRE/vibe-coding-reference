@@ -45,6 +45,8 @@ def render(registry, proposals, limitations):
         lines += ['', '**Cause possible, non confirmée :** ' + p.suspected_cause, '', '**Option A :** ' + p.solution_a, '', '**Option B :** ' + p.solution_b, '', '**Risque :** ' + p.risk, '', '**Maintenance :** ' + p.maintenance, '', '**Préserver :** les données, règles métier et modifications existantes.', '', '**Vérifier :** confirmer chaque source et la pertinence de l’option retenue avant toute intervention.', '', '**Réévaluer :** ' + escape(p.reevaluate_when), '', '**Validation humaine requise** avant toute modification ou exécution dans le projet.']
         if p.id == 'architecture-doc':
             lines += ['', '**Texte à envisager après validation humaine, sans application automatique :**', '> Indiquer ici le lien vers la carte d’architecture réellement existante et la maintenir lors des changements concernés.']
+        if p.id == 'agents-conflict':
+            lines += ['', '**Texte à envisager après validation humaine, sans application automatique :**', '> Remplacer uniquement l’instruction confirmée comme obsolète par la procédure vérifiée et conserver les protections applicables.']
     isolated = [(rule, entry) for rule, entry in registry['entries'].items() if len(entry['sources']) == 1]
     if isolated:
         lines += ['', '## Observations isolées — à surveiller']
