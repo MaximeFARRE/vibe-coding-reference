@@ -2,7 +2,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from vcr.models import Evidence, Finding, Run
+from vcr.models import CheckResult, Evidence, Finding, Run
 from vcr.normalize import normalize
 from vcr.report import render
 
@@ -17,6 +17,28 @@ class NormalizationTests(unittest.TestCase):
 
     def finding(self, id, evidence, **kwargs):
         return Finding(id, 'Titre', 'code', 'P2', 'confirmed', 'high', 'static_check', 'Résumé', evidence, ['Action'], **kwargs)
+
+
+    def test_check_validation_rejects_invalid_evidence_and_duplicate_ids(self):
+        self.run.workflow = 'check'
+        self.run.checks = [CheckResult('A', 'passed', 'Fichier présent', [Evidence('file', 'Présent', path='code.py')], 'inventaire', 'Tous')]
+        self.assertEqual(normalize(self.run, self.repo).checks[0].status, 'passed')
+        for evidence in (None, [Evidence('bogus', 'Présent')], [Evidence('file', 'Présent', redacted='oui')], [Evidence('file', 'Présent', line_start=1)], [Evidence('file', 'Présent', path='../outside')]):
+            with self.subTest(evidence=evidence):
+                self.run.checks[0].evidence = evidence
+                with self.assertRaises(ValueError):
+                    normalize(self.run, self.repo)
+        self.run.checks[0].evidence = [Evidence('file', 'Présent')]
+        self.run.checks.append(CheckResult('A', 'not_checked', 'Inconnu'))
+        with self.assertRaisesRegex(ValueError, 'double'):
+            normalize(self.run, self.repo)
+
+    def test_optional_fields_keep_older_rescue_checks_compatible(self):
+        self.run.checks = [CheckResult('legacy', 'passed', 'Réalisé')]
+        self.assertEqual(normalize(self.run, self.repo).checks[0].id, 'legacy')
+        self.run.checks[0].source_method = 12
+        with self.assertRaises(ValueError):
+            normalize(self.run, self.repo)
 
     def test_invalid_line_degrades_confidence_and_status(self):
         self.run.findings = [self.finding('x', [Evidence('file', 'Indice', path='code.py', line_start=8)])]
