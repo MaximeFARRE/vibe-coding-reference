@@ -58,7 +58,9 @@ def read_sources(project, reports, notes, logs):
                 raise ValueError('Constat RESCUE invalide.')
             rule = finding.get('rule_id') or finding.get('id')
             status = finding.get('status')
-            if rule not in RULES or status not in {'confirmed', 'suspected'} or finding.get('id') in excluded:
+            if not isinstance(rule, str) or not isinstance(finding.get('id'), str):
+                raise ValueError('Identifiant de constat RESCUE invalide.')
+            if rule not in RULES or status not in {'confirmed', 'suspected'} or finding['id'] in excluded:
                 continue
             evidence = finding.get('evidence')
             if not isinstance(evidence, list) or not any(isinstance(e, dict) and e.get('kind') and e.get('summary') for e in evidence):

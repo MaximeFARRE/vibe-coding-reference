@@ -27,11 +27,15 @@ def load_registry(path, project):
                     or not isinstance(entry.get('sources'), list) or not isinstance(entry.get('updated_at'), str)
                     or not isinstance(entry.get('reevaluate_when'), str)):
                 raise ValueError('Entrée de registre invalide.')
+            identities = set()
             for source in entry['sources']:
                 if (not isinstance(source, dict) or source.get('rule') != rule
                         or source.get('status') not in {'confirmed', 'suspected'}
                         or any(not isinstance(source.get(k), str) or len(source[k]) > 4096 or not source[k] for k in ('source', 'reference', 'identity', 'origin'))):
                     raise ValueError('Source de registre invalide.')
+                if source['identity'] in identities:
+                    raise ValueError('Source dupliquée dans le registre.')
+                identities.add(source['identity'])
     except (json.JSONDecodeError, TypeError) as exc:
         raise ValueError('Registre JSON invalide.') from exc
     return data
