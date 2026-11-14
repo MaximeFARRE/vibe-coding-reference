@@ -98,3 +98,103 @@ Ce système traite le harness comme un ensemble de composants éditables autour 
 ## 4. Skills et workflows d'ingénierie déjà publics
 
 ### [G12] Matt Pocock — Skills for Real Engineers
+
+**URL :** https://github.com/mattpocock/skills  
+**Catégorie : B (sélection manuelle de skills individuels)**. Compétences de formalisation, architecture, audit, TDD, passation. Au moment de la revue, le dépôt décrit entre autres : `grill-with-docs`, `to-spec`, `improve-codebase-architecture`, `retro`, `diagnosing-bugs`, `code-review`, `to-tickets`.
+
+**Avis :** particulièrement pertinent pour IMPROVE (`retro`) et préparation des spécifications ; vérifier **le nom et le contenu exact à la version installée**. Son existence et sa notoriété ne démontrent pas de gains comparatifs individuels. Ne pas installer tout son setup dans chaque repo.
+
+### [G13] Jesse Vincent / obra — Superpowers
+
+**URL :** https://github.com/obra/superpowers  
+**Catégorie : B**. Workflows de debugging systématique, tests, vérification avant fin, planification. Peut imposer des étapes lourdes qui conviennent moins aux micro-tâches ; examiner `systematic-debugging` / `verification-before-completion` et les règles de déclenchement réelles.
+
+### [G14] Vercel — Agent Skills
+
+**URL :** https://github.com/vercel-labs/agent-skills  
+**Catégorie : B**. Skills de bonnes pratiques React, Next.js et UX web ; utile pour START lorsqu'une stack correspond. Source officielle sur les pratiques du framework ; **pas de preuve indépendante de gain marginal du skill exact** dans notre corpus. Scanner scripts, version et déclencheurs avant usage.
+
+### [G15] GitHub — Spec Kit
+
+**URL :** https://github.com/github/spec-kit  
+**Catégorie : B/A**. Spécification → planification → implémentation → vérification. Source de bonnes pratiques à adapter pour START et définition des besoins ; n'introduire qu'un sous-ensemble proportionné. Ne pas faire un système de spécifications de 30 documents par défaut.
+
+### [G16] Every — Compound Engineering Plugin
+
+**URL :** https://github.com/EveryInc/compound-engineering-plugin  
+**Catégorie : B/C**. Boucle brainstorm/plan/build/review/compound, plusieurs skills et parfois sous-agents ; version actuelle compatible avec Codex selon la documentation (à vérifier lors de l'installation). Très proche de notre IMPROVE ; attention à coûts de contexte, permissions, comportements automatiques et installation de toute la suite. **Étudier certains mécanismes, ne pas l'installer en bloc** pour P0.1.
+
+### [G17] Peter Steinberger — Agent Scripts
+
+**URL :** https://github.com/steipete/agent-scripts  
+**Catégorie : A/B**. Instructions courtes, skills synchronisés par scripts, hooks et utilitaires. Utile pour gouvernance et format d'instructions ; de nombreuses décisions sont liées à l'environnement personnel de l'auteur. Ne pas copier ses chemins, modèles ni permissions.
+
+### [G18] Anthropic — Public Skills
+
+**URL :** https://github.com/anthropics/skills  
+**Catégorie : A/B**. Exemples officiels de skills et formats ; utiles comme source, pas tous adaptés ni garantis pour production. Nous conservons le principe de sélection et revue individuelles.
+
+### [G19] khasky — Awesome Agent Skills
+
+**URL :** https://github.com/khasky/awesome-agent-skills  
+**Catégorie : D/B sur skill individuel**. Catalogue de skills d'audit, debugging, qualité ; instructions d'installation globales par lot très larges. **Ne pas utiliser l'installation de tous les skills** proposée dans le README ; sélectionner uniquement après revue du code, de la licence et de la valeur.
+
+### [G20] SWE-Skills-Bench (benchmark + corpus)
+
+**Code :** https://github.com/ControllableModel/SWE-Skills-Bench  
+**Papier révisé :** https://arxiv.org/html/2603.15401v2  
+**Catégorie : A (recherche)**. Référence pour différencier « connu » et « évalué ». Les quatre skills positifs du protocole ne constituent pas une shortlist universelle de production ; certaines tâches appartiennent à des écosystèmes non ciblés par VCR (Go/Java). Épingler le commit exact si l'on discute de la version testée.
+
+## 5. Optimisation de tokens et coûts
+
+### [G21] Microsoft — TokenEconomizer
+
+**URL :** https://github.com/microsoft/TokenEconomizer  
+**Publication :** https://www.microsoft.com/en-us/research/publication/tokeneconomizer-experience-driven-black-box-cost-control-for-coding-agents/  
+**Catégorie : B/C**. Plugin de contrôle de coûts sur agents, utilise micro-faits, filtrage outils et garde sur boucles d'échecs. Recherche intéressante, mais ses hooks agissent sur un runtime, ses fichiers de config et potentiellement des traces locales. La table du README donne **des plages précises de versions supportées** ; Codex peut changer rapidement. Ne jamais installer automatiquement et ne jamais promettre un pourcentage constant.
+
+**Checklist avant usage** : version réelle de Codex/Claude ; dépendances ; hooks et commandes ; fichiers locaux touchés ; modèle/judge additionnel ; données enregistrées ; accès réseau ; instructions d'undo ; consentement. Tester d'abord dans un profil de Codex isolé et un dépôt jetable, pas les projets personnels.
+
+## 6. Sécurité de la supply chain des skills
+
+Étude USENIX Security 2026 : https://www.usenix.org/conference/usenixsecurity26/presentation/liu-yi  
+Spécification : https://agentskills.io/specification
+
+**Fiche obligatoire avant de recommander un skill en installation :**
+
+```text
+ID et nom exact :
+Lien officiel et mainteneur :
+Tag/commit de revue :
+Licence et redistribution :
+Date du dernier commit/release :
+Domaine utile et modèle(s) ciblé(s) :
+Preuve de bénéfice (étude exacte / retour / aucune) :
+Contenu des SKILL.md et scripts :
+Actions dangereuses / réseau / permissions / secrets :
+Coût en contexte et dépendances :
+Chevauchement avec les skills déjà installés :
+Compatibilité Codex / Claude / versions :
+Installation minimale :
+Désinstallation et rollback :
+Statut : non vérifié / documenté / révisé / optionnel / déconseillé
+```
+
+**Règle** : un dépôt très populaire reste une entrée **G**, pas **E**. La preuve « fonctionne » n'est pas la preuve « améliore significativement la réussite ».
+
+## 7. Programme de recherche appliquée — sans benchmarks de performance maison
+
+**À mener par Codex en priorité sur des dépôts de démonstration** :
+
+| Recherche | Question précise | Livrable documentaire | Intégration |
+|---|---|---|---|
+| Serena | Navigation par symboles TS/Python sans surcharge ? | fiche installation/risques/usage, capture de résultat sur fixture | B futur |
+| Codebase Memory MCP | Graph d'appels local pertinent pour un module complexe ? | fiche architecture/permissions/limites ; pas de claim tokens repris | B/C |
+| TokenEconomizer | Hooks compatibles avec la version locale ? Peut-on isoler la config ? | fiche version/rollback/risque | B/C |
+| Harness² | Quelles abstractions généralisables sans récursion autonome ? | fiche des huit composants, deux boucles et sécurité | C uniquement |
+| LangGraph | Quel problème concret de reprise/coordination justifie un graph ? | matrice de décision mono-agent vs graphe | C |
+| Skills Pocock / Vercel / Superpowers | Quels skills précis sans doublons, sur quelles stacks ? | fiche de sélection et provenance | B |
+
+La « preuve de fonctionnement » du prototype inclut des **tests de compatibilité/fonctionnels** sur fixtures. Il ne faut pas les appeler étude démontrant une économie de tokens ; ne pas publier de benchmark de performance comparatif, conformément à la décision utilisateur.
+
+## 8. Sources complémentaires pertinentes, à laisser dans le catalogue historique
