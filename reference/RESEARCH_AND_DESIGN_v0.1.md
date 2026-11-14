@@ -398,3 +398,103 @@ OpenAI et les équipes Codex ; Anthropic et Claude Code ; DeepSeek ; Google Deep
 
 Chaque fiche devra préciser : (1) problème visé ; (2) contexte applicable ; (3) recommandation ; (4) contre-exemples ; (5) sources primaires ; (6) type de preuve ; (7) limites ; (8) date de dernière revue ; (9) décision retenue/à tester/écartée ; (10) changement depuis version précédente.
 
+### Précautions essentielles
+
+- Un papier de performance de modèle ne prouve pas une supériorité de framework.
+- Un repo très populaire n'est pas une preuve de gain en tokens.
+- Un retour de production d'OpenAI ne s'applique pas automatiquement à un petit projet individuel.
+- Une étude sur les modèles 2024–2025 peut perdre de sa pertinence avec les modèles 2026.
+- Une publication d'éditeur peut avoir un biais commercial : comparer avec des résultats indépendants.
+- On doit laisser les conclusions ouvertes si les preuves sont insuffisantes.
+
+## 12. Résultats publiés déjà utiles, sans extrapolation excessive
+
+- OpenAI montre l'intérêt d'un **environnement agent lisible**, des garde-fous et d'une documentation utilisée comme source de référence dans un projet Codex [S01]. **Nature B**.
+- OpenAI recommande de réduire les descriptions de skills inutiles et de ne charger les documents que lorsque la tâche le demande [S02]. **Nature B**.
+- Anthropic décrit le contexte comme une ressource finie et recommande un contenu à forte valeur informationnelle [S04]. **Nature B**.
+- Anthropic rapporte que la revue séparée, l'évaluation active et les artefacts de transmission peuvent aider des tâches de génération longues, avec un coût et une complexité supplémentaires [S05]. **Nature B**.
+- SWE-agent étudie expérimentalement l'influence de l'interface agent-ordinateur pour manipuler un dépôt et exécuter les outils [S09]. **Nature A**.
+- METR trouve que, dans ses conditions expérimentales du début 2025, les développeurs expérimentés ont mis en moyenne **19 % de temps en plus** avec IA, malgré une perception inverse ; le résultat n'est pas transposable tel quel aux modèles actuels [S11]. **Nature A**.
+- METR explique que des biais de participation rendent sa mise à jour de 2026 difficile à utiliser pour quantifier les gains récents [S12]. **Nature A/B**.
+- Google Code Wiki illustre un système de documentation rattachée à des références de code ; c'est une annonce produit et non une validation indépendante de gain de productivité [S29]. **Nature C/B**.
+
+---
+
+# Partie VIII — Décisions, pistes et priorités
+
+## 13. Registre consolidé des décisions
+
+| ID | Sujet | Statut | Décision / raison |
+|---|---|---|---|
+| D01 | Type de produit | **RETENU** | référentiel GitHub, pas une app |
+| D02 | Piliers | **RETENU** | START + RESCUE, contexte/architecture/qualité transverses |
+| D03 | Usage RESCUE | **RETENU** | audit lecture seule avant toute réparation |
+| D04 | Verdicts RESCUE | **RETENU** | KEEP / REFACTOR / PARTIAL REBUILD / REBUILD |
+| D05 | Rebuild | **RETENU** | possible mais exceptionnel et argumenté |
+| D06 | Supprimer des fonctions | **RETENU** | jamais sans validation du besoin métier |
+| D07 | Choix d'architecture | **RETENU** | contextualisé, sans dogme |
+| D08 | Monolithe modulaire/feature-first | **HYPOTHÈSE** | candidat de départ, pas vérité scientifique |
+| D09 | Documentation IA | **RETENU** | quatre niveaux, chargement progressif |
+| D10 | Maintenance des docs | **RETENU** | événements et révision ciblée, contrôle de dérive |
+| D11 | Skills | **RETENU** | catalogue large, installation sélective |
+| D12 | Quality gates | **RETENU** | tests, lint, sécurité, frontières vérifiables |
+| D13 | Seuils de lignes | **ÉCARTÉ** | pas de critère universel automatique |
+| D14 | Benchmarks propres | **ÉCARTÉ** | s'appuyer sur les études existantes |
+| D15 | Sources primaires | **RETENU** | industrie + science + documentation, avec limites |
+| D16 | Nouvelle CLI | **REPORTÉ** | non nécessaire au référentiel initial |
+| D17 | SaaS / application de guidance | **ÉCARTÉ maintenant** | bibliothèque avant produit |
+| D18 | Propre framework/agent | **ÉCARTÉ** | privilégier les outils existants |
+| D19 | Tous les outils au premier commit | **ÉCARTÉ** | installation minimale adaptée |
+| D20 | Réécriture par défaut | **ÉCARTÉ** | vérifier le coût et la valeur de l'existant |
+
+## 14. Questions de recherche non résolues
+
+1. Quelles études comparent véritablement les architectures sous des agents de code récents ?
+2. Quelles preuves quantifient la valeur des frontières de modules pour localiser et corriger les bugs ?
+3. Quels effets documentés de repo maps, recherche symbolique et index persistants sur la réussite des agents ?
+4. Comment détecter automatiquement une dérive de documentation sans créer de bruit ou de faux positifs ?
+5. Quelles études sérieuses abordent les critères *rebuild vs refactor* et l'économie de la dette technique ?
+6. Quels contrôles sont effectivement indispensables selon le profil de projet ?
+7. Comment les comportements de lecture `AGENTS.md` et des skills diffèrent-ils entre agents et versions ?
+8. Quels comparatifs officiels/indépendants permettent de recommander des stacks sans surinterpréter ?
+9. Quel niveau de standardisation des starter packs reste acceptable sans sacrifier le minimalisme ?
+10. Comment maintenir la bibliographie, les liens, les versions et les avertissements de sécurité à jour ?
+
+## 15. Priorité des recherches suivantes
+
+1. **Architecture pour agents** : modularité, barrières automatiques, compréhension du code.
+2. **Contexte et documentation** : navigation, indexation, recouvrement docs/code, versionnement.
+3. **RESCUE / dette technique** : diagnostic, migration, refactoring ou reconstruction.
+4. **Quality gates** : tests, sécurité, vérification des agents, limitations de l'auto-review.
+5. **Stack et infrastructure** : recommandations conditionnelles, systèmes et coûts d'exploitation.
+
+À chaque étape : partir des sources primaires, noter les résultats contradictoires et séparer les faits des décisions de conception.
+
+## 16. Arborescence conceptuelle, NON implémentée
+
+```text
+vibe-coding-reference/
+├── README.md
+├── RESEARCH_AND_DESIGN_REFERENCE.md
+├── research/
+│   ├── evidence-reviews/
+│   ├── source-index/
+│   ├── industry-publications/
+│   └── scientific-papers/
+├── start/
+│   ├── choosing-stack/
+│   ├── choosing-infrastructure/
+│   ├── project-initialization/
+│   └── starter-packs/
+├── rescue/
+│   ├── audit/
+│   ├── architecture-assessment/
+│   ├── rebuild-vs-refactor/
+│   └── recovery-process/
+├── architecture/
+│   ├── patterns/
+│   ├── stack-guides/
+│   └── architecture-controls/
+├── agent-context/
+│   ├── documentation/
+│   ├── code-navigation/
