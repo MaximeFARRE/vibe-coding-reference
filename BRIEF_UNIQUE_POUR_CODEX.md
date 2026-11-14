@@ -98,3 +98,103 @@ Créer un dépôt open source **local-first** qui permet à une personne dévelo
 7. `docs/06_PLAYBOOKS_ET_AUDITS.md` : scénarios complets START, RESCUE, IMPROVE, TOKEN EFFICIENCY.
 8. `reference/RESEARCH_AND_DESIGN_v0.2.md` : document historique complet (1673 lignes), **référence de fond**, à consulter à la demande ; ne pas injecter en entier dans chaque tâche.
 9. `reference/RESEARCH_AND_DESIGN_v0.1.md` : historique de cadrage, si une décision doit être retracée.
+
+Les anciens documents v0.1/v0.2 ne sont **pas** des instructions d'implémentation exécutables. En cas de contradiction, privilégier **le présent dossier daté du 14/11/2026**, puis demander confirmation si la décision implique un risque réel.
+
+## Les quatre modes visibles par l'utilisateur
+
+| Mode | Ce que l'utilisateur doit comprendre | Travail réel de l'agent | Risque par défaut |
+|---|---|---|---|
+| START | « Aide-moi à choisir et préparer mon projet » | questionnaire court, proposition conditionnelle, configuration minimale, critères métier | Conseil seulement |
+| RESCUE | « Analyse mon application et montre-moi les vrais problèmes » | collecte de preuves, exécution bornée de contrôles autorisés, rapport avec gravité et correctifs | Lecture/analyse sans modification du dépôt cible |
+| IMPROVE | « Repère ce qui rend les prochaines sessions IA difficiles » | constats de répétitions, dette de contexte, documentation, outils, propositions avec risques | Proposition uniquement, jamais auto-mutation |
+| TOKEN EFFICIENCY | « Où sont mes gaspillages et comment les corriger ? » | analyse de traces fournies volontairement, distinction coût/tokens/quota, pistes priorisées | Aucune surveillance implicite |
+
+`TOKEN EFFICIENCY` peut être un onglet d'IMPROVE ; ce n'est **pas** un service de facturation ni une promesse d'économies.
+
+## La stratégie pour un premier prototype « complet » mais réaliste
+
+**Un parcours vertical de bout en bout fonctionnel avant d'ajouter 20 intégrations.** Le prototype doit pouvoir :
+
+- analyser un dépôt **TypeScript/Next.js ou Python**, avec dégradation propre si le framework est inconnu ;
+- produire une sortie **Markdown + JSON + éventuellement un HTML statique local** ;
+- montrer des **preuves contrôlables** (fichier, ligne, commande, extraits anonymisés si nécessaire) ;
+- séparer `confirmed`, `suspected`, `not_checked` et `not_applicable` ;
+- transformer les conclusions en **actions proposées** que l'utilisateur peut accepter/rejeter ;
+- afficher les règles de prudence : jamais de réécriture automatique, aucun secret dans les rapports, aucune publication sans accord ;
+- se lancer avec un **point d'entrée local simple**, un mode interactif en terminal ou des prompts prêts à coller dans Codex ;
+- avoir des **tests fonctionnels sur dépôts fixtures** et une documentation utilisateur en français ;
+- pouvoir expliquer clairement quelles détections sont automatiques et quelles conclusions nécessitent l'IA ;
+- fonctionner **sans modèle/API ajouté** : on utilise le Codex/Claude Code déjà en place ; aucun envoi externe par le logiciel lui-même en mode de base.
+
+## Instructions d'utilisation immédiate avec Codex
+
+1. Créer un dépôt local vide, par exemple `vibe-coding-reference`.
+2. Placer **tout le contenu de ce dossier** dans le dépôt. Ne pas confondre ce dossier documentaire avec le petit prototype ZIP précédent.
+3. Ouvrir ce nouveau dépôt dans Codex.
+4. Copier le contenu de `prompts/01_CODEX_BOOTSTRAP.md` dans une **session neuve**.
+5. Demander à Codex de commencer par le **lot 0** puis le **lot 1** du backlog ; poursuivre dans de nouvelles sessions en s'appuyant sur le journal d'avancement. Ne pas envoyer aveuglément l'intégralité de la bibliographie au contexte à chaque tour.
+
+## Points non négociables
+
+- **Pas de benchmark maison de performance/tokens** : seulement des tests fonctionnels du prototype et la synthèse critique d'études existantes.
+- **Pas de nouveau modèle ni nouvel agent de code** : utiliser les agents déjà présents.
+- **Pas de création d'un catalogue de skills maison** : sélectionner, référencer et vérifier des skills existants. Les prompts de workflow de VCR ne sont pas présentés comme des « skills validés ».
+- **Pas d'intégration automatique de Google Harness², RAG, LangGraph, TokenEconomizer, Serena ou autres**, malgré leur intérêt : plugins optionnels avec contrôle de compatibilité et de permissions.
+- **Aucune modification non approuvée** de la base auditée ; aucune suppression de fonctionnalités métier sans accord.
+- **Ne jamais déclarer un gain de tokens ou une amélioration de fiabilité sans l'attribuer au protocole exact d'une source publiée.**
+
+## Définition de réussite de la première version
+
+Une personne non développeuse doit pouvoir analyser un dépôt exemple, comprendre les 3 à 5 vrais constats importants, retrouver leur preuve et décider quoi faire ensuite **sans lire le code de l'outil VCR**. Une personne expérimentée doit pouvoir inspecter les vérificateurs, enrichir les règles, reproduire les résultats et désactiver chaque mécanisme. Le tout sans service permanent ni infrastructure cloud obligatoire.
+
+
+
+---
+
+# SECTION — VISION ET DÉCISIONS
+
+# 01 — Vision, objectifs produit et décisions de conception
+
+**Document normatif pour le prototype.** Il met à jour la référence documentaire v0.2 créée le 12 novembre 2026 : ce qui était auparavant « hors périmètre : application / CLI » devient **un très petit outil local optionnel** pour rendre les procédures accessibles, **pas** un SaaS, un nouvel agent ou une grosse plateforme. Conserver la distinction.
+
+## 1. Problème utilisateur
+
+Les développeurs débutants ou « vibe coders » capables de générer une application complète par IA ne savent pas toujours :
+
+- si le produit respecte réellement son besoin métier ;
+- si le dépôt est sûr, maintenable, évolutif et testable ;
+- où se trouvent les problèmes qui feront consommer inutilement des tokens aux agents futurs ;
+- quelles corrections méritent d'être faites, dans quel ordre, avec quels risques ;
+- si une recommandation vient d'une étude empirique, d'un retour industriel ou d'une simple préférence ;
+- comment installer seulement les outils appropriés, sans transformer un projet simple en usine à gaz.
+
+**Promesse :** « L'agent rend visibles les problèmes importants, leurs preuves et les décisions possibles, sans ajouter de complexité gratuite. »
+
+**Différenciation :** ce n'est ni un cours généraliste de Harness Engineering (Walking Labs existe), ni un wrapper de Codex, ni un moteur de recherche de code concurrent de Serena, ni un nouveau framework multi-agent. C'est un **dispositif d'orientation, de diagnostic et d'amélioration contrôlée**, agnostique du modèle et de la stack, étayé par la recherche.
+
+## 2. Utilisateurs et situations
+
+**U1 Débutant** — souhaite lancer une application. Fournit un descriptif simple. Reçoit questions essentielles, choix de stack conditionnels, risques évidents, critères d'acceptation compréhensibles, setup minimal reproductible.
+
+**U2 Développeur amateur intensif en IA** — possède un projet de 100 à 1 000 fichiers, devenu difficile à modifier. Reçoit carte fonctionnelle et audit RESCUE ; voit preuves, gravité, stratégie de réparation et limites ; ne reçoit pas un « score de qualité 3/10 » arbitraire.
+
+**U3 Mainteneur** — veut un audit ciblé sécurité, tests, migration ou performance. Peut configurer domaines, outils et chemins ; reçoit JSON structuré + Markdown + vérificateurs reproductibles.
+
+**U4 Usage intensif de Codex** — veut expliquer l'inflation de contexte. Reçoit suggestions sur sessions, navigation, sorties de commandes, outils/plugins, cache et étapes échouées, sans chiffres inventés.
+
+**U5 Créateur d'un harness** — veut une amélioration continue : lit un journal d'incidents et approuve les propositions de modification d'instructions, de tests ou de cartes. Aucune boucle d'auto-édition incontrôlée.
+
+## 3. Capacités à exposer
+
+### START
+- Accepter une description en langage courant, puis poser uniquement les questions qui changent matériellement le design.
+- Séparer *produit / données et sécurité / exploitation / stack / architecture / contrôles*. Ne jamais comparer « Python » à « Next.js » comme s'il s'agissait du même niveau.
+- Fournir 1 à 3 options de stack lorsque pertinent, avec avantages, inconvénients, coût opérationnel et hypothèses.
+- Générer une **spécification d'intention** et une **checklist de validation métier** ; ne pas déployer.
+- Proposer des fichiers de démarrage minimaux sans imposer Docker, Postgres, Redis, Playwright ou RAG.
+
+### RESCUE
+- Audit d'abord **non destructif**. Reconnaître que certains outils supposés « lecture seule » peuvent créer des caches/logs ; utiliser un répertoire isolé ou demander l'accord avant ces outils.
+- Scanner : git/sauvegardes ; configuration ; structure ; imports ; tests ; build ; dépendances ; sécurité ; API ; données ; documentation ; UX métier si observable ; exploitabilité.
+- Séparer signaux heuristiques de constats confirmés. Ne jamais déduire l'inutilité fonctionnelle d'un simple import absent.
