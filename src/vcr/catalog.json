@@ -1,0 +1,97 @@
+{
+  "version": 1,
+  "review_date": "2026-11-14",
+  "review_basis": "Fiches documentaires locales docs/04_RECHERCHE_ET_SOURCES.md et docs/05_PROJETS_EXTERNES_ET_SKILLS.md ; aucune vérification réseau de cette session.",
+  "entries": [
+    {
+      "id": "tokeneconomizer", "name": "TokenEconomizer", "kind": "tool", "topics": ["tokens", "cost", "hooks"],
+      "level": "B", "evidence_type": "publication fournisseur et dépôt", "evidence_status": "unverified", "maintenance_status": "unverified",
+      "official_url": "https://github.com/microsoft/TokenEconomizer", "scientific_url": "https://www.microsoft.com/en-us/research/publication/tokeneconomizer-experience-driven-black-box-cost-control-for-coding-agents/",
+      "problem": "Étudier des contrôles de contexte et de coûts pour agents de code.",
+      "incompatibilities": "Versions d'agents et hooks à vérifier ; aucune compatibilité actuelle confirmée.", "hidden_costs": "Maintenance des hooks, stockage et coûts éventuels de modèles supplémentaires à examiner.",
+      "permissions": "Examiner accès aux traces, fichiers de configuration, processus et réseau avant tout usage.", "license": "Non vérifiée.",
+      "verification": "Contrôler source, version de l'agent, dépendances et documentation ; essayer seulement dans un profil et projet jetables après accord.",
+      "rollback": "Avant installation éventuelle, sauvegarder la configuration et relever les étapes officielles de retrait ; aucune désinstallation automatique."
+    },
+    {
+      "id": "serena", "name": "Serena", "kind": "tool", "topics": ["navigation", "symbols", "mcp"],
+      "level": "B", "evidence_type": "dépôt et documentation", "evidence_status": "unverified", "maintenance_status": "unverified",
+      "official_url": "https://github.com/oraios/serena", "scientific_url": null,
+      "problem": "Explorer une navigation de code par symboles et références.",
+      "incompatibilities": "Langages, serveurs LSP et agents pris en charge à vérifier selon version.", "hidden_costs": "Installation, indexation, mémoire et entretien des serveurs de langage.",
+      "permissions": "Examiner l'accès au code, aux fichiers de configuration, aux processus et au réseau.", "license": "Non vérifiée.",
+      "verification": "Comparer aux recherches natives sur un besoin réel ; inspecter version, permissions et dépendances.",
+      "rollback": "Sauvegarder la configuration avant essai ; relever fichiers créés et méthode officielle de retrait."
+    },
+    {
+      "id": "aider-repomap", "name": "Aider RepoMap", "kind": "tool", "topics": ["navigation", "tokens", "context"],
+      "level": "B", "evidence_type": "documentation de l'outil", "evidence_status": "unverified", "maintenance_status": "unverified",
+      "official_url": "https://aider.chat/docs/repomap.html", "scientific_url": null,
+      "problem": "Étudier une carte compacte de symboles pour la navigation.",
+      "incompatibilities": "Réutilisation autonome et prise en charge des langages à confirmer.", "hidden_costs": "Construction et actualisation d'une carte, dépendances éventuelles.",
+      "permissions": "Vérifier lecture du dépôt, éventuels services de modèle et données transmises.", "license": "Non vérifiée.",
+      "verification": "Examiner l'interface et la licence de la version visée avant toute intégration.",
+      "rollback": "Identifier les configurations et index créés avant tout essai ; documenter leur retrait après sauvegarde."
+    },
+    {
+      "id": "repomix", "name": "Repomix", "kind": "tool", "topics": ["context", "export", "tokens"],
+      "level": "B", "evidence_type": "documentation de l'outil", "evidence_status": "unverified", "maintenance_status": "unverified",
+      "official_url": "https://repomix.com/", "scientific_url": null,
+      "problem": "Étudier un export ponctuel de fichiers de projet pour revue.",
+      "incompatibilities": "Formats d'export, exclusions et compatibilité à vérifier sur la version choisie.", "hidden_costs": "Exports volumineux, stockage et risque de divulgation de contenu.",
+      "permissions": "Inspecter les fichiers lus et destinations des exports ; aucun envoi externe implicite.", "license": "Non vérifiée.",
+      "verification": "Vérifier les exclusions et essayer uniquement sur un projet fictif sans secrets après accord.",
+      "rollback": "Repérer les fichiers d'export créés et la procédure de retrait avant tout essai."
+    },
+    {
+      "id": "import-linter", "name": "Import Linter", "kind": "tool", "topics": ["architecture", "python", "dependencies"],
+      "level": "B", "evidence_type": "documentation de l'outil", "evidence_status": "unverified", "maintenance_status": "unverified",
+      "official_url": "https://import-linter.readthedocs.io/en/stable/", "scientific_url": null,
+      "problem": "Étudier des contrats de dépendances entre modules Python.",
+      "incompatibilities": "Version Python, imports dynamiques et couverture des contrats à vérifier.", "hidden_costs": "Maintenance des contrats et interprétation des faux positifs.",
+      "permissions": "Vérifier fichiers lus, caches et commandes avant usage.", "license": "Non vérifiée.",
+      "verification": "Définir une frontière utile et vérifier la licence, la version et les limites sur une fixture.",
+      "rollback": "Documenter les dépendances et fichiers de configuration ajoutés avant toute installation."
+    },
+    {
+      "id": "dependency-cruiser", "name": "Dependency Cruiser", "kind": "tool", "topics": ["architecture", "javascript", "dependencies"],
+      "level": "B", "evidence_type": "dépôt et documentation", "evidence_status": "unverified", "maintenance_status": "unverified",
+      "official_url": "https://github.com/sverweij/dependency-cruiser", "scientific_url": null,
+      "problem": "Étudier les frontières et dépendances d'imports JS/TS.",
+      "incompatibilities": "Versions Node/TS et imports dynamiques à examiner.", "hidden_costs": "Dépendances, configuration des règles et maintenance du graphe.",
+      "permissions": "Vérifier les fichiers lus, scripts d'installation et sorties écrites.", "license": "Non vérifiée.",
+      "verification": "Tester sur fixture une règle correspondant à un besoin démontré, après revue de la version.",
+      "rollback": "Sauvegarder les fichiers modifiés et identifier dépendances/configuration à retirer avant essai."
+    },
+    {
+      "id": "langgraph", "name": "LangGraph", "kind": "tool", "topics": ["orchestration", "agents", "architecture"],
+      "level": "C", "evidence_type": "documentation et dépôt", "evidence_status": "unverified", "maintenance_status": "unverified",
+      "official_url": "https://github.com/langchain-ai/langgraph", "scientific_url": null,
+      "problem": "Étudier une orchestration avec état et reprise lorsque le besoin existe.",
+      "incompatibilities": "Versions Python, composants de persistance et intégrations à vérifier.", "hidden_costs": "Dépendances, stockage d'état, complexité opérationnelle et coûts éventuels des modèles.",
+      "permissions": "Examiner accès aux services, secrets, stockage et appels de modèles avant tout essai.", "license": "Non vérifiée.",
+      "verification": "Établir un cas réel exigeant reprise ou coordination ; évaluer dans un environnement isolé.",
+      "rollback": "Préparer la sauvegarde des états et configurations et la suppression des dépendances avant expérimentation."
+    },
+    {
+      "id": "harness2", "name": "Google Research Harness²", "kind": "tool", "topics": ["research", "agents", "harness"],
+      "level": "C", "evidence_type": "dépôt de recherche et prépublication", "evidence_status": "unverified", "maintenance_status": "unverified",
+      "official_url": "https://github.com/google-research/harness2", "scientific_url": "https://arxiv.org/abs/2610.14224",
+      "problem": "Étudier la recherche sur l'amélioration de harness d'agents.",
+      "incompatibilities": "Compatibilité et configuration actuelles non vérifiées ; la documentation historique signale une possible exécution sans sandbox.", "hidden_costs": "Coûts de modèles, boucles itératives et risque de surajustement.",
+      "permissions": "Examiner exécution de commandes, réseau, accès aux fichiers et sandbox avant tout essai.", "license": "Non vérifiée.",
+      "verification": "Lecture seule d'abord ; toute expérimentation nécessite environnement jetable, limites explicites et accord humain.",
+      "rollback": "Prévoir un environnement jetable et un plan de retour arrière avant tout test autorisé."
+    },
+    {
+      "id": "context-engineering-anthropic", "name": "Effective context engineering for AI agents", "kind": "publication", "topics": ["tokens", "context", "agents"],
+      "level": "A", "evidence_type": "retour industriel", "evidence_status": "unverified", "maintenance_status": "unverified",
+      "official_url": "https://www.anthropic.com/research/effective-context-engineering-for-ai-agents", "scientific_url": null,
+      "problem": "Référence sur la sélection et la gestion du contexte d'agents.",
+      "incompatibilities": "Applicabilité à une tâche et un agent donnés à examiner ; pas de comparaison universelle.", "hidden_costs": "Temps de lecture et d'adaptation ; aucune économie quantifiée inférée.",
+      "permissions": "Lecture de documentation ; aucun accès au projet nécessaire pour consulter la fiche locale.", "license": "Non vérifiée.",
+      "verification": "Lire la source primaire, sa date et ses limites avant d'en tirer une recommandation.",
+      "rollback": "Aucune installation depuis le catalogue ; annuler séparément tout changement adopté après revue."
+    }
+  ]
+}
