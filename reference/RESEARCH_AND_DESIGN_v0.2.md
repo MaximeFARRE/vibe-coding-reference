@@ -1498,3 +1498,103 @@ Les décisions historiques D01–D20 de la v0.1 restent en vigueur : **référen
 | D33 | TokenEconomizer | **À ÉTUDIER / OPTION AVANCÉE** | plugin existant à compatibilité et sécurité vérifier |
 | D34 | Tests ciblés puis globaux | **RETENU** | séquencement proportionné au risque, sans exclure la suite complète |
 | D35 | Architecture recommandée | **HYPOTHÈSE MAINTENUE** | monolithe modulaire/feature-first conditionnel, non démontré optimal |
+| D36 | Recherche documentaire | **RETENU** | conserver résultats négatifs, contradictoires et publications révisées |
+| D37 | Benchmarks de l'utilisateur | **ÉCARTÉ** | aucune expérience personnelle requise ; suivi opérationnel facultatif |
+| D38 | Déploiement de la bibliothèque | **RETENU** | trois niveaux A/B/C et documentation progressive |
+
+## 17.4 Questions ouvertes après cette consolidation
+
+1. Existe-t-il une étude multi-frameworks/architectures récente et contrôlée évaluant **la maintenabilité agentique sur plusieurs mois**, pas seulement une correction ponctuelle ?
+2. Quel bénéfice spécifique une **carte de fonctionnalités humaine courte** apporte-t-elle par rapport à la recherche native du modèle, à taille de dépôt comparable ?
+3. Comment estimer le **coût par tâche correcte** dans les interfaces d'abonnement sans déduire abusivement des prix API ?
+4. Quelles versions des agents supportent réellement l'injection dynamique des outils MCP et des skills, et comment évoluent les mécanismes de cache ?
+5. Quel outil officiel simple donne le meilleur compromis pour vérifier les **règles métier** d'un utilisateur non-développeur ?
+6. Quelles méthodes détectent de manière fiable la **dérive des docs** en minimisant le bruit et les fausses alertes ?
+7. Quelle est la fréquence de maintenance raisonnable des fiches de skills quand les modèles évoluent vite ?
+8. Quelle bibliographie indépendante permet de relier **refactor vs rebuild** au coût des agents sur projets historiques ?
+9. Quels contrôles de permissions sont indispensables avant d'activer un skill ou un hook provenant de GitHub ?
+10. Comment publier des starters multi-stacks sans dériver vers des dizaines de configurations quasi identiques et périmées ?
+
+## 17.5 Ordre recommandé pour la première publication GitHub
+
+**Première tranche documentaire** : README court, présent document de référence, guide START, guide RESCUE, guide TOKEN EFFICIENCY, index des skills existants et fiches de sources prioritaires. Ne pas créer de CLI, de webapp, de skills maison, de batterie de mesures ou de microservices documentaires.
+
+**Critères de préparation** : les liens sont valides, les chiffres datés et contextualisés, les décisions distinguées des preuves, chaque guide dispose d'au moins un exemple en langage accessible, les scripts proposés ne sont pas destructifs, les compétences externes sont identifiées par leur provenance et leur état de révision.
+
+---
+
+
+## 17 bis. Sources nouvelles vérifiées ou identifiées pour la v0.2 (N01–N31)
+
+**Mode de lecture :** `A-prépublication` = étude expérimentale déposée avant validation éventuelle par les pairs ; `A-conférence` = article dans des actes de conférence/atelier ; `B` = retour technique industriel ; `C` = documentation éditeur ; `D` = dépôt et pratiques publiques. L'état **« source consultée »** signifie que l'abstract, la page d'actes ou la documentation liée a été accessible lors de cette consolidation, **pas** que nous avons reproduit les résultats ni audité le code de l'étude. La présence d'un article dans Google Scholar/arXiv n'établit pas sa robustesse.
+
+### Navigation et architecture
+
+**[N01] Qin, B. & Xie, Y. — Agent Retrieval Bench: Evaluating Repository Context Retrieval for Coding Agents.** 27 juillet 2026. **A-prépublication, source consultée.** 427 exemples, 25 dépôts ; comparaison lexicale, embeddings, RepoMap et récupérations d'agents. Ne pas confondre métrique de retrieval et réussite d'un correctif.  
+https://arxiv.org/abs/2607.24882
+
+**[N02] Coppola, A., Esposito, M., Kazman, R. & Lenarduzzi, V. — On Coding Agent Issue Localization Accuracy: An Exploratory Study.** ESEM, 5 octobre 2026. **A-conférence, source consultée.** Étude de granularité package/classe/méthode ; 2 441 commits dans dix projets Java.  
+https://drops.dagstuhl.de/entities/document/10.4230/LIPIcs.ESEM.2026.59
+
+**[N10] Zhang, S. et al. — SWE-Explore: Benchmarking How Coding Agents Explore Repositories.** Juin 2026. **A-prépublication, source consultée.** 848 problèmes, 203 projets, dix langages ; évaluation d'exploration sous budget de lignes.  
+https://arxiv.org/abs/2606.07297
+
+**[N11] Chen, W., Yang, Y., Cao, Y. & Lin, Y. — CodeGrep: An RL-Trained Retrieval Agent for LLM Coding Agents.** REALM 2026, ACL Anthology, octobre 2026. **A-atelier, source consultée.** Code retrieval spécialisé, résultats −15 % de tours et −19 % de tokens sur instances résolues de SWE-bench Verified.  
+https://aclanthology.org/2026.realm-1.80/
+
+**[N23] Aider — Repository Map.** Documentation technique de l'outil ; **C/D, référence de documentation**. Emploi d'une carte des symboles pondérés sous budget de tokens.  
+https://aider.chat/docs/repomap.html
+
+### Instructions, besoins et skills
+
+**[N03] Gloaguen, T. et al. — Evaluating AGENTS.md: Are Repository-Level Context Files Helpful for Coding Agents?** 12 février 2026. **A-prépublication, source consultée.** Résultats défavorables à l'injection indiscriminée de contexte ; ne prouve pas que toute consigne minimale est inutile.  
+https://arxiv.org/abs/2602.11988
+
+**[N04] Li, X. et al. — SkillsBench: Benchmarking How Well Agent Skills Work Across Diverse Tasks.** 13 février 2026. **A-prépublication, source consultée.** Benchmark général multi-domaines ; +16,2 points moyen, +4,5 en génie logiciel d'après la version consultée.  
+https://arxiv.org/abs/2602.12670
+
+**[N05] Han, T. et al. — SWE-Skills-Bench: Do Agent Skills Actually Help in Real-World Software Engineering?** **Version 2 du 27 octobre 2026**. **A-prépublication, texte HTML et tableau de résultats consultés.** 98 skills ; 92 sans effet significatif, quatre positifs et deux négatifs, moyenne +0,3 point. Les résultats de mars 2026 sont historiques.  
+https://arxiv.org/html/2603.15401v2
+
+**[N06] Deng, H. et al. — SWE-Journey: Towards More Realistic Evaluation of Coding Assistants through Long-Horizon, Multi-Turn Interaction.** 8 octobre 2026. **A-prépublication, source consultée.** Benchmark d'interactions prolongées avec profils utilisateurs ; fortes différences selon la capacité à préciser les besoins.  
+https://arxiv.org/abs/2610.11559
+
+**[N17] Liu, Y. et al. — “Do Not Mention This to the User”: Detecting and Understanding Malicious Agent Skills in the Wild.** USENIX Security 2026. **A-conférence, résumé consulté.** 98 380 skills étudiés, 157 malveillants confirmés dans le corpus.  
+https://www.usenix.org/conference/usenixsecurity26/presentation/liu-yi
+
+**[N24] Vercel — Agent Skills, notamment `vercel-react-best-practices`.** Dépôt officiel, **C/D, documentation consultée** ; 70 règles dans le SKILL.md consulté. Pas de preuve expérimentale indépendante de gain marginal examinée pour ce skill exact.  
+https://github.com/vercel-labs/agent-skills
+
+**[N25] Matt Pocock — Skills for Real Engineers.** Dépôt public et release notes, **D, documentation consultée**. Certains noms/invocations ont évolué ; ne pas supposer qu'un ancien nom persiste.  
+https://github.com/mattpocock/skills
+
+**[N26] Jesse Vincent / obra — Superpowers.** Dépôt et `systematic-debugging`, **D, documentation consultée**. Processus de debugging détaillé, pas une preuve d'efficacité comparative universelle.  
+https://github.com/obra/superpowers
+
+**[N30] Agent Skills — Specification.** Standard documentaire public des skills, **C, spécification identifiée**. Interopérabilité de format, pas uniformité d'interprétation des agents.  
+https://agentskills.io/specification
+
+**[N31] Huang, J. et al. — How Agent Skills Evolve: A Large-Scale Empirical Study of Skills on GitHub.** 3 novembre 2026. **A-prépublication, source consultée.** 84 200 skills, 750 898 commits ; maintenance, redondance et évolution des connaissances.  
+https://arxiv.org/abs/2611.04456
+
+### Tests, sécurité, qualité
+
+**[N07] Banik, D., Chowdhury, K. & Shamim, S. I. — All Smoke, No Alarm: Oracle Signals in Agent-Authored Test Code.** Juin 2026. **A-prépublication, source consultée.** 86 156 patchs de tests ; 80,2 % sans signaux d'oracle explicites forts selon la classification de l'étude.  
+https://arxiv.org/abs/2606.18168
+
+**[N08] Dipongkor, A. K., Baral, T., Lam, W. & Moran, K. — Test Coverage Analysis of Agentic Pull Requests.** 20 juillet 2026. **A-prépublication, source consultée.** Analyse de 4 882 PR ; couverture du code modifié et lacunes dans les blocs de gestion d'erreur.  
+https://arxiv.org/abs/2607.18057
+
+**[N09] Sun, C., Mündler-Sasahara, N., Vero, M. & Vechev, M. — Coding Agents Propagate Vulnerabilities in Code Bases.** 8 novembre 2026. **A-prépublication, source consultée.** Étude de la réutilisation de vulnérabilités à partir de code voisin ; résultats spécifiques aux protocoles backend et C/C++.  
+https://arxiv.org/abs/2611.11455
+
+### Tokens, cache et coût
+
+**[N12] Li, A. J. et al. — TokenEconomizer: Experience-Driven Black-Box Cost Control for Coding Agents.** Microsoft Research, octobre 2026. **A-prépublication + B industriel, résumé officiel consulté.** Réduction moyenne de 18,4–30,9 % dans les configurations de l'étude.  
+https://www.microsoft.com/en-us/research/publication/tokeneconomizer-experience-driven-black-box-cost-control-for-coding-agents/
+
+**[N13] Bai, L. et al. — How Do AI Agents Spend Your Money? Analyzing and Predicting Token Consumption in Agentic Coding Tasks.** 24 avril 2026. **A-prépublication, source consultée.** Variabilité jusqu'à 30× selon trajectoires, saturation des gains de réussite avec plus de tokens.  
+https://arxiv.org/abs/2604.22750
+
+**[N14] Weinberger, S. & Hozez, A. — Token Reduction Is Not Cost Reduction.** 13 juillet 2026. **A-prépublication, source consultée.** 2 848 runs appariés analysés ; compression de sorties d'outils sans économie correspondante dans certains bras.  
+https://arxiv.org/abs/2607.12161
