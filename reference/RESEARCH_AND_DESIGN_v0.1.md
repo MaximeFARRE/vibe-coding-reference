@@ -698,3 +698,32 @@ Next.js, SvelteKit, React, Vite, FastAPI, Streamlit, Ruby on Rails, GitHub Actio
 
 ---
 
+# Partie X — Gouvernance du document
+
+## 18. Règles de maintenance de la référence
+
+- Toute nouvelle décision est ajoutée au registre (ID, date, motif, sources, statut).
+- Les changements importants de modèle IA déclenchent une revue des instructions et skills concernés.
+- Un lien cassé ou un changement majeur de produit conduit à un statut « à revérifier ».
+- Les fiches de source doivent noter les limites, pas seulement une citation favorable.
+- Les idées abandonnées restent visibles avec la raison de leur abandon.
+- Ne jamais transformer silencieusement une hypothèse en conclusion.
+- Garder ce document synthétique et renvoyer vers les futures fiches détaillées pour éviter d'en faire un manuel impossible à maintenir.
+
+## 19. Proposition de première étape documentaire
+
+1. Conserver ce document comme **source de vérité du cadrage**.
+2. Créer, plus tard, une fiche de revue pour chacun des grands travaux [S01], [S02], [S04], [S05], [S09], [S11], [S12] et [S29].
+3. Extraire les recommandations documentées et leurs limites vers `research/evidence-reviews/`.
+4. Établir ensuite les guides START et RESCUE à partir de cette base, sans leur attribuer de bénéfices quantitatifs non démontrés.
+5. Ne sélectionner des configurations prêtes à copier qu'après vérification de leur compatibilité et de leur provenance.
+
+## 20. Journal de version
+
+| Date | Version | Changement |
+|---|---|---|
+| 2026-11-12 | 0.1 | Consolidation des échanges, décisions, hypothèses, architecture conceptuelle et catalogue de sources ; correction du lien Google Code Wiki et signalement des références à vérifier. |
+
+---
+
+**Résumé de doctrine :** un dépôt de référence qui aide à **bien commencer (START)** et à **remettre sur les rails (RESCUE)**, fondé sur les publications et les pratiques documentées les plus solides, sans dogme de stack, sans nouveaux outils maison inutiles et avec une attention permanente à la sécurité, à la qualité, à la maintenance et au contexte des agents IA.
