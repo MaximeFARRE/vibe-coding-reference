@@ -98,3 +98,32 @@ class RescueTests(unittest.TestCase):
         real_scandir = os.scandir
         def denied(path):
             if Path(path) == self.repo: raise PermissionError('fixture')
+            return real_scandir(path)
+        with patch('vcr.rescue.os.scandir', side_effect=denied):
+            run = audit(self.repo)
+        self.assertEqual(next(c.status for c in run.checks if c.id == 'inventory'), 'not_checked')
+        self.assertTrue(any('incomplet' in x for x in run.limitations))
+
+    def test_ignore_failure_stops_collection(self):
+        (self.repo / 'package.json').write_text('{"scripts":{"test":"do not run"}}')
+        def fake_git(repo, *args, **kwargs):
+            if args[0] == 'rev-parse' and '--show-toplevel' in args:
+                return 0, b'/fixture\n'
+            if args[0] == 'check-ignore':
+                return 2, b''
+            return 1, b''
+        with patch('vcr.rescue.git', side_effect=fake_git):
+            run = audit(self.repo)
+        self.assertEqual(next(c.status for c in run.checks if c.id == 'inventory'), 'not_checked')
+        self.assertEqual(next(c.status for c in run.checks if c.id == 'ignored_files'), 'not_checked')
+        self.assertEqual(run.profile, ['generic'])
+
+    def test_clean_project_no_findings(self):
+        (self.repo / 'architecture.md').write_text('fixture')
+        (self.repo / 'test_ok.py').write_text('pass')
+        run = self.run_audit()
+        self.assertEqual(run['findings'], [])
+
+
+if __name__ == '__main__':
+    unittest.main()
