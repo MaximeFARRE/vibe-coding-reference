@@ -16,6 +16,13 @@ def valid_url(value):
         return False
 
 
+def valid_date(value):
+    try:
+        return isinstance(value, str) and date.fromisoformat(value).isoformat() == value
+    except ValueError:
+        return False
+
+
 def load_catalog():
     try:
         data = json.loads(files('vcr').joinpath('catalog.json').read_text(encoding='utf-8'))
@@ -28,10 +35,7 @@ def normalize_catalog(data):
     if not isinstance(data, dict) or data.get('version') != 1 or not isinstance(data.get('entries'), list):
         raise ValueError('Format du catalogue invalide.')
     review = data.get('review_date')
-    try:
-        if not isinstance(review, str) or date.fromisoformat(review).isoformat() != review:
-            raise ValueError
-    except ValueError:
+    if not valid_date(review):
         review = None
     normalized = []
     ids = set()
@@ -49,11 +53,15 @@ def normalize_catalog(data):
             raise ValueError('Type ou niveau du catalogue invalide.')
         item['official_url'] = item.get('official_url') if valid_url(item.get('official_url')) else None
         item['scientific_url'] = item.get('scientific_url') if valid_url(item.get('scientific_url')) else None
-        item['maintenance_status'] = item.get('maintenance_status') if item.get('maintenance_status') in {'verified', 'unverified'} else 'unverified'
-        if item.get('evidence_status') != 'verified' or not item['official_url'] or item['maintenance_status'] != 'verified' or review is None:
+        maintenance = item.get('maintenance_status')
+        item['maintenance_status'] = maintenance if isinstance(maintenance, str) and maintenance in {'verified', 'unverified'} else 'unverified'
+        if item['maintenance_status'] == 'verified' and (not valid_date(item.get('maintenance_verified_at')) or not valid_url(item.get('maintenance_source'))):
+            item['maintenance_status'] = 'unverified'
+        if (item.get('evidence_status') != 'verified' or not item['official_url'] or item['maintenance_status'] != 'verified'
+                or review is None or not valid_date(item.get('evidence_verified_at')) or not valid_url(item.get('verification_source'))):
             item['evidence_status'] = 'unverified'
         item['recommended_by_default'] = False
-        for key in ('evidence_type', 'problem', 'incompatibilities', 'hidden_costs', 'permissions', 'license', 'verification', 'rollback'):
+        for key in ('evidence_type', 'problem', 'incompatibilities', 'hidden_costs', 'permissions', 'license', 'verification', 'rollback', 'maintainer', 'version'):
             if not isinstance(item.get(key), str) or not item[key].strip():
                 item[key] = 'Non vérifié ou non renseigné.'
                 item['evidence_status'] = 'unverified'
@@ -76,6 +84,11 @@ def render(catalog, topic=None):
         lines += ['', 'Aucun résultat pour ce thème. Thèmes disponibles : ' + ', '.join(available) + '.']
     for item in entries:
         lines += ['', f"## {item['name']} — {item['id']}", f"- **Type / thèmes :** {item['kind']} ; {', '.join(item['topics'])}", f"- **Niveau de complexité :** {item['level']}", f"- **Statut de preuve :** {item['evidence_status']} ; nature : {item['evidence_type']}", f"- **Maintenance :** {item['maintenance_status']} ; **installation par défaut :** non recommandée."]
+        if item['evidence_status'] == 'verified':
+            lines.append(f"- **Vérification de preuve :** {item['evidence_verified_at']} ; {item['verification_source']}")
+        if item['maintenance_status'] == 'verified':
+            lines.append(f"- **Vérification de maintenance :** {item['maintenance_verified_at']} ; {item['maintenance_source']}")
+        lines.append(f"- **Mainteneur :** {item['maintainer']} **Version :** {item['version']}")
         for label, key in [('Problème traité', 'problem'), ('Incompatibilités / limites', 'incompatibilities'), ('Coûts cachés', 'hidden_costs'), ('Permissions', 'permissions'), ('Licence', 'license')]:
             lines.append(f"- **{label} :** {item[key]}")
         lines.append('- **Source officielle :** ' + (item['official_url'] or 'non renseignée ou URL invalide.'))
