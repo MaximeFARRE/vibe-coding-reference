@@ -49,7 +49,7 @@ def normalize_catalog(data):
         topics = item.get('topics')
         if not isinstance(topics, list) or any(not isinstance(t, str) or not t.strip() for t in topics):
             raise ValueError('Liste de thèmes invalide.')
-        if item.get('kind') not in {'tool', 'publication'} or item.get('level') not in {'A', 'B', 'C'}:
+        if item.get('kind') not in ('tool', 'publication') or item.get('level') not in ('A', 'B', 'C'):
             raise ValueError('Type ou niveau du catalogue invalide.')
         item['official_url'] = item.get('official_url') if valid_url(item.get('official_url')) else None
         item['scientific_url'] = item.get('scientific_url') if valid_url(item.get('scientific_url')) else None
