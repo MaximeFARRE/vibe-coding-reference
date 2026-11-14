@@ -64,6 +64,11 @@ class TraceValidationTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             load_trace(link)
 
+    def test_decimal_cost_sum_is_not_rounded(self):
+        self.file.write_text('{"format":"vcr-token-trace-v1","records":[{"cost":{"amount":0.123456789012345678,"currency":"EUR","kind":"actual","provider":"x","date":"2026-11-14"}},{"cost":{"amount":0.000000000000000001,"currency":"EUR","kind":"actual","provider":"x","date":"2026-11-14"}}]}')
+        cost = analyse(load_trace(self.file))['metrics']['cost_declared']
+        self.assertEqual(cost['value'], '0.123456789012345679')
+
 
 if __name__ == '__main__':
     unittest.main()
