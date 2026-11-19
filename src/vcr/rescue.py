@@ -137,10 +137,10 @@ def audit(repo, *, health=False, full=False):
         if path.name not in {'package.json', 'pyproject.toml', 'requirements.txt'}:
             continue
         try:
-            full = repo / path
-            if full.is_symlink():
+            manifest_path = repo / path
+            if manifest_path.is_symlink():
                 raise OSError('lien symbolique')
-            data = full.read_bytes()
+            data = manifest_path.read_bytes()
             if len(data) > MAX_SIZE: raise ValueError('taille')
             if path.name == 'package.json':
                 obj = json.loads(data)

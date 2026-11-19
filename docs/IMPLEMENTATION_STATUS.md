@@ -1,5 +1,27 @@
 # Prototype status
 
+## Cleanup — November 19, 2026
+
+Removed the obsolete seven-file CHECK implementation kit and documentary catalog. Its historical material remains in Git at `d53401d`. Fixed CHECK quick mode and added a regression assertion. Existing research changes were preserved.
+
+Verification: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -m unittest discover -s tests -q` passed 68 tests. `git diff --check` passed. Next: evaluate the product value and consumers of IMPROVE, TOKENS and SOURCES before changing their commands or stored formats. External use remains unknown.
+
+## VCR self-audit — November 19, 2026
+
+Audited the local VCR tree at `d53401d`. The [audit note](../research/2026-11-19-vcr-self-audit.md) records the inventory, traced maintenance scenarios, duplicated evidence and decision paths, and candidates for retirement. Only audit documentation was added or updated.
+
+Verification on macOS with Python 3.12.9: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -m unittest discover -s tests -q` passed 68 tests. Git inventory and history commands, `rg` and `wc -l` supported the source review. Temporary fixtures exercised `python3 -m vcr check`, `rescue` and `improve`, reproducing the Node and Python evidence differences, unintended full-mode rows, and the two-report proposal gate. No fixture scripts ran. Downstream users, Windows and remote CI were not checked.
+
+Next proposed batch: consolidate passive test evidence for CHECK and RESCUE, fix quick/full behavior and verify a useful next action from one scan. Keep existing CLI and report contracts while assessing which secondary features and obsolete instructions can be retired.
+
+## Portfolio Engine trial review — November 15, 2026
+
+Reviewed the two supplied report directories, the VCR implementation, relevant research/design sections, and the target's README, AGENTS.md, Python configuration and CI declarations in read-only mode. Recorded confirmed detection gaps, the broader product-value hypothesis, three options and proposed functional acceptance criteria in [the research note](../research/2026-11-15-portfolio-trial-product-gap.md). No product code, target files, commits, installations or deployments were changed. The existing untracked `.DS_Store` was preserved.
+
+Checks: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src python3 -m unittest discover -s tests -q` passed 68 existing fixture tests. Reads used `rg`, `cat`, `nl -ba` and `sed`; `git status --short` identified pre-existing work. These tests confirm the existing implementation contract, not useful diagnosis on a real project. No Portfolio Engine scripts were run, no private database or session trace was read, and remote CI, dependency security and business correctness were not checked.
+
+Next proposed batch, pending product direction: define one useful end-to-end RESCUE outcome, unify Python/Node evidence across CHECK and RESCUE, and validate a bounded evidence-to-action workflow with synthetic functional fixtures. The recommendation is discussion material, not an approved refactor.
+
 Latest initial batch: 7, with local checks and GitHub CI on `feat/initial-publication`; the main branch had not yet been merged at that point. Python 3.12.9 on macOS; Linux checked in CI, Windows not checked. The owner chose the MIT license.
 
 Features: START scopes an idea; RESCUE performs a passive audit; IMPROVE offers supervised proposals; TOKENS accepts a VCR trace or one selected OpenAI/Anthropic API response; SOURCES filters nine local entries by topic. VCR contacts no service and installs nothing. Agents may consult useful public sources over the network.

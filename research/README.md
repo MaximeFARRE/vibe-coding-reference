@@ -37,3 +37,5 @@ Purpose: preserve project findings, sources, options, benefits, drawbacks and op
 | TOKENS: diagnosis and voluntary import | [2026-11-14-tokens-diagnostic.md](2026-11-14-tokens-diagnostic.md) | Decided (batch 5) |
 | Catalog: links and maintenance | [2026-11-14-catalogue-sources.md](2026-11-14-catalogue-sources.md) | Decided (batch 6) |
 | Functional exercise and CI | [2026-11-14-epreuve-fonctionnelle.md](2026-11-14-epreuve-fonctionnelle.md) | Decided (batch 7) |
+| Portfolio Engine trial: inventory versus useful diagnosis | [2026-11-15-portfolio-trial-product-gap.md](2026-11-15-portfolio-trial-product-gap.md) | Open |
+| VCR self-audit and simplification priorities | [2026-11-19-vcr-self-audit.md](2026-11-19-vcr-self-audit.md) | Open |

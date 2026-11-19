@@ -40,6 +40,9 @@ class CheckTests(unittest.TestCase):
             repo = Path(tmp) / 'repo'; repo.mkdir()
             (repo / 'package.json').write_text(json.dumps({'scripts': {'test': 'touch SHOULD_NOT_EXIST'}}))
             (repo / 'package-lock.json').write_text('{}')
+            quick = self.cli('--repo', repo, '--json')
+            self.assertEqual(quick.returncode, 0, quick.stderr)
+            self.assertNotIn('TEST-01-EXEC', {x['id'] for x in json.loads(quick.stdout)['checks']})
             result = self.cli('--repo', repo, '--json', '--full')
             self.assertEqual(result.returncode, 0, result.stderr)
             checks = {x['id']: x['status'] for x in json.loads(result.stdout)['checks']}
